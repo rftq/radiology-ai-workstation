@@ -365,16 +365,16 @@
                     <div class="meta-row">
                         <div class="win11-radio-group" id="modalityGroup">
                             <label>
-                                <input type="radio" name="modality" value="ct" checked> 🖥️ КТ <span class="modality-prefix">(ct)</span>
+                                <input type="radio" name="modality" value="ct" checked> 🖥️ КТ
                             </label>
                             <label>
-                                <input type="radio" name="modality" value="mr"> 🧠 МРТ <span class="modality-prefix">(mr)</span>
+                                <input type="radio" name="modality" value="mr"> 🧠 МРТ
                             </label>
                             <label>
-                                <input type="radio" name="modality" value="rg"> 📦 РГ <span class="modality-prefix">(rg)</span>
+                                <input type="radio" name="modality" value="rg"> 📦 РГ
                             </label>
                             <label>
-                                <input type="radio" name="modality" value="fl"> 🫁 ФЛГ <span class="modality-prefix">(fl)</span>
+                                <input type="radio" name="modality" value="fl"> 🫁 ФЛГ
                             </label>
                         </div>
                         
@@ -392,7 +392,7 @@
 
         <!-- Основной ряд с двумя колонками -->
         <div class="main-row">
-            <!-- Левая колонка: Сокращения (немного уже) -->
+            <!-- Левая колонка: Сокращения -->
             <div class="win11-card">
                 <h3 class="section-title">➕ Добавить сокращение</h3>
                 <div class="input-group">
@@ -417,7 +417,7 @@
                     <input type="file" id="fileInput" class="file-input" accept=".json">
                 </div>
 
-                <div id="autoSaveStatus" class="status-badge">⏺ Автосохранение каждые 5 мин</div>
+                <div id="autoSaveStatus" class="status-badge">⏺ Автосохранение каждые 10 мин</div>
             </div>
 
             <!-- Правая колонка: Основное рабочее поле -->
@@ -445,7 +445,7 @@
         // Загрузка сокращений из localStorage
         let abbreviations = JSON.parse(localStorage.getItem('abbreviations')) || {};
         let autoSaveInterval;
-        const AUTO_SAVE_INTERVAL = 5 * 60 * 1000; // 5 минут в миллисекундах
+        const AUTO_SAVE_INTERVAL = 10 * 60 * 1000; // 10 минут в миллисекундах
 
         // Переменные для работы с JSON-файлом
         let jsonData = null;
@@ -534,10 +534,10 @@
         function getSelectedModalityText() {
             for (const radio of modalityRadios) {
                 if (radio.checked) {
-                    // Получаем текст метки и убираем эмодзи и префикс
+                    // Получаем текст метки и убираем эмодзи
                     const labelText = radio.parentElement.textContent.trim();
-                    // Удаляем эмодзи и скобки с префиксом
-                    return labelText.replace(/[🖥️🧠📦🫁\s]|\([a-z]+\)/g, '').trim();
+                    // Удаляем эмодзи (оставляем только буквы)
+                    return labelText.replace(/[🖥️🧠📦🫁\s]/g, '').trim();
                 }
             }
             return 'КТ'; // По умолчанию
@@ -750,7 +750,7 @@
         function updateAutoSaveStatus(message) {
             autoSaveStatus.textContent = message;
             setTimeout(() => {
-                autoSaveStatus.textContent = `⏺ Автосохранение каждые 5 мин`;
+                autoSaveStatus.textContent = `⏺ Автосохранение каждые 10 мин`;
             }, 3000);
         }
 
@@ -787,27 +787,15 @@
                     jsonData = JSON.parse(e.target.result);
                     jsonFileName = file.name;
                     
-                    // Определяем следующий доступный ID (числовой)
+                    // Определяем следующий доступный ID
                     if (Array.isArray(jsonData)) {
-                        // Проверяем, есть ли уже числовые ID
                         const maxId = jsonData.reduce((max, item) => {
-                            // Если ID число, используем его, иначе пытаемся преобразовать
-                            const id = typeof item.id === 'number' ? item.id : parseInt(item.id, 10);
-                            return !isNaN(id) && id > max ? id : max;
+                            return item.id && item.id > max ? item.id : max;
                         }, 0);
                         nextId = maxId + 1;
-                        
-                        // Если не было ни одного числового ID, начинаем с 1
-                        if (nextId === 1 && jsonData.length > 0) {
-                            // Проверяем, были ли нечисловые ID
-                            const hasNonNumeric = jsonData.some(item => isNaN(parseInt(item.id, 10)));
-                            if (hasNonNumeric) {
-                                console.warn('Обнаружены нечисловые ID, начинаем нумерацию с 1');
-                            }
-                        }
                     } else {
                         jsonData = [];
-                        nextId = 1;
+                        nextId = 1001;
                     }
                     
                     dataFileInfo.innerHTML = `<span style="color: #107c10;">✅ Загружен: ${jsonFileName}</span>`;
@@ -862,9 +850,9 @@
             // Получаем выбранную модальность (сохраняем для использования после отправки)
             const selectedModality = getSelectedModality();
 
-            // Создаем новый объект с ЧИСЛОВЫМ ID
+            // Создаем новый объект (БЕЗ ЭМОДЗИ В TITLE)
             const newEntry = {
-                id: nextId, // Числовой ID для совместимости
+                id: nextId,
                 title: title, // Без эмодзи
                 text: text,
                 modality: selectedModality, // Латинские значения: ct, mr, rg, fl
@@ -901,20 +889,21 @@
             patientName.value = '';
             titleField.value = '..';
             // НЕ сбрасываем выбранную модальность
+            // modalityRadios остаются с текущим выбранным значением
             setTodayDate();
 
             // Обновляем информацию о файле
             dataFileInfo.innerHTML = `<span style="color: #107c10;">✅ Загружен: ${jsonFileName} (обновлен)</span>`;
             
-            alert(`Данные успешно добавлены! ID: ${nextId-1}, файл сохранен как: ${filename}`);
+            alert(`Данные успешно добавлены! Файл сохранен как: ${filename}`);
         }
 
         // Инициализация автосохранения
         function initAutoSave() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
             autoSaveInterval = setInterval(autoSaveText, AUTO_SAVE_INTERVAL);
-            updateAutoSaveStatus(`⏺ Автосохранение каждые 5 мин`);
-            // Первое автосохранение через 5 минут
+            updateAutoSaveStatus(`⏺ Автосохранение каждые 10 мин`);
+            // Первое автосохранение через 10 минут
             setTimeout(autoSaveText, AUTO_SAVE_INTERVAL);
         }
 
