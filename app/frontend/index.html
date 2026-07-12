@@ -58,6 +58,8 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
+            position: relative;
+            overflow: hidden;
         }
 
         .win11-button:hover {
@@ -87,6 +89,30 @@
         .win11-button.success:hover {
             background-color: #13a10e;
             border-color: #13a10e;
+        }
+
+        .win11-button .button-message {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: inherit;
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        .win11-button.show-message .button-message {
+            opacity: 1;
+        }
+
+        .win11-button.show-message .button-text {
+            opacity: 0;
         }
 
         .win11-input {
@@ -150,6 +176,7 @@
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             transition: all 0.2s ease;
+            min-height: 400px;
         }
 
         .win11-textarea:focus {
@@ -309,11 +336,6 @@
         .submit-btn-container {
             margin-bottom: 5px;
         }
-        
-        .small-textarea {
-            min-height: 250px;
-            max-height: 350px;
-        }
 
         /* Стиль для префиксов */
         .modality-prefix {
@@ -322,6 +344,15 @@
             color: #666;
             margin-left: 2px;
             opacity: 0.7;
+        }
+        
+        /* Стиль для сообщений на кнопках */
+        .button-text, .button-message {
+            transition: opacity 0.2s ease;
+        }
+        
+        .error-message {
+            background-color: #d13438 !important;
         }
     </style>
 </head>
@@ -337,7 +368,10 @@
                     <span class="win11-badge" id="jsonStatusBadge" style="font-size: 11px;">Файл не загружен</span>
                 </div>
                 
-                <button id="loadDataFileBtn" class="win11-button" style="width: 100%; margin-bottom: 6px; padding: 6px 12px; font-size: 13px;">📂 Загрузить файл</button>
+                <button id="loadDataFileBtn" class="win11-button" style="width: 100%; margin-bottom: 6px; padding: 6px 12px; font-size: 13px;">
+                    <span class="button-text">📂 Загрузить файл</span>
+                    <span class="button-message"></span>
+                </button>
                 <input type="file" id="dataFileInput" class="file-input" accept=".json">
                 
                 <div class="file-info" id="dataFileInfo" style="margin-top: 2px; margin-bottom: 8px; padding: 5px; font-size: 11px;">
@@ -353,7 +387,7 @@
                     </div>
                     <div style="flex: 2;">
                         <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Имя файла</div>
-                        <div style="font-family: monospace; background: rgba(0,0,0,0.02); padding: 4px; border-radius: 6px; font-size: 11px;" id="filenamePreview">ct_18mar_15-30-45.json</div>
+                        <div style="font-family: monospace; background: rgba(0,0,0,0.02); padding: 4px; border-radius: 6px; font-size: 11px;" id="filenamePreview">rg_18mar_15-30-45.json</div>
                     </div>
                 </div>
             </div>
@@ -361,20 +395,20 @@
             <!-- Правый верхний блок: Мета-поля в два ряда -->
             <div class="win11-card compact-card">
                 <div class="meta-fields">
-                    <!-- Первый ряд: модальность и дата -->
+                    <!-- Первый ряд: модальность и дата (новый порядок: РГ, ФЛГ, КТ, МРТ) -->
                     <div class="meta-row">
                         <div class="win11-radio-group" id="modalityGroup">
                             <label>
-                                <input type="radio" name="modality" value="ct" checked> 🖥️ КТ
-                            </label>
-                            <label>
-                                <input type="radio" name="modality" value="mr"> 🧠 МРТ
-                            </label>
-                            <label>
-                                <input type="radio" name="modality" value="rg"> 📦 РГ
+                                <input type="radio" name="modality" value="rg" checked> 📦 РГ
                             </label>
                             <label>
                                 <input type="radio" name="modality" value="fl"> 🫁 ФЛГ
+                            </label>
+                            <label>
+                                <input type="radio" name="modality" value="ct"> 🖥️ КТ
+                            </label>
+                            <label>
+                                <input type="radio" name="modality" value="mr"> 🧠 МРТ
                             </label>
                         </div>
                         
@@ -384,7 +418,7 @@
                     <!-- Второй ряд: ФИО и название -->
                     <div class="meta-row">
                         <input type="text" id="patientName" class="win11-input" placeholder="ФИО пациента" style="height: 38px;">
-                        <input type="text" id="titleField" class="win11-input" value=".." onfocus="clearDefaultText(this)" style="height: 38px;">
+                        <input type="text" id="titleField" class="win11-input" placeholder="Название" style="height: 38px;">
                     </div>
                 </div>
             </div>
@@ -401,19 +435,31 @@
                 <div class="input-group">
                     <input type="text" id="phraseInput" class="win11-input" placeholder="Полная фраза (например, 'пожалуйста')">
                 </div>
-                <button id="addBtn" class="win11-button primary" style="width: 100%;">Добавить</button>
+                <button id="addBtn" class="win11-button primary" style="width: 100%;">
+                    <span class="button-text">Добавить</span>
+                    <span class="button-message"></span>
+                </button>
 
                 <div style="margin-top: 16px;">
                     <h3 class="section-title">📋 Мои сокращения</h3>
                     <div id="abbreviationList" class="win11-list"></div>
-                    <button id="clearBtn" class="win11-button" style="width: 100%; margin-top: 8px;">Очистить все</button>
+                    <button id="clearBtn" class="win11-button" style="width: 100%; margin-top: 8px;">
+                        <span class="button-text">Очистить все</span>
+                        <span class="button-message"></span>
+                    </button>
                 </div>
 
                 <div class="win11-divider"></div>
 
                 <div style="display: flex; gap: 10px;">
-                    <button id="importBtn" class="win11-button" style="flex: 1;">📥 Импорт</button>
-                    <button id="exportBtn" class="win11-button" style="flex: 1;">📤 Экспорт</button>
+                    <button id="importBtn" class="win11-button" style="flex: 1;">
+                        <span class="button-text">📥 Импорт</span>
+                        <span class="button-message"></span>
+                    </button>
+                    <button id="exportBtn" class="win11-button" style="flex: 1;">
+                        <span class="button-text">📤 Экспорт</span>
+                        <span class="button-message"></span>
+                    </button>
                     <input type="file" id="fileInput" class="file-input" accept=".json">
                 </div>
 
@@ -423,17 +469,26 @@
             <!-- Правая колонка: Основное рабочее поле -->
             <div class="win11-card">
                 <h3 class="section-title">📝 Текстовое поле</h3>
-                <textarea id="textInput" class="win11-textarea small-textarea" rows="12"
+                <textarea id="textInput" class="win11-textarea" rows="16"
                     placeholder="Введите текст здесь... Сокращения заменяются при нажатии пробела или Enter."></textarea>
                 
                 <!-- Кнопка отправки ВЫШЕ остальных кнопок -->
                 <div class="submit-btn-container">
-                    <button id="submitBtn" class="win11-button success" style="width: 100%;">📨 Отправить в JSON</button>
+                    <button id="submitBtn" class="win11-button success" style="width: 100%;">
+                        <span class="button-text">📨 Отправить в JSON</span>
+                        <span class="button-message"></span>
+                    </button>
                 </div>
                 
                 <div class="button-group">
-                    <button class="win11-button" onclick="copy_to_clipboard('textInput');" style="flex: 1;">📋 Скопировать</button>
-                    <button class="win11-button" id="exportTextBtn" style="flex: 1;">💾 Сохранить</button>
+                    <button class="win11-button" onclick="copy_to_clipboard('textInput');" style="flex: 1;">
+                        <span class="button-text">📋 Скопировать</span>
+                        <span class="button-message"></span>
+                    </button>
+                    <button class="win11-button" id="exportTextBtn" style="flex: 1;">
+                        <span class="button-text">💾 Сохранить</span>
+                        <span class="button-message"></span>
+                    </button>
                 </div>
                 
                 <button id="replaceBtn" hidden>Заменить все сокращения</button>
@@ -490,6 +545,26 @@
             dateField.value = `${year}-${month}-${day}`;
         }
 
+        // Функция для отображения временного сообщения на кнопке
+        function showButtonMessage(button, message, isError = false) {
+            const buttonElement = button.tagName === 'BUTTON' ? button : button.target;
+            const messageSpan = buttonElement.querySelector('.button-message');
+            const textSpan = buttonElement.querySelector('.button-text');
+            
+            if (!messageSpan || !textSpan) return;
+            
+            messageSpan.textContent = message;
+            buttonElement.classList.add('show-message');
+            if (isError) {
+                buttonElement.classList.add('error-message');
+            }
+            
+            setTimeout(() => {
+                buttonElement.classList.remove('show-message');
+                buttonElement.classList.remove('error-message');
+            }, 2000);
+        }
+
         // Функция для форматирования даты и времени для имени файла с префиксом модальности
         function formatFilenameWithModality(modality) {
             const now = new Date();
@@ -508,27 +583,45 @@
             
             // Маппинг модальностей для префикса
             const modalityPrefix = {
-                'ct': 'ct',
-                'mr': 'mr',
                 'rg': 'rg',
-                'fl': 'fl'
+                'fl': 'fl',
+                'ct': 'ct',
+                'mr': 'mr'
             };
             
             const prefix = modalityPrefix[modality] || 'unknown';
             return `${prefix}_${day}${month}_${hours}-${minutes}-${seconds}`;
         }
 
+        // Функция для форматирования имени файла с ФИО пациента
+        function formatFilenameWithPatientName(patientNameText) {
+            const now = new Date();
+            
+            // Месяц: 3-буквенное сокращение на английском
+            const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+            const month = months[now.getMonth()];
+            
+            // День
+            const day = String(now.getDate()).padStart(2, '0');
+            
+            // Часы, минуты и секунды
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            // Обрабатываем ФИО: заменяем пробелы на подчеркивания
+            let namePart = patientNameText.trim().replace(/\s+/g, '_');
+            if (namePart === '') {
+                namePart = 'без_имени';
+            }
+            
+            return `${namePart}_${day}${month}_${hours}-${minutes}-${seconds}`;
+        }
+
         // Обновление превью имени файла на основе выбранной модальности
         function updateFilenamePreview() {
             const selectedModality = getSelectedModality();
             filenamePreview.textContent = formatFilenameWithModality(selectedModality) + '.json';
-        }
-
-        // Функция для очистки поля "Название" при фокусе
-        function clearDefaultText(element) {
-            if (element.value === '..') {
-                element.value = '';
-            }
         }
 
         // Получение выбранной модальности
@@ -538,7 +631,7 @@
                     return radio.value;
                 }
             }
-            return 'ct'; // По умолчанию
+            return 'rg'; // По умолчанию РГ
         }
 
         // Получение текста выбранной модальности БЕЗ ЭМОДЗИ для title
@@ -551,7 +644,7 @@
                     return labelText.replace(/[🖥️🧠📦🫁\s]/g, '').trim();
                 }
             }
-            return 'КТ'; // По умолчанию
+            return 'РГ'; // По умолчанию
         }
 
         // Обновление отображения следующего ID
@@ -603,8 +696,9 @@
                 phraseInput.value = '';
 
                 renderAbbreviations();
+                showButtonMessage(addBtn, '✓ Добавлено');
             } else {
-                alert('Пожалуйста, заполните оба поля!');
+                showButtonMessage(addBtn, '✗ Заполните поля', true);
             }
         }
 
@@ -614,6 +708,7 @@
                 abbreviations = {};
                 saveAbbreviations();
                 renderAbbreviations();
+                showButtonMessage(clearBtn, '✓ Очищено');
             }
         }
 
@@ -715,19 +810,23 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            
+            showButtonMessage(exportBtn, `✓ ${Object.keys(abbreviations).length} экспортировано`);
         }
 
-        // Экспорт текста в TXT
+        // Экспорт текста в TXT с именем по формату: ФИО_ддмесяц_чч-мм-сс.txt
         function exportText() {
             const text = textInput.value;
             if (!text.trim()) {
-                alert('Текст для сохранения пуст!');
+                showButtonMessage(exportTextBtn, '✗ Текст пуст', true);
                 return;
             }
 
-            const date = new Date();
-            const dateStr = formatDate(date);
-            const filename = `текст_${dateStr}.txt`;
+            // Получаем ФИО из поля
+            const patientNameText = patientName.value.trim();
+            
+            // Генерируем имя файла на основе ФИО
+            const filename = formatFilenameWithPatientName(patientNameText) + '.txt';
 
             const blob = new Blob([text], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
@@ -741,6 +840,7 @@
             URL.revokeObjectURL(url);
 
             updateAutoSaveStatus(`Текст сохранен в ${filename}`);
+            showButtonMessage(exportTextBtn, '✓ Сохранено');
         }
 
         // Форматирование даты для имени файла (только дата и часы)
@@ -777,12 +877,13 @@
                         throw new Error('Неверный формат файла');
                     }
 
+                    const count = Object.keys(imported).length;
                     abbreviations = { ...abbreviations, ...imported };
                     saveAbbreviations();
                     renderAbbreviations();
-                    alert(`Успешно импортировано ${Object.keys(imported).length} сокращений`);
+                    showButtonMessage(importBtn, `✓ ${count} импортировано`);
                 } catch (error) {
-                    alert(`Ошибка импорта: ${error.message}`);
+                    showButtonMessage(importBtn, '✗ Ошибка импорта', true);
                 }
             };
 
@@ -795,31 +896,32 @@
 
             reader.onload = function (e) {
                 try {
-                    jsonData = JSON.parse(e.target.result);
-                    jsonFileName = file.name;
+                    const data = JSON.parse(e.target.result);
                     
-                    // Определяем следующий доступный ID
-                    if (Array.isArray(jsonData)) {
+                    if (Array.isArray(data)) {
+                        jsonData = data;
+                        jsonFileName = file.name;
+                        
+                        // Определяем следующий доступный ID
                         const maxId = jsonData.reduce((max, item) => {
                             return item.id && item.id > max ? item.id : max;
                         }, 0);
                         nextId = maxId + 1;
+                        
+                        dataFileInfo.innerHTML = `<span style="color: #107c10;">✅ Загружен: ${jsonFileName}</span>`;
+                        jsonStatusBadge.textContent = `Файл загружен`;
+                        jsonStatusBadge.style.backgroundColor = 'rgba(16, 124, 16, 0.1)';
+                        jsonStatusBadge.style.color = '#107c10';
+                        
+                        // Обновляем отображение ID
+                        updateNextIdDisplay();
+                        
+                        showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
                     } else {
-                        jsonData = [];
-                        nextId = 1001;
+                        throw new Error('Файл должен быть массивом данных');
                     }
-                    
-                    dataFileInfo.innerHTML = `<span style="color: #107c10;">✅ Загружен: ${jsonFileName}</span>`;
-                    jsonStatusBadge.textContent = `Файл загружен`;
-                    jsonStatusBadge.style.backgroundColor = 'rgba(16, 124, 16, 0.1)';
-                    jsonStatusBadge.style.color = '#107c10';
-                    
-                    // Обновляем отображение ID
-                    updateNextIdDisplay();
-                    
-                    alert(`Файл успешно загружен! Следующий ID: ${nextId}`);
                 } catch (error) {
-                    alert(`Ошибка загрузки файла: ${error.message}`);
+                    showButtonMessage(loadDataFileBtn, '✗ Ошибка загрузки', true);
                     jsonData = null;
                     nextId = null;
                     dataFileInfo.innerHTML = '<span style="color: #d13438;">❌ Ошибка загрузки файла</span>';
@@ -837,20 +939,20 @@
         function submitToJson() {
             // Проверяем, загружен ли файл
             if (!jsonData) {
-                alert('Сначала загрузите JSON-файл для отправки!');
+                showButtonMessage(submitBtn, '✗ Сначала загрузите файл', true);
                 return;
             }
 
             // Проверяем, заполнено ли текстовое поле
             const text = textInput.value.trim();
             if (!text) {
-                alert('Текстовое поле пустое!');
+                showButtonMessage(submitBtn, '✗ Текст пустой', true);
                 return;
             }
 
             // Получаем значение поля "Название"
             let title = titleField.value.trim();
-            if (title === '..' || title === '') {
+            if (title === '') {
                 // Формируем название по умолчанию (БЕЗ ЭМОДЗИ)
                 const modalityText = getSelectedModalityText();
                 const date = dateField.value;
@@ -866,7 +968,7 @@
                 id: nextId,
                 title: title, // Без эмодзи
                 text: text,
-                modality: selectedModality, // Латинские значения: ct, mr, rg, fl
+                modality: selectedModality, // Латинские значения: rg, fl, ct, mr
                 patient: patientName.value.trim() || '',
                 date: dateField.value
             };
@@ -897,16 +999,18 @@
 
             // Очищаем поля (НО НЕ СБРАСЫВАЕМ МОДАЛЬНОСТЬ)
             textInput.value = '';
-            patientName.value = '';
-            titleField.value = '..';
-            // НЕ сбрасываем выбранную модальность
-            // modalityRadios остаются с текущим выбранным значением
+            titleField.value = '';
             setTodayDate();
+
+            // Устанавливаем курсор в поле ФИО
+            patientName.value = '';
+            patientName.focus();
 
             // Обновляем информацию о файле
             dataFileInfo.innerHTML = `<span style="color: #107c10;">✅ Загружен: ${jsonFileName} (обновлен)</span>`;
             
-            alert(`Данные успешно добавлены! Файл сохранен как: ${filename}`);
+            // Показываем сообщение на кнопке
+            showButtonMessage(submitBtn, `✓ ID: ${nextId-1} сохранен`);
         }
 
         // Инициализация автосохранения
@@ -914,8 +1018,6 @@
             if (autoSaveInterval) clearInterval(autoSaveInterval);
             autoSaveInterval = setInterval(autoSaveText, AUTO_SAVE_INTERVAL);
             updateAutoSaveStatus(`⏺ Автосохранение каждые 10 мин`);
-            // Первое автосохранение через 10 минут
-            setTimeout(autoSaveText, AUTO_SAVE_INTERVAL);
         }
 
         // Обработчики событий
@@ -951,16 +1053,13 @@
         });
 
         function copy_to_clipboard(textInput) {
-            document.getElementById(textInput).select();
+            const textarea = document.getElementById(textInput);
+            textarea.select();
             document.execCommand('copy');
             
             // Визуальная обратная связь
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = '✅ Скопировано!';
-            setTimeout(() => {
-                btn.textContent = originalText;
-            }, 1500);
+            const btn = event.target.closest('.win11-button');
+            showButtonMessage(btn, '✓ Скопировано');
         }
 
         // Обновляем превью имени файла каждую секунду (для отображения актуальных секунд)
