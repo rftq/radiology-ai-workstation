@@ -353,7 +353,7 @@
                     </div>
                     <div style="flex: 2;">
                         <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Имя файла</div>
-                        <div style="font-family: monospace; background: rgba(0,0,0,0.02); padding: 4px; border-radius: 6px; font-size: 11px;" id="filenamePreview">pr_15mar_12-30.json</div>
+                        <div style="font-family: monospace; background: rgba(0,0,0,0.02); padding: 4px; border-radius: 6px; font-size: 11px;" id="filenamePreview">ct_18mar_15-30-45.json</div>
                     </div>
                 </div>
             </div>
@@ -490,8 +490,8 @@
             dateField.value = `${year}-${month}-${day}`;
         }
 
-        // Функция для форматирования даты и времени для имени файла
-        function formatFilenameDate() {
+        // Функция для форматирования даты и времени для имени файла с префиксом модальности
+        function formatFilenameWithModality(modality) {
             const now = new Date();
             
             // Месяц: 3-буквенное сокращение на английском
@@ -499,18 +499,29 @@
             const month = months[now.getMonth()];
             
             // День
-            const day = now.getDate();
+            const day = String(now.getDate()).padStart(2, '0');
             
-            // Часы и минуты
+            // Часы, минуты и секунды
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
             
-            return `pr_${day}${month}_${hours}-${minutes}`;
+            // Маппинг модальностей для префикса
+            const modalityPrefix = {
+                'ct': 'ct',
+                'mr': 'mr',
+                'rg': 'rg',
+                'fl': 'fl'
+            };
+            
+            const prefix = modalityPrefix[modality] || 'unknown';
+            return `${prefix}_${day}${month}_${hours}-${minutes}-${seconds}`;
         }
 
-        // Обновление превью имени файла
+        // Обновление превью имени файла на основе выбранной модальности
         function updateFilenamePreview() {
-            filenamePreview.textContent = formatFilenameDate() + '.json';
+            const selectedModality = getSelectedModality();
+            filenamePreview.textContent = formatFilenameWithModality(selectedModality) + '.json';
         }
 
         // Функция для очистки поля "Название" при фокусе
@@ -847,7 +858,7 @@
                 title = `${modalityText} от ${formattedDate}`;
             }
 
-            // Получаем выбранную модальность (сохраняем для использования после отправки)
+            // Получаем выбранную модальность
             const selectedModality = getSelectedModality();
 
             // Создаем новый объект (БЕЗ ЭМОДЗИ В TITLE)
@@ -871,8 +882,8 @@
             const a = document.createElement('a');
             a.href = url;
             
-            // Генерируем имя файла в формате pr_14mar_23-18
-            const filename = formatFilenameDate() + '.json';
+            // Генерируем имя файла с префиксом модальности и секундами
+            const filename = formatFilenameWithModality(selectedModality) + '.json';
             a.download = filename;
             
             document.body.appendChild(a);
@@ -933,6 +944,11 @@
         submitBtn.addEventListener('click', submitToJson);
         
         textInput.addEventListener('keydown', replaceOnKeyPress);
+        
+        // Обновляем превью при смене модальности
+        modalityRadios.forEach(radio => {
+            radio.addEventListener('change', updateFilenamePreview);
+        });
 
         function copy_to_clipboard(textInput) {
             document.getElementById(textInput).select();
@@ -947,8 +963,8 @@
             }, 1500);
         }
 
-        // Обновляем превью имени файла каждую минуту
-        setInterval(updateFilenamePreview, 60000);
+        // Обновляем превью имени файла каждую секунду (для отображения актуальных секунд)
+        setInterval(updateFilenamePreview, 1000);
         
         // Установка сегодняшней даты при загрузке
         setTodayDate();
