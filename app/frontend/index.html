@@ -6,241 +6,425 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Система сокращений</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0 auto;
-            padding: 10px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .container {
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .app-container {
+            max-width: 1300px;
+            width: 100%;
+            background-color: transparent;
+        }
+
+        /* Windows 11 стили */
+        .win11-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .win11-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .win11-button {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e1e1e;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .win11-button:hover {
+            background-color: rgba(255, 255, 255, 1);
+            border-color: rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .win11-button.primary {
+            background-color: #0067c0;
+            border-color: #0067c0;
+            color: white;
+        }
+
+        .win11-button.primary:hover {
+            background-color: #0078d4;
+            border-color: #0078d4;
+        }
+
+        .win11-button.success {
+            background-color: #107c10;
+            border-color: #107c10;
+            color: white;
+        }
+
+        .win11-button.success:hover {
+            background-color: #13a10e;
+            border-color: #13a10e;
+        }
+
+        .win11-input {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 14px;
+            width: 100%;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .win11-input:focus {
+            outline: none;
+            border-color: #0067c0;
+            box-shadow: 0 0 0 3px rgba(0, 103, 192, 0.2);
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        .win11-radio-group {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 8px 12px;
             display: flex;
             gap: 20px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            height: 42px;
+            align-items: center;
         }
 
-        .column {
-            flex: 1;
-            max-width: 200px;
-        }
-
-        .column2 {
-            flex: 2;
-        }
-
-        input,
-        button,
-        select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
+        .win11-radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-size: 14px;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-            font-size: 18px;
-        }
-
-        button {
-            background-color: #bbd1ff;
-            color: rgb(92, 92, 92);
-            border: none;
+            color: #1e1e1e;
             cursor: pointer;
         }
 
-        button:hover {
-            background-color: #FFE5B3;
+        .win11-radio-group input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #0067c0;
+            margin: 0;
         }
 
-        .abbreviation-list {
-            border: 1px solid #ddd;
-            padding: 10px;
-            max-height: 200px;
+        .win11-textarea {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 16px;
+            width: 100%;
+            resize: vertical;
+            font-family: 'Segoe UI', monospace;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: all 0.2s ease;
+        }
+
+        .win11-textarea:focus {
+            outline: none;
+            border-color: #0067c0;
+            box-shadow: 0 0 0 3px rgba(0, 103, 192, 0.2);
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        .win11-list {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 8px;
+            max-height: 180px;
             overflow-y: auto;
-            font-size: 11px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
 
-        .abbreviation-item {
+        .win11-list-item {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
+            align-items: center;
+            padding: 6px 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 12px;
         }
 
-        .delete-btn {
-            background-color: #c5c5c5;
-            padding: 2px 5px;
+        .win11-list-item:last-child {
+            border-bottom: none;
         }
 
-        .clear-btn {
-            background-color: #c5c5c5;
+        .win11-list-item:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .win11-delete-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 22px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 2px 10px;
+            border-radius: 6px;
+            line-height: 1;
+            transition: all 0.2s ease;
+        }
+
+        .win11-delete-btn:hover {
+            background-color: rgba(209, 52, 56, 0.1);
+            color: #d13438;
+            transform: scale(1.1);
+        }
+
+        .win11-badge {
+            background-color: rgba(0, 103, 192, 0.1);
+            color: #0067c0;
+            padding: 4px 8px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .win11-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
+            margin: 12px 0;
+        }
+
+        .top-row {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .main-row {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 12px;
+        }
+
+        .meta-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .meta-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
             margin-top: 10px;
         }
 
-        .import-export {
-            padding-top: 10px;
-            border-top: 1px solid #eee;
+        .file-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px;
+            word-break: break-all;
+            padding: 6px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 6px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e1e1e;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge {
+            font-size: 11px;
+            color: #666;
+            text-align: center;
+            margin-top: 8px;
         }
 
         .file-input {
             display: none;
         }
 
-        .auto-save-status {
-            font-size: 12px;
-            color: #666;
-            margin: 0px;
-            text-align: center;
-        }
-
-        .zag {
-            font-size: 11px;
-            margin-top: 5px;
-        }
-
-        .copyTextBtn {
-            width: 48%;
-            margin-right: 2%;
-        }
-
-        .exportTextBtn {
-            width: 48%;
-        }
-        
-        .submitBtn {
-            width: 100%;
-            margin-top: 10px;
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        .submitBtn:hover {
-            background-color: #45a049;
-        }
-        
-        .file-info {
-            font-size: 11px;
-            color: #666;
-            margin-top: 5px;
-            word-break: break-all;
-        }
-
-        .meta-fields {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 2fr 1.5fr;
-            gap: 10px;
-            margin-bottom: 15px;
-            align-items: center;
-        }
-
-        .meta-fields input[type="date"],
-        .meta-fields input[type="text"] {
-            margin-bottom: 0;
-            height: 38px;
-        }
-
-        .meta-fields input[type="date"] {
-            font-family: Arial, sans-serif;
-        }
-        
-        .radio-group {
-            display: flex;
-            gap: 15px;
-            background-color: #f5f5f5;
-            padding: 8px;
-            border-radius: 5px;
-            height: 38px;
-            align-items: center;
-            box-sizing: border-box;
-        }
-        
-        .radio-group label {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        
-        .radio-group input[type="radio"] {
-            width: auto;
-            margin: 0;
-            margin-right: 2px;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 10px;
+        .input-group {
             margin-bottom: 10px;
+        }
+        
+        .input-group:last-of-type {
+            margin-bottom: 14px;
+        }
+        
+        .compact-card {
+            padding: 14px;
+        }
+        
+        .unknown-id {
+            color: #999;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .submit-btn-container {
+            margin-bottom: 5px;
+        }
+        
+        .small-textarea {
+            min-height: 250px;
+            max-height: 350px;
         }
     </style>
 </head>
 
 <body>
-
-    <div class="container">
-        <div class="column">
-            <p class="zag">Добавить сокращение</p>
-            <input type="text" id="abbrInput" placeholder="Сокращение (например, 'пж')">
-            <input type="text" id="phraseInput" placeholder="Полная фраза (например, 'пожалуйста')">
-            <button id="addBtn">Добавить</button>
-
-            <p class="zag">Мои сокращения</p>
-            <div id="abbreviationList" class="abbreviation-list"></div>
-            <button id="clearBtn" class="clear-btn">Очистить</button>
-
-            <div class="import-export">
-                <button id="importBtn">Импорт</button>
-                <button id="exportBtn">Экспорт</button>
-                <input type="file" id="fileInput" class="file-input" accept=".json">
-                <div id="autoSaveStatus" class="auto-save-status"></div>
-            </div>
-            
-            <!-- Кнопка для загрузки JSON-файла с данными -->
-            <p class="zag">Работа с JSON</p>
-            <button id="loadDataFileBtn">Загрузить JSON для отправки</button>
-            <input type="file" id="dataFileInput" class="file-input" accept=".json">
-            <div id="dataFileInfo" class="file-info">Файл не загружен</div>
-        </div>
-
-        <div class="column2">
-            <!-- Поля над текстовым полем -->
-            <div class="meta-fields">
-                <!-- Radio buttons для модальности с эмодзи -->
-                <div class="radio-group" id="modalityGroup">
-                    <label>
-                        <input type="radio" name="modality" value="ct" checked> 🖥️ КТ
-                    </label>
-                    <label>
-                        <input type="radio" name="modality" value="mr"> 🧠 МРТ
-                    </label>
-                    <label>
-                        <input type="radio" name="modality" value="rg"> 🩻 РГ
-                    </label>
+    <div class="app-container">
+        <!-- Верхний ряд: JSON блок и мета-поля на одном уровне -->
+        <div class="top-row">
+            <!-- Левый верхний блок: Работа с JSON -->
+            <div class="win11-card compact-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h3 style="font-weight: 500; color: #1e1e1e; font-size: 15px;">📁 Работа с JSON</h3>
+                    <span class="win11-badge" id="jsonStatusBadge" style="font-size: 11px;">Файл не загружен</span>
                 </div>
                 
-                <input type="date" id="dateField" value="">
+                <button id="loadDataFileBtn" class="win11-button" style="width: 100%; margin-bottom: 6px; padding: 6px 12px; font-size: 13px;">📂 Загрузить файл</button>
+                <input type="file" id="dataFileInput" class="file-input" accept=".json">
                 
-                <input type="text" id="patientName" placeholder="ФИО пациента (необязательно)">
+                <div class="file-info" id="dataFileInfo" style="margin-top: 2px; margin-bottom: 8px; padding: 5px; font-size: 11px;">
+                    <span style="opacity: 0.6;">⏺ Файл не загружен</span>
+                </div>
                 
-                <input type="text" id="titleField" value=".." onfocus="clearDefaultText(this)">
+                <div class="win11-divider" style="margin: 6px 0;"></div>
+                
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Следующий ID</div>
+                        <div id="nextIdDisplay" class="unknown-id">—</div>
+                    </div>
+                    <div style="flex: 2;">
+                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Имя файла</div>
+                        <div style="font-family: monospace; background: rgba(0,0,0,0.02); padding: 4px; border-radius: 6px; font-size: 11px;" id="filenamePreview">pr_15mar_12-30.json</div>
+                    </div>
+                </div>
             </div>
-            
-            <p class="zag">Текстовое поле</p>
-            <textarea id="textInput" rows="20"
-                placeholder="Введите текст здесь... Сокращения заменяются при нажатии пробела или Enter."></textarea>
-            
-            <div class="button-group">
-                <button class="copyTextBtn" onclick="copy_to_clipboard('textInput');">Скопировать</button>
-                <button class="exportTextBtn" id="exportTextBtn">Сохранить</button>
+
+            <!-- Правый верхний блок: Мета-поля в два ряда -->
+            <div class="win11-card compact-card">
+                <div class="meta-fields">
+                    <!-- Первый ряд: модальность и дата -->
+                    <div class="meta-row">
+                        <div class="win11-radio-group" id="modalityGroup" style="height: 38px; padding: 4px 8px;">
+                            <label style="font-size: 13px;">
+                                <input type="radio" name="modality" value="ct" checked> 🖥️ КТ
+                            </label>
+                            <label style="font-size: 13px;">
+                                <input type="radio" name="modality" value="mr"> 🧠 МРТ
+                            </label>
+                            <label style="font-size: 13px;">
+                                <input type="radio" name="modality" value="rg"> 📦 РГ
+                            </label>
+                        </div>
+                        
+                        <input type="date" id="dateField" class="win11-input" value="" style="height: 38px;">
+                    </div>
+                    
+                    <!-- Второй ряд: ФИО и название -->
+                    <div class="meta-row">
+                        <input type="text" id="patientName" class="win11-input" placeholder="ФИО пациента" style="height: 38px;">
+                        <input type="text" id="titleField" class="win11-input" value=".." onfocus="clearDefaultText(this)" style="height: 38px;">
+                    </div>
+                </div>
             </div>
-            
-            <!-- Кнопка отправки -->
-            <button id="submitBtn" class="submitBtn">Отправить в JSON</button>
-            <button id="replaceBtn" hidden>Заменить все сокращения</button>
+        </div>
+
+        <!-- Основной ряд с двумя колонками -->
+        <div class="main-row">
+            <!-- Левая колонка: Сокращения (немного уже) -->
+            <div class="win11-card">
+                <h3 class="section-title">➕ Добавить сокращение</h3>
+                <div class="input-group">
+                    <input type="text" id="abbrInput" class="win11-input" placeholder="Сокращение (например, 'пж')">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="phraseInput" class="win11-input" placeholder="Полная фраза (например, 'пожалуйста')">
+                </div>
+                <button id="addBtn" class="win11-button primary" style="width: 100%;">Добавить</button>
+
+                <div style="margin-top: 16px;">
+                    <h3 class="section-title">📋 Мои сокращения</h3>
+                    <div id="abbreviationList" class="win11-list"></div>
+                    <button id="clearBtn" class="win11-button" style="width: 100%; margin-top: 8px;">Очистить все</button>
+                </div>
+
+                <div class="win11-divider"></div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button id="importBtn" class="win11-button" style="flex: 1;">📥 Импорт</button>
+                    <button id="exportBtn" class="win11-button" style="flex: 1;">📤 Экспорт</button>
+                    <input type="file" id="fileInput" class="file-input" accept=".json">
+                </div>
+
+                <div id="autoSaveStatus" class="status-badge">⏺ Автосохранение каждые 5 мин</div>
+            </div>
+
+            <!-- Правая колонка: Основное рабочее поле -->
+            <div class="win11-card">
+                <h3 class="section-title">📝 Текстовое поле</h3>
+                <textarea id="textInput" class="win11-textarea small-textarea" rows="12"
+                    placeholder="Введите текст здесь... Сокращения заменяются при нажатии пробела или Enter."></textarea>
+                
+                <!-- Кнопка отправки ВЫШЕ остальных кнопок -->
+                <div class="submit-btn-container">
+                    <button id="submitBtn" class="win11-button success" style="width: 100%;">📨 Отправить в JSON</button>
+                </div>
+                
+                <div class="button-group">
+                    <button class="win11-button" onclick="copy_to_clipboard('textInput');" style="flex: 1;">📋 Скопировать</button>
+                    <button class="win11-button" id="exportTextBtn" style="flex: 1;">💾 Сохранить</button>
+                </div>
+                
+                <button id="replaceBtn" hidden>Заменить все сокращения</button>
+            </div>
         </div>
     </div>
 
@@ -248,12 +432,12 @@
         // Загрузка сокращений из localStorage
         let abbreviations = JSON.parse(localStorage.getItem('abbreviations')) || {};
         let autoSaveInterval;
-        const AUTO_SAVE_INTERVAL = 30 * 60 * 1000; // 30 минут в миллисекундах
+        const AUTO_SAVE_INTERVAL = 5 * 60 * 1000; // 5 минут в миллисекундах
 
         // Переменные для работы с JSON-файлом
         let jsonData = null;
         let jsonFileName = '';
-        let nextId = 1001;
+        let nextId = null; // Теперь null по умолчанию
 
         // Элементы DOM
         const abbrInput = document.getElementById('abbrInput');
@@ -279,6 +463,9 @@
         const loadDataFileBtn = document.getElementById('loadDataFileBtn');
         const dataFileInput = document.getElementById('dataFileInput');
         const dataFileInfo = document.getElementById('dataFileInfo');
+        const jsonStatusBadge = document.getElementById('jsonStatusBadge');
+        const nextIdDisplay = document.getElementById('nextIdDisplay');
+        const filenamePreview = document.getElementById('filenamePreview');
         const submitBtn = document.getElementById('submitBtn');
 
         // Установка сегодняшней даты в поле даты
@@ -308,6 +495,11 @@
             return `pr_${day}${month}_${hours}-${minutes}`;
         }
 
+        // Обновление превью имени файла
+        function updateFilenamePreview() {
+            filenamePreview.textContent = formatFilenameDate() + '.json';
+        }
+
         // Функция для очистки поля "Название" при фокусе
         function clearDefaultText(element) {
             if (element.value === '..') {
@@ -325,15 +517,31 @@
             return 'ct'; // По умолчанию
         }
 
-        // Получение текста выбранной модальности с эмодзи для title
+        // Получение текста выбранной модальности БЕЗ ЭМОДЗИ для title
         function getSelectedModalityText() {
             for (const radio of modalityRadios) {
                 if (radio.checked) {
-                    // Получаем текст метки (эмодзи + текст)
-                    return radio.parentElement.textContent.trim();
+                    // Получаем текст метки и убираем эмодзи
+                    const labelText = radio.parentElement.textContent.trim();
+                    // Удаляем эмодзи (оставляем только буквы)
+                    return labelText.replace(/[🖥️🧠📦\s]/g, '').trim();
                 }
             }
-            return '🖥️ КТ'; // По умолчанию
+            return 'КТ'; // По умолчанию
+        }
+
+        // Обновление отображения следующего ID
+        function updateNextIdDisplay() {
+            if (nextId === null) {
+                nextIdDisplay.textContent = '—';
+                nextIdDisplay.className = 'unknown-id';
+            } else {
+                nextIdDisplay.textContent = nextId;
+                nextIdDisplay.className = '';
+                nextIdDisplay.style.fontSize = '18px';
+                nextIdDisplay.style.fontWeight = '600';
+                nextIdDisplay.style.color = '#0067c0';
+            }
         }
 
         // Отображение списка сокращений
@@ -342,14 +550,14 @@
 
             for (const [abbr, phrase] of Object.entries(abbreviations)) {
                 const item = document.createElement('div');
-                item.className = 'abbreviation-item';
+                item.className = 'win11-list-item';
 
                 const text = document.createElement('span');
                 text.textContent = `${abbr} → ${phrase}`;
 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.textContent = '×';
-                deleteBtn.className = 'delete-btn';
+                deleteBtn.className = 'win11-delete-btn';
                 deleteBtn.onclick = () => deleteAbbreviation(abbr);
 
                 item.appendChild(text);
@@ -529,7 +737,7 @@
         function updateAutoSaveStatus(message) {
             autoSaveStatus.textContent = message;
             setTimeout(() => {
-                autoSaveStatus.textContent = `Автосохранение каждые ${AUTO_SAVE_INTERVAL / 60000} минут`;
+                autoSaveStatus.textContent = `⏺ Автосохранение каждые 5 мин`;
             }, 3000);
         }
 
@@ -577,12 +785,24 @@
                         nextId = 1001;
                     }
                     
-                    dataFileInfo.textContent = `Загружен: ${jsonFileName} (ID: ${nextId})`;
+                    dataFileInfo.innerHTML = `<span style="color: #107c10;">✅ Загружен: ${jsonFileName}</span>`;
+                    jsonStatusBadge.textContent = `Файл загружен`;
+                    jsonStatusBadge.style.backgroundColor = 'rgba(16, 124, 16, 0.1)';
+                    jsonStatusBadge.style.color = '#107c10';
+                    
+                    // Обновляем отображение ID
+                    updateNextIdDisplay();
+                    
                     alert(`Файл успешно загружен! Следующий ID: ${nextId}`);
                 } catch (error) {
                     alert(`Ошибка загрузки файла: ${error.message}`);
                     jsonData = null;
-                    dataFileInfo.textContent = 'Ошибка загрузки файла';
+                    nextId = null;
+                    dataFileInfo.innerHTML = '<span style="color: #d13438;">❌ Ошибка загрузки файла</span>';
+                    jsonStatusBadge.textContent = 'Ошибка загрузки';
+                    jsonStatusBadge.style.backgroundColor = 'rgba(209, 52, 56, 0.1)';
+                    jsonStatusBadge.style.color = '#d13438';
+                    updateNextIdDisplay();
                 }
             };
 
@@ -607,7 +827,7 @@
             // Получаем значение поля "Название"
             let title = titleField.value.trim();
             if (title === '..' || title === '') {
-                // Формируем название по умолчанию (С ЭМОДЗИ)
+                // Формируем название по умолчанию (БЕЗ ЭМОДЗИ)
                 const modalityText = getSelectedModalityText();
                 const date = dateField.value;
                 const formattedDate = date.split('-').reverse().slice(0, 2).join('.');
@@ -617,10 +837,10 @@
             // Получаем выбранную модальность (сохраняем для использования после отправки)
             const selectedModality = getSelectedModality();
 
-            // Создаем новый объект (С ЭМОДЗИ В TITLE)
+            // Создаем новый объект (БЕЗ ЭМОДЗИ В TITLE)
             const newEntry = {
                 id: nextId,
-                title: title, // С эмодзи
+                title: title, // Без эмодзи
                 text: text,
                 modality: selectedModality, // Латинские значения: ct, mr, rg
                 patient: patientName.value.trim() || '',
@@ -649,6 +869,7 @@
 
             // Увеличиваем ID для следующей записи
             nextId++;
+            updateNextIdDisplay();
 
             // Очищаем поля (НО НЕ СБРАСЫВАЕМ МОДАЛЬНОСТЬ)
             textInput.value = '';
@@ -659,7 +880,7 @@
             setTodayDate();
 
             // Обновляем информацию о файле
-            dataFileInfo.textContent = `Загружен: ${jsonFileName} (ID: ${nextId})`;
+            dataFileInfo.innerHTML = `<span style="color: #107c10;">✅ Загружен: ${jsonFileName} (обновлен)</span>`;
             
             alert(`Данные успешно добавлены! Файл сохранен как: ${filename}`);
         }
@@ -668,7 +889,8 @@
         function initAutoSave() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
             autoSaveInterval = setInterval(autoSaveText, AUTO_SAVE_INTERVAL);
-            updateAutoSaveStatus(`Автосохранение каждые ${AUTO_SAVE_INTERVAL / 60000} минут`);
+            updateAutoSaveStatus(`⏺ Автосохранение каждые 5 мин`);
+            // Первое автосохранение через 5 минут
             setTimeout(autoSaveText, AUTO_SAVE_INTERVAL);
         }
 
@@ -699,15 +921,26 @@
         
         textInput.addEventListener('keydown', replaceOnKeyPress);
 
-        // УДАЛЕНО: автоматическая вставка даты в текстовое поле
-
         function copy_to_clipboard(textInput) {
             document.getElementById(textInput).select();
             document.execCommand('copy');
+            
+            // Визуальная обратная связь
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Скопировано!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 1500);
         }
 
+        // Обновляем превью имени файла каждую минуту
+        setInterval(updateFilenamePreview, 60000);
+        
         // Установка сегодняшней даты при загрузке
         setTodayDate();
+        updateFilenamePreview();
+        updateNextIdDisplay(); // Показываем прочерк
 
         // Инициализация
         renderAbbreviations();
