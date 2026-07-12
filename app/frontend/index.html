@@ -117,11 +117,9 @@
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             border: 1px solid rgba(0, 0, 0, 0.1);
-            height: 42px;
+            min-height: 42px;
             align-items: center;
             flex-wrap: wrap;
-            min-height: 42px;
-            height: auto;
         }
 
         .win11-radio-group label {
@@ -317,12 +315,13 @@
             max-height: 350px;
         }
 
-        /* Маппинг префиксов */
+        /* Стиль для префиксов */
         .modality-prefix {
             font-family: monospace;
-            font-size: 11px;
+            font-size: 10px;
             color: #666;
-            margin-left: 4px;
+            margin-left: 2px;
+            opacity: 0.7;
         }
     </style>
 </head>
@@ -347,27 +346,15 @@
                 
                 <div class="win11-divider" style="margin: 6px 0;"></div>
                 
-                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 100px;">
-                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">КТ</div>
-                        <div id="nextIdCtDisplay" class="unknown-id" style="font-size: 16px;">—</div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Следующий ID</div>
+                        <div id="nextIdDisplay" class="unknown-id">—</div>
                     </div>
-                    <div style="flex: 1; min-width: 100px;">
-                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">МРТ</div>
-                        <div id="nextIdMrDisplay" class="unknown-id" style="font-size: 16px;">—</div>
+                    <div style="flex: 2;">
+                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Имя файла</div>
+                        <div style="font-family: monospace; background: rgba(0,0,0,0.02); padding: 4px; border-radius: 6px; font-size: 11px;" id="filenamePreview">pr_15mar_12-30.json</div>
                     </div>
-                    <div style="flex: 1; min-width: 100px;">
-                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">РГ</div>
-                        <div id="nextIdRgDisplay" class="unknown-id" style="font-size: 16px;">—</div>
-                    </div>
-                    <div style="flex: 1; min-width: 100px;">
-                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">ФЛГ</div>
-                        <div id="nextIdFlDisplay" class="unknown-id" style="font-size: 16px;">—</div>
-                    </div>
-                </div>
-                <div style="margin-top: 8px;">
-                    <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Имя файла</div>
-                    <div style="font-family: monospace; background: rgba(0,0,0,0.02); padding: 4px; border-radius: 6px; font-size: 11px;" id="filenamePreview">pr_15mar_12-30.json</div>
                 </div>
             </div>
 
@@ -384,7 +371,7 @@
                                 <input type="radio" name="modality" value="mr"> 🧠 МРТ <span class="modality-prefix">(mr)</span>
                             </label>
                             <label>
-                                <input type="radio" name="modality" value="rg"> 🩻 РГ <span class="modality-prefix">(rg)</span>
+                                <input type="radio" name="modality" value="rg"> 📦 РГ <span class="modality-prefix">(rg)</span>
                             </label>
                             <label>
                                 <input type="radio" name="modality" value="fl"> 🫁 ФЛГ <span class="modality-prefix">(fl)</span>
@@ -405,7 +392,7 @@
 
         <!-- Основной ряд с двумя колонками -->
         <div class="main-row">
-            <!-- Левая колонка: Сокращения -->
+            <!-- Левая колонка: Сокращения (немного уже) -->
             <div class="win11-card">
                 <h3 class="section-title">➕ Добавить сокращение</h3>
                 <div class="input-group">
@@ -458,27 +445,12 @@
         // Загрузка сокращений из localStorage
         let abbreviations = JSON.parse(localStorage.getItem('abbreviations')) || {};
         let autoSaveInterval;
-        const AUTO_SAVE_INTERVAL = 5 * 60 * 1000; // 5 минут
+        const AUTO_SAVE_INTERVAL = 5 * 60 * 1000; // 5 минут в миллисекундах
 
         // Переменные для работы с JSON-файлом
         let jsonData = null;
         let jsonFileName = '';
-        
-        // Объект для хранения следующего ID для каждой модальности
-        let nextIdByModality = {
-            ct: null,
-            mr: null,
-            rg: null,
-            fl: null
-        };
-
-        // Маппинг модальность -> префикс
-        const modalityPrefix = {
-            ct: 'ct',
-            mr: 'mr',
-            rg: 'rg',
-            fl: 'fl'
-        };
+        let nextId = null; // Теперь null по умолчанию
 
         // Элементы DOM
         const abbrInput = document.getElementById('abbrInput');
@@ -505,14 +477,9 @@
         const dataFileInput = document.getElementById('dataFileInput');
         const dataFileInfo = document.getElementById('dataFileInfo');
         const jsonStatusBadge = document.getElementById('jsonStatusBadge');
+        const nextIdDisplay = document.getElementById('nextIdDisplay');
         const filenamePreview = document.getElementById('filenamePreview');
         const submitBtn = document.getElementById('submitBtn');
-        
-        // Элементы для отображения следующих ID
-        const nextIdCtDisplay = document.getElementById('nextIdCtDisplay');
-        const nextIdMrDisplay = document.getElementById('nextIdMrDisplay');
-        const nextIdRgDisplay = document.getElementById('nextIdRgDisplay');
-        const nextIdFlDisplay = document.getElementById('nextIdFlDisplay');
 
         // Установка сегодняшней даты в поле даты
         function setTodayDate() {
@@ -560,12 +527,7 @@
                     return radio.value;
                 }
             }
-            return 'ct';
-        }
-
-        // Получение префикса для модальности
-        function getModalityPrefix(modality) {
-            return modalityPrefix[modality] || modality;
+            return 'ct'; // По умолчанию
         }
 
         // Получение текста выбранной модальности БЕЗ ЭМОДЗИ для title
@@ -573,94 +535,26 @@
             for (const radio of modalityRadios) {
                 if (radio.checked) {
                     // Получаем текст метки и убираем эмодзи и префикс
-                    let labelText = radio.parentElement.textContent.trim();
+                    const labelText = radio.parentElement.textContent.trim();
                     // Удаляем эмодзи и скобки с префиксом
-                    return labelText.replace(/[🖥️🧠🩻🫁\s]|\([a-z]+\)/g, '').trim();
+                    return labelText.replace(/[🖥️🧠📦🫁\s]|\([a-z]+\)/g, '').trim();
                 }
             }
-            return 'КТ';
+            return 'КТ'; // По умолчанию
         }
 
-        // Обновление отображения следующих ID
-        function updateNextIdDisplays() {
-            const displays = {
-                ct: nextIdCtDisplay,
-                mr: nextIdMrDisplay,
-                rg: nextIdRgDisplay,
-                fl: nextIdFlDisplay
-            };
-            
-            for (const [modality, display] of Object.entries(displays)) {
-                if (nextIdByModality[modality] === null) {
-                    display.textContent = '—';
-                    display.className = 'unknown-id';
-                } else {
-                    display.textContent = nextIdByModality[modality];
-                    display.className = '';
-                    display.style.fontSize = '16px';
-                    display.style.fontWeight = '600';
-                    display.style.color = '#0067c0';
-                }
+        // Обновление отображения следующего ID
+        function updateNextIdDisplay() {
+            if (nextId === null) {
+                nextIdDisplay.textContent = '—';
+                nextIdDisplay.className = 'unknown-id';
+            } else {
+                nextIdDisplay.textContent = nextId;
+                nextIdDisplay.className = '';
+                nextIdDisplay.style.fontSize = '18px';
+                nextIdDisplay.style.fontWeight = '600';
+                nextIdDisplay.style.color = '#0067c0';
             }
-        }
-
-        // Парсинг ID вида ct1, mr2, rg3 и обновление счётчиков
-        function updateNextIdsFromData() {
-            // Сбрасываем счётчики
-            nextIdByModality = {
-                ct: null,
-                mr: null,
-                rg: null,
-                fl: null
-            };
-            
-            if (!jsonData || !Array.isArray(jsonData)) {
-                updateNextIdDisplays();
-                return;
-            }
-            
-            // Для каждой модальности ищем максимальный номер
-            const maxNumbers = {
-                ct: 0,
-                mr: 0,
-                rg: 0,
-                fl: 0
-            };
-            
-            jsonData.forEach(item => {
-                if (item.id && typeof item.id === 'string') {
-                    // Парсим строку вида ct1, mr2 и т.д.
-                    const match = item.id.match(/^([a-z]+)(\d+)$/);
-                    if (match) {
-                        const prefix = match[1];
-                        const number = parseInt(match[2], 10);
-                        
-                        // Определяем модальность по префиксу
-                        let modality = null;
-                        for (const [mod, pref] of Object.entries(modalityPrefix)) {
-                            if (pref === prefix) {
-                                modality = mod;
-                                break;
-                            }
-                        }
-                        
-                        if (modality && !isNaN(number) && number > maxNumbers[modality]) {
-                            maxNumbers[modality] = number;
-                        }
-                    }
-                }
-            });
-            
-            // Устанавливаем следующий ID = максимальный + 1, или 1 если записей нет
-            for (const modality in maxNumbers) {
-                if (maxNumbers[modality] > 0) {
-                    nextIdByModality[modality] = maxNumbers[modality] + 1;
-                } else {
-                    nextIdByModality[modality] = 1; // Начинаем с 1
-                }
-            }
-            
-            updateNextIdDisplays();
         }
 
         // Отображение списка сокращений
@@ -893,28 +787,47 @@
                     jsonData = JSON.parse(e.target.result);
                     jsonFileName = file.name;
                     
-                    if (!Array.isArray(jsonData)) {
+                    // Определяем следующий доступный ID (числовой)
+                    if (Array.isArray(jsonData)) {
+                        // Проверяем, есть ли уже числовые ID
+                        const maxId = jsonData.reduce((max, item) => {
+                            // Если ID число, используем его, иначе пытаемся преобразовать
+                            const id = typeof item.id === 'number' ? item.id : parseInt(item.id, 10);
+                            return !isNaN(id) && id > max ? id : max;
+                        }, 0);
+                        nextId = maxId + 1;
+                        
+                        // Если не было ни одного числового ID, начинаем с 1
+                        if (nextId === 1 && jsonData.length > 0) {
+                            // Проверяем, были ли нечисловые ID
+                            const hasNonNumeric = jsonData.some(item => isNaN(parseInt(item.id, 10)));
+                            if (hasNonNumeric) {
+                                console.warn('Обнаружены нечисловые ID, начинаем нумерацию с 1');
+                            }
+                        }
+                    } else {
                         jsonData = [];
+                        nextId = 1;
                     }
-                    
-                    // Обновляем счётчики ID на основе загруженных данных
-                    updateNextIdsFromData();
                     
                     dataFileInfo.innerHTML = `<span style="color: #107c10;">✅ Загружен: ${jsonFileName}</span>`;
                     jsonStatusBadge.textContent = `Файл загружен`;
                     jsonStatusBadge.style.backgroundColor = 'rgba(16, 124, 16, 0.1)';
                     jsonStatusBadge.style.color = '#107c10';
                     
-                    alert(`Файл успешно загружен!`);
+                    // Обновляем отображение ID
+                    updateNextIdDisplay();
+                    
+                    alert(`Файл успешно загружен! Следующий ID: ${nextId}`);
                 } catch (error) {
                     alert(`Ошибка загрузки файла: ${error.message}`);
                     jsonData = null;
-                    nextIdByModality = { ct: null, mr: null, rg: null, fl: null };
+                    nextId = null;
                     dataFileInfo.innerHTML = '<span style="color: #d13438;">❌ Ошибка загрузки файла</span>';
                     jsonStatusBadge.textContent = 'Ошибка загрузки';
                     jsonStatusBadge.style.backgroundColor = 'rgba(209, 52, 56, 0.1)';
                     jsonStatusBadge.style.color = '#d13438';
-                    updateNextIdDisplays();
+                    updateNextIdDisplay();
                 }
             };
 
@@ -946,35 +859,21 @@
                 title = `${modalityText} от ${formattedDate}`;
             }
 
-            // Получаем выбранную модальность
+            // Получаем выбранную модальность (сохраняем для использования после отправки)
             const selectedModality = getSelectedModality();
-            const prefix = getModalityPrefix(selectedModality);
-            
-            // Получаем следующий ID для этой модальности
-            let nextNumber = nextIdByModality[selectedModality];
-            if (nextNumber === null) {
-                nextNumber = 1;
-                nextIdByModality[selectedModality] = 1;
-            }
-            
-            // Формируем строковый ID
-            const newId = `${prefix}${nextNumber}`;
 
-            // Создаем новый объект
+            // Создаем новый объект с ЧИСЛОВЫМ ID
             const newEntry = {
-                id: newId,
-                title: title,
+                id: nextId, // Числовой ID для совместимости
+                title: title, // Без эмодзи
                 text: text,
-                modality: selectedModality,
+                modality: selectedModality, // Латинские значения: ct, mr, rg, fl
                 patient: patientName.value.trim() || '',
                 date: dateField.value
             };
 
             // Добавляем в массив
             jsonData.push(newEntry);
-
-            // Увеличиваем счётчик для этой модальности
-            nextIdByModality[selectedModality] = nextNumber + 1;
 
             // Сохраняем файл
             const data = JSON.stringify(jsonData, null, 2);
@@ -984,7 +883,7 @@
             const a = document.createElement('a');
             a.href = url;
             
-            // Генерируем имя файла
+            // Генерируем имя файла в формате pr_14mar_23-18
             const filename = formatFilenameDate() + '.json';
             a.download = filename;
             
@@ -993,17 +892,21 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 
-            // Очищаем поля
+            // Увеличиваем ID для следующей записи
+            nextId++;
+            updateNextIdDisplay();
+
+            // Очищаем поля (НО НЕ СБРАСЫВАЕМ МОДАЛЬНОСТЬ)
             textInput.value = '';
             patientName.value = '';
             titleField.value = '..';
+            // НЕ сбрасываем выбранную модальность
             setTodayDate();
 
-            // Обновляем отображения
-            updateNextIdDisplays();
+            // Обновляем информацию о файле
             dataFileInfo.innerHTML = `<span style="color: #107c10;">✅ Загружен: ${jsonFileName} (обновлен)</span>`;
             
-            alert(`Данные успешно добавлены! ID: ${newId}, файл сохранен как: ${filename}`);
+            alert(`Данные успешно добавлены! ID: ${nextId-1}, файл сохранен как: ${filename}`);
         }
 
         // Инициализация автосохранения
@@ -1011,6 +914,7 @@
             if (autoSaveInterval) clearInterval(autoSaveInterval);
             autoSaveInterval = setInterval(autoSaveText, AUTO_SAVE_INTERVAL);
             updateAutoSaveStatus(`⏺ Автосохранение каждые 5 мин`);
+            // Первое автосохранение через 5 минут
             setTimeout(autoSaveText, AUTO_SAVE_INTERVAL);
         }
 
@@ -1060,7 +964,7 @@
         // Установка сегодняшней даты при загрузке
         setTodayDate();
         updateFilenamePreview();
-        updateNextIdDisplays();
+        updateNextIdDisplay(); // Показываем прочерк
 
         // Инициализация
         renderAbbreviations();
