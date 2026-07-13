@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Протокол</title>
+    <title>Протокол — единая система</title>
     <style>
         * {
             margin: 0;
@@ -17,32 +17,22 @@
             background-color: #f0f0f0;
             padding: 20px;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
         }
 
         .app-container {
-            max-width: 1300px;
-            width: 100%;
-            background-color: transparent;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         /* Windows 11 стили */
         .win11-card {
             background-color: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.5);
             padding: 20px;
             margin-bottom: 12px;
-            transition: all 0.2s ease;
-        }
-
-        .win11-card:hover {
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
         .win11-button {
@@ -52,43 +42,25 @@
             padding: 8px 16px;
             font-size: 14px;
             font-weight: 500;
-            color: #1e1e1e;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            transition: all 0.2s;
             position: relative;
             overflow: hidden;
         }
 
         .win11-button:hover {
             background-color: rgba(255, 255, 255, 1);
-            border-color: rgba(0, 0, 0, 0.2);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             transform: translateY(-1px);
         }
 
         .win11-button.primary {
             background-color: #0067c0;
-            border-color: #0067c0;
             color: white;
-        }
-
-        .win11-button.primary:hover {
-            background-color: #0078d4;
-            border-color: #0078d4;
         }
 
         .win11-button.success {
             background-color: #107c10;
-            border-color: #107c10;
             color: white;
-        }
-
-        .win11-button.success:hover {
-            background-color: #13a10e;
-            border-color: #13a10e;
         }
 
         .win11-button .button-message {
@@ -103,7 +75,7 @@
             background-color: inherit;
             border-radius: inherit;
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.2s;
             pointer-events: none;
         }
 
@@ -122,16 +94,12 @@
             padding: 10px 12px;
             font-size: 14px;
             width: 100%;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
         }
 
         .win11-input:focus {
             outline: none;
             border-color: #0067c0;
             box-shadow: 0 0 0 3px rgba(0, 103, 192, 0.2);
-            background-color: rgba(255, 255, 255, 1);
         }
 
         .win11-radio-group {
@@ -140,12 +108,8 @@
             padding: 8px 12px;
             display: flex;
             gap: 20px;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            min-height: 42px;
-            align-items: center;
             flex-wrap: wrap;
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .win11-radio-group label {
@@ -153,7 +117,6 @@
             align-items: center;
             gap: 6px;
             font-size: 14px;
-            color: #1e1e1e;
             cursor: pointer;
         }
 
@@ -161,7 +124,6 @@
             width: 16px;
             height: 16px;
             accent-color: #0067c0;
-            margin: 0;
         }
 
         .win11-textarea {
@@ -172,29 +134,17 @@
             font-size: 16px;
             width: 100%;
             resize: vertical;
-            font-family: 'Segoe UI', monospace;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            transition: all 0.2s ease;
+            font-family: monospace;
             min-height: 280px;
-        }
-
-        .win11-textarea:focus {
-            outline: none;
-            border-color: #0067c0;
-            box-shadow: 0 0 0 3px rgba(0, 103, 192, 0.2);
-            background-color: rgba(255, 255, 255, 1);
         }
 
         .win11-list {
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 8px;
             padding: 8px;
-            max-height: 180px;
+            max-height: 200px;
             overflow-y: auto;
             border: 1px solid rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
         }
 
         .win11-list-item {
@@ -206,31 +156,19 @@
             font-size: 12px;
         }
 
-        .win11-list-item:last-child {
-            border-bottom: none;
-        }
-
-        .win11-list-item:hover {
-            background-color: rgba(0, 0, 0, 0.02);
-        }
-
         .win11-delete-btn {
             background: none;
             border: none;
             color: #888;
             font-size: 22px;
-            font-weight: 500;
             cursor: pointer;
             padding: 2px 10px;
             border-radius: 6px;
-            line-height: 1;
-            transition: all 0.2s ease;
         }
 
         .win11-delete-btn:hover {
             background-color: rgba(209, 52, 56, 0.1);
             color: #d13438;
-            transform: scale(1.1);
         }
 
         .win11-badge {
@@ -239,13 +177,6 @@
             padding: 4px 8px;
             border-radius: 16px;
             font-size: 12px;
-            font-weight: 500;
-        }
-
-        .win11-divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
-            margin: 12px 0;
         }
 
         .top-row {
@@ -259,18 +190,14 @@
             display: grid;
             grid-template-columns: 340px 1fr;
             gap: 12px;
-        }
-
-        .meta-fields {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            margin-bottom: 12px;
         }
 
         .meta-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
+            margin-bottom: 10px;
         }
 
         .button-group {
@@ -283,862 +210,949 @@
             font-size: 12px;
             color: #666;
             margin-top: 6px;
-            word-break: break-all;
             padding: 6px;
-            background-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255,255,255,0.5);
             border-radius: 6px;
         }
 
         .section-title {
             font-size: 13px;
             font-weight: 600;
-            color: #1e1e1e;
             margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .status-badge {
-            font-size: 11px;
-            color: #666;
-            text-align: center;
-            margin-top: 8px;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .input-group {
-            margin-bottom: 10px;
-        }
-        
-        .input-group:last-of-type {
-            margin-bottom: 14px;
-        }
-        
         .compact-card {
             padding: 14px;
         }
-        
+
         .unknown-id {
             color: #999;
             font-size: 18px;
             font-weight: 500;
         }
-        
-        .action-buttons {
+
+        /* === Стили для блока просмотра === */
+        .viewer-header {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .submit-btn-container {
-            margin-bottom: 5px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        /* Стиль для префиксов */
-        .modality-prefix {
-            font-family: monospace;
-            font-size: 10px;
+        .search-container {
+            flex: 2;
+            min-width: 250px;
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #cbd9e8;
+            border-radius: 30px;
+            padding: 0.2rem 0.2rem 0.2rem 1rem;
+        }
+
+        .search-container input {
+            flex: 1;
+            border: none;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            outline: none;
+            background: transparent;
+        }
+
+        .search-container button {
+            background: transparent;
+            border: none;
+            color: #6b8bb0;
+            cursor: pointer;
+            padding: 0.3rem 1rem;
+        }
+
+        .filter-panel {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: #f8fafd;
+            padding: 0.8rem 1.2rem;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .date-filter {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            border: 1px solid #cbd9e8;
+            border-radius: 30px;
+            padding: 0.2rem 0.8rem;
+        }
+
+        .date-filter input {
+            border: none;
+            padding: 0.4rem 0;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .sort-button {
+            background: white;
+            border: 1px solid #cbd9e8;
+            border-radius: 30px;
+            padding: 0.4rem 1rem;
+            cursor: pointer;
+        }
+
+        .clear-filters-btn {
+            background: transparent;
+            border: 1px solid #d8dde3;
+            border-radius: 30px;
+            padding: 0.4rem 1rem;
+            cursor: pointer;
+        }
+
+        .filter-stats {
+            font-size: 0.85rem;
+            color: #5f7b9c;
+            margin-left: auto;
+        }
+
+        .conclusions-list {
+            max-height: 600px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .conclusion-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            padding: 15px;
+            border-left: 4px solid #107c10;
+        }
+
+        .conclusion-card.editing {
+            background: #fffef0;
+            border-left-color: #0067c0;
+        }
+
+        .row-patient {
+            margin-bottom: 8px;
+        }
+
+        .patient-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 2px 4px;
+        }
+
+        .patient-name:hover {
+            background: #e1efff;
+            border-radius: 4px;
+        }
+
+        .patient-edit {
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 6px 10px;
+            border: 1px solid #0067c0;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .row-modality-study-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .left-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .modality-badge {
+            font-size: 1.1rem;
+        }
+
+        .study-title {
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+
+        .study-title:hover {
+            background: #e1efff;
+            border-radius: 4px;
+        }
+
+        .study-title-edit {
+            padding: 4px 8px;
+            border: 1px solid #0067c0;
+            border-radius: 6px;
+            width: 200px;
+        }
+
+        .study-date {
+            cursor: pointer;
+            padding: 2px 6px;
+            font-size: 0.85rem;
+        }
+
+        .study-date:hover {
+            background: #e1efff;
+            border-radius: 4px;
+        }
+
+        .date-edit-input {
+            padding: 4px 8px;
+            border: 1px solid #0067c0;
+            border-radius: 6px;
+        }
+
+        .conclusion-id {
+            font-size: 0.8rem;
             color: #666;
-            margin-left: 2px;
-            opacity: 0.7;
         }
-        
-        /* Стиль для сообщений на кнопках */
-        .button-text, .button-message {
-            transition: opacity 0.2s ease;
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
         }
-        
-        .error-message {
-            background-color: #d13438 !important;
+
+        .edit-button, .save-button, .cancel-button, .copy-button {
+            background: white;
+            border: 1px solid #c9dbf0;
+            border-radius: 8px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .save-button {
+            background: #0067c0;
+            color: white;
+        }
+
+        .conclusion-text {
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            cursor: pointer;
+        }
+
+        .conclusion-text-edit {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #0067c0;
+            border-radius: 10px;
+            font-family: monospace;
+            resize: vertical;
+        }
+
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+
+        .placeholder-message {
+            text-align: center;
+            padding: 2rem;
+            background: #f1f7fd;
+            border-radius: 20px;
+            color: #55779b;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            background: #0067c0;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,103,192,0.3);
+            z-index: 100;
+        }
+
+        .scroll-to-top.visible {
+            display: flex;
         }
     </style>
 </head>
 
 <body>
-    <div class="app-container">
-        <!-- Верхний ряд: JSON блок и мета-поля на одном уровне -->
-        <div class="top-row">
-            <!-- Левый верхний блок: Работа с JSON -->
-            <div class="win11-card compact-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <h3 style="font-weight: 500; color: #1e1e1e; font-size: 15px;">📁 Работа с JSON</h3>
-                    <span class="win11-badge" id="jsonStatusBadge" style="font-size: 11px;">Файл не загружен</span>
-                </div>
-                
-                <button id="loadDataFileBtn" class="win11-button" style="width: 100%; margin-bottom: 6px; padding: 6px 12px; font-size: 13px;">
-                    <span class="button-text">📂 Загрузить файл</span>
-                    <span class="button-message"></span>
-                </button>
-                <input type="file" id="dataFileInput" class="file-input" accept=".json">
-                
-                <div class="file-info" id="dataFileInfo" style="margin-top: 2px; margin-bottom: 8px; padding: 5px; font-size: 11px;">
-                    <span style="opacity: 0.6;">⏺ Файл не загружен</span>
-                </div>
-                
-                <div class="win11-divider" style="margin: 6px 0;"></div>
-                
-                <div style="display: flex; gap: 8px; align-items: center;">
-                    <div style="flex: 1;">
-                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Следующий ID</div>
-                        <div id="nextIdDisplay" class="unknown-id">—</div>
-                    </div>
-                    <div style="flex: 2;">
-                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Имя файла</div>
-                        <div style="font-family: monospace; background: rgba(0,0,0,0.02); padding: 4px; border-radius: 6px; font-size: 11px;" id="filenamePreview">RG___02apr_19-17-34.json</div>
-                    </div>
-                </div>
+<div class="app-container">
+    <!-- Верхний ряд: JSON блок и мета-поля -->
+    <div class="top-row">
+        <div class="win11-card compact-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h3 style="font-size: 15px;">📁 Работа с JSON</h3>
+                <span class="win11-badge" id="jsonStatusBadge">Файл не загружен</span>
             </div>
-
-            <!-- Правый верхний блок: Мета-поля в два ряда -->
-            <div class="win11-card compact-card">
-                <div class="meta-fields">
-                    <!-- Первый ряд: модальность и дата -->
-                    <div class="meta-row">
-                        <div class="win11-radio-group" id="modalityGroup">
-                            <label>
-                                <input type="radio" name="modality" value="rg" checked> 📦 РГ
-                            </label>
-                            <label>
-                                <input type="radio" name="modality" value="flg"> 🫁 ФЛГ
-                            </label>
-                            <label>
-                                <input type="radio" name="modality" value="ct"> 🖥️ КТ
-                            </label>
-                            <label>
-                                <input type="radio" name="modality" value="mri"> 🧠 МРТ
-                            </label>
-                        </div>
-                        
-                        <input type="date" id="dateField" class="win11-input" value="" style="height: 38px;">
-                    </div>
-                    
-                    <!-- Второй ряд: ФИО и название -->
-                    <div class="meta-row">
-                        <input type="text" id="patientName" class="win11-input" placeholder="ФИО пациента" style="height: 38px;">
-                        <input type="text" id="titleField" class="win11-input" placeholder="Название" style="height: 38px;">
-                    </div>
-                </div>
-            </div>
+            <button id="loadDataFileBtn" class="win11-button" style="width: 100%;">
+                <span class="button-text">📂 Загрузить файл</span>
+                <span class="button-message"></span>
+            </button>
+            <input type="file" id="dataFileInput" class="file-input" accept=".json" style="display:none">
+            <div class="file-info" id="dataFileInfo">⏺ Файл не загружен</div>
+            <div class="win11-divider" style="margin: 8px 0; height:1px; background:#ddd;"></div>
+            <div><div style="font-size:10px">Следующий ID</div><div id="nextIdDisplay" class="unknown-id">—</div></div>
+            <div style="margin-top:6px"><div style="font-size:10px">Имя файла</div><div id="filenamePreview" style="font-size:11px">—</div></div>
         </div>
 
-        <!-- Основной ряд с двумя колонками -->
-        <div class="main-row">
-            <!-- Левая колонка: Сокращения -->
-            <div class="win11-card">
-                <h3 class="section-title">➕ Добавить сокращение</h3>
-                <div class="input-group">
-                    <input type="text" id="abbrInput" class="win11-input" placeholder="Сокращение (например, 'пж')">
+        <div class="win11-card compact-card">
+            <div class="meta-row">
+                <div class="win11-radio-group" id="modalityGroup">
+                    <label><input type="radio" name="modality" value="rg" checked> 📦 РГ</label>
+                    <label><input type="radio" name="modality" value="flg"> 🫁 ФЛГ</label>
+                    <label><input type="radio" name="modality" value="ct"> 🖥️ КТ</label>
+                    <label><input type="radio" name="modality" value="mri"> 🧠 МРТ</label>
                 </div>
-                <div class="input-group">
-                    <input type="text" id="phraseInput" class="win11-input" placeholder="Полная фраза (например, 'пожалуйста')">
-                </div>
-                <button id="addBtn" class="win11-button primary" style="width: 100%;">
-                    <span class="button-text">Добавить</span>
-                    <span class="button-message"></span>
-                </button>
-
-                <div style="margin-top: 16px;">
-                    <h3 class="section-title">📋 Мои сокращения</h3>
-                    <div id="abbreviationList" class="win11-list"></div>
-                    <button id="clearBtn" class="win11-button" style="width: 100%; margin-top: 8px;">
-                        <span class="button-text">Очистить все</span>
-                        <span class="button-message"></span>
-                    </button>
-                </div>
-
-                <div class="win11-divider"></div>
-
-                <div style="display: flex; gap: 10px;">
-                    <button id="importBtn" class="win11-button" style="flex: 1;">
-                        <span class="button-text">📥 Импорт</span>
-                        <span class="button-message"></span>
-                    </button>
-                    <button id="exportBtn" class="win11-button" style="flex: 1;">
-                        <span class="button-text">📤 Экспорт</span>
-                        <span class="button-message"></span>
-                    </button>
-                    <input type="file" id="fileInput" class="file-input" accept=".json">
-                </div>
-
-                <div id="autoSaveStatus" class="status-badge">⏺ Автосохранение каждые 20 мин</div>
+                <input type="date" id="dateField" class="win11-input">
             </div>
-
-            <!-- Правая колонка: Основное рабочее поле -->
-            <div class="win11-card">
-                <h3 class="section-title">📝 Текстовое поле</h3>
-                <textarea id="textInput" class="win11-textarea" rows="8"
-                    placeholder="Введите текст здесь... Сокращения заменяются при нажатии пробела или Enter."></textarea>
-                
-                <!-- Кнопка отправки ВЫШЕ остальных кнопок -->
-                <div class="submit-btn-container">
-                    <button id="submitBtn" class="win11-button success" style="width: 100%;">
-                        <span class="button-text">📨 Отправить в JSON</span>
-                        <span class="button-message"></span>
-                    </button>
-                </div>
-                
-                <div class="button-group">
-                    <button class="win11-button" onclick="copy_to_clipboard('textInput');" style="flex: 1;">
-                        <span class="button-text">📋 Скопировать</span>
-                        <span class="button-message"></span>
-                    </button>
-                    <button class="win11-button" id="exportTextBtn" style="flex: 1;">
-                        <span class="button-text">💾 Сохранить</span>
-                        <span class="button-message"></span>
-                    </button>
-                </div>
-                
-                <button id="replaceBtn" hidden>Заменить все сокращения</button>
+            <div class="meta-row">
+                <input type="text" id="patientName" class="win11-input" placeholder="ФИО пациента">
+                <input type="text" id="titleField" class="win11-input" placeholder="Название">
             </div>
         </div>
     </div>
 
-    <script>
-        // Загрузка сокращений из localStorage
-        let abbreviations = JSON.parse(localStorage.getItem('abbreviations')) || {};
-        let autoSaveInterval;
-        const AUTO_SAVE_INTERVAL = 20 * 60 * 1000; // 20 минут в миллисекундах
+    <!-- Основной ряд: сокращения + рабочее поле -->
+    <div class="main-row">
+        <div class="win11-card">
+            <h3 class="section-title">➕ Добавить сокращение</h3>
+            <input type="text" id="abbrInput" class="win11-input" placeholder="Сокращение (например, 'пж')" style="margin-bottom:10px">
+            <input type="text" id="phraseInput" class="win11-input" placeholder="Полная фраза" style="margin-bottom:10px">
+            <button id="addBtn" class="win11-button primary" style="width:100%">Добавить</button>
 
-        // Переменные для работы с JSON-файлом
-        let jsonData = null;
-        let jsonFileName = '';
-        let nextId = null; // Теперь null по умолчанию
+            <div style="margin-top:16px">
+                <h3 class="section-title">📋 Мои сокращения</h3>
+                <div id="abbreviationList" class="win11-list"></div>
+                <button id="clearBtn" class="win11-button" style="width:100%; margin-top:8px">Очистить все</button>
+            </div>
+            <div class="win11-divider" style="margin:12px 0"></div>
+            <div style="display:flex; gap:10px">
+                <button id="importBtn" class="win11-button" style="flex:1">📥 Импорт</button>
+                <button id="exportBtn" class="win11-button" style="flex:1">📤 Экспорт</button>
+            </div>
+            <div id="autoSaveStatus" class="status-badge" style="font-size:11px; text-align:center; margin-top:8px">⏺ Автосохранение каждые 20 мин</div>
+        </div>
 
-        // Элементы DOM
-        const abbrInput = document.getElementById('abbrInput');
-        const phraseInput = document.getElementById('phraseInput');
-        const addBtn = document.getElementById('addBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const abbrList = document.getElementById('abbreviationList');
-        const textInput = document.getElementById('textInput');
-        const replaceBtn = document.getElementById('replaceBtn');
-        const exportBtn = document.getElementById('exportBtn');
-        const exportTextBtn = document.getElementById('exportTextBtn');
-        const importBtn = document.getElementById('importBtn');
-        const fileInput = document.getElementById('fileInput');
-        const autoSaveStatus = document.getElementById('autoSaveStatus');
-        
-        // Новые элементы
-        const modalityRadios = document.querySelectorAll('input[name="modality"]');
-        const dateField = document.getElementById('dateField');
-        const patientName = document.getElementById('patientName');
-        const titleField = document.getElementById('titleField');
-        
-        // Элементы для работы с JSON
-        const loadDataFileBtn = document.getElementById('loadDataFileBtn');
-        const dataFileInput = document.getElementById('dataFileInput');
-        const dataFileInfo = document.getElementById('dataFileInfo');
-        const jsonStatusBadge = document.getElementById('jsonStatusBadge');
-        const nextIdDisplay = document.getElementById('nextIdDisplay');
-        const filenamePreview = document.getElementById('filenamePreview');
-        const submitBtn = document.getElementById('submitBtn');
+        <div class="win11-card">
+            <h3 class="section-title">📝 Новое заключение</h3>
+            <textarea id="textInput" class="win11-textarea" rows="8" placeholder="Введите текст заключения..."></textarea>
+            <div style="margin-top:10px">
+                <button id="submitBtn" class="win11-button success" style="width:100%">📨 Отправить в JSON</button>
+            </div>
+            <div class="button-group">
+                <button class="win11-button" onclick="copy_to_clipboard('textInput')" style="flex:1">📋 Скопировать</button>
+                <button id="exportTextBtn" class="win11-button" style="flex:1">💾 Сохранить текст</button>
+            </div>
+        </div>
+    </div>
 
-        // Маппинг модальностей для префиксов в имени файла (ПРОПИСНЫЕ для файла)
-        const modalityPrefixMap = {
-            'rg': 'RG',
-            'flg': 'FLG',
-            'ct': 'CT',
-            'mri': 'MRI'
-        };
-        
-        // Маппинг модальностей для значения в JSON (как должно сохраняться в поле modality)
-        const modalityJsonMap = {
-            'rg': 'rg',
-            'flg': 'flg',
-            'ct': 'ct',
-            'mri': 'mri'
-        };
-        
-        // Обратный маппинг для загрузки (из префикса файла в значение радио-кнопки)
-        const prefixToModalityMap = {
-            'RG': 'rg',
-            'FLG': 'flg',
-            'CT': 'ct',
-            'MRI': 'mri'
-        };
+    <!-- ОТДЕЛЬНЫЙ БЛОК ПРОСМОТРА ЗАКЛЮЧЕНИЙ (без кнопок загрузки/экспорта) -->
+    <div class="win11-card">
+        <div class="viewer-header">
+            <div class="search-container">
+                <input type="text" id="viewerSearchInput" placeholder="🔍 Поиск по пациентам, тексту, названию...">
+                <button id="viewerClearSearchBtn">Очистить</button>
+            </div>
+        </div>
 
-        // Функция для форматирования даты и времени для имени файла
-        function formatDateTimeForFilename() {
-            const now = new Date();
-            const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-            const month = months[now.getMonth()];
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            return `${day}${month}_${hours}-${minutes}-${seconds}`;
+        <div class="filter-panel">
+            <div class="date-filter">
+                <span>📅</span>
+                <input type="date" id="viewerDateFilter">
+            </div>
+            <button id="viewerSortBtn" class="sort-button">⬇️ По ID (новые сверху)</button>
+            <button id="viewerClearFiltersBtn" class="clear-filters-btn">✕ Сбросить фильтры</button>
+            <span id="viewerFilterStats" class="filter-stats"></span>
+        </div>
+
+        <div id="viewerConclusionsList" class="conclusions-list">
+            <div class="placeholder-message">📭 Загрузите JSON-файл в левом верхнем углу</div>
+        </div>
+    </div>
+</div>
+
+<button id="scrollToTopBtn" class="scroll-to-top">↑</button>
+
+<script>
+    // === ОСНОВНЫЕ ПЕРЕМЕННЫЕ ===
+    let abbreviations = JSON.parse(localStorage.getItem('abbreviations')) || {};
+    let jsonData = null;
+    let jsonFileName = '';
+    let nextId = null;
+
+    // Элементы
+    const abbrInput = document.getElementById('abbrInput');
+    const phraseInput = document.getElementById('phraseInput');
+    const addBtn = document.getElementById('addBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const abbrList = document.getElementById('abbreviationList');
+    const textInput = document.getElementById('textInput');
+    const exportBtn = document.getElementById('exportBtn');
+    const exportTextBtn = document.getElementById('exportTextBtn');
+    const importBtn = document.getElementById('importBtn');
+    const fileInput = document.getElementById('fileInput');
+    const autoSaveStatus = document.getElementById('autoSaveStatus');
+    const modalityRadios = document.querySelectorAll('input[name="modality"]');
+    const dateField = document.getElementById('dateField');
+    const patientName = document.getElementById('patientName');
+    const titleField = document.getElementById('titleField');
+    const loadDataFileBtn = document.getElementById('loadDataFileBtn');
+    const dataFileInput = document.getElementById('dataFileInput');
+    const dataFileInfo = document.getElementById('dataFileInfo');
+    const jsonStatusBadge = document.getElementById('jsonStatusBadge');
+    const nextIdDisplay = document.getElementById('nextIdDisplay');
+    const filenamePreview = document.getElementById('filenamePreview');
+    const submitBtn = document.getElementById('submitBtn');
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+    // === ФУНКЦИИ ОСНОВНОГО ПРИЛОЖЕНИЯ ===
+    function formatDateTimeForFilename() {
+        const now = new Date();
+        const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+        const month = months[now.getMonth()];
+        const day = String(now.getDate()).padStart(2,'0');
+        const hours = String(now.getHours()).padStart(2,'0');
+        const minutes = String(now.getMinutes()).padStart(2,'0');
+        const seconds = String(now.getSeconds()).padStart(2,'0');
+        return `${day}${month}_${hours}-${minutes}-${seconds}`;
+    }
+
+    function setTodayDate() {
+        const today = new Date();
+        dateField.value = today.toISOString().slice(0,10);
+    }
+
+    function showButtonMessage(button, message, isError = false) {
+        const msgSpan = button.querySelector('.button-message');
+        if(!msgSpan) return;
+        msgSpan.textContent = message;
+        button.classList.add('show-message');
+        if(isError) button.classList.add('error-message');
+        setTimeout(() => {
+            button.classList.remove('show-message');
+            button.classList.remove('error-message');
+        }, 2000);
+    }
+
+    function getSelectedModality() {
+        for(let r of modalityRadios) if(r.checked) return r.value;
+        return 'rg';
+    }
+
+    function getSelectedModalityText() {
+        for(let r of modalityRadios) if(r.checked) {
+            return r.parentElement.textContent.trim().replace(/[🖥️🧠📦🫁\s]/g,'').trim();
         }
+        return 'РГ';
+    }
 
-        // Установка сегодняшней даты в поле даты
-        function setTodayDate() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            dateField.value = `${year}-${month}-${day}`;
+    const modalityPrefixMap = { 'rg':'RG', 'flg':'FLG', 'ct':'CT', 'mri':'MRI' };
+    const modalityJsonMap = { 'rg':'rg', 'flg':'flg', 'ct':'ct', 'mri':'mri' };
+    const prefixToModalityMap = { 'RG':'rg', 'FLG':'flg', 'CT':'ct', 'MRI':'mri' };
+
+    function formatFilenameWithModality(modality) {
+        const now = new Date();
+        const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+        const month = months[now.getMonth()];
+        const day = String(now.getDate()).padStart(2,'0');
+        const hms = `${String(now.getHours()).padStart(2,'0')}-${String(now.getMinutes()).padStart(2,'0')}-${String(now.getSeconds()).padStart(2,'0')}`;
+        return `${modalityPrefixMap[modality]}___${day}${month}_${hms}`;
+    }
+
+    function updateFilenamePreview() {
+        filenamePreview.textContent = formatFilenameWithModality(getSelectedModality()) + '.json';
+    }
+
+    function updateNextIdDisplay() {
+        nextIdDisplay.textContent = nextId === null ? '—' : nextId;
+    }
+
+    function getPrefixFromFilename(filename) {
+        let match = filename.match(/^([A-Z]+)___/i);
+        if(!match) match = filename.match(/^([A-Z]+)_/i);
+        return match ? match[1].toUpperCase() : null;
+    }
+
+    function setModalityByPrefix(prefix) {
+        const modality = prefixToModalityMap[prefix];
+        if(modality) {
+            for(let r of modalityRadios) if(r.value === modality) r.checked = true;
+            updateFilenamePreview();
+            return true;
         }
+        return false;
+    }
 
-        // Функция для отображения временного сообщения на кнопке
-        function showButtonMessage(button, message, isError = false) {
-            const buttonElement = button.tagName === 'BUTTON' ? button : button.target;
-            const messageSpan = buttonElement.querySelector('.button-message');
-            const textSpan = buttonElement.querySelector('.button-text');
-            
-            if (!messageSpan || !textSpan) return;
-            
-            messageSpan.textContent = message;
-            buttonElement.classList.add('show-message');
-            if (isError) {
-                buttonElement.classList.add('error-message');
-            }
-            
-            setTimeout(() => {
-                buttonElement.classList.remove('show-message');
-                buttonElement.classList.remove('error-message');
-            }, 2000);
-        }
+    // АВТОСОХРАНЕНИЕ JSON НА ДИСК
+    function saveJsonToDisk() {
+        if(!jsonData || !jsonFileName) return false;
+        const dataStr = JSON.stringify(jsonData, null, 2);
+        const blob = new Blob([dataStr], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = jsonFileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        return true;
+    }
 
-        // Функция для форматирования даты и времени для имени файла с префиксом модальности (ТРИ ПОДЧЕРКИВАНИЯ)
-        function formatFilenameWithModality(modality) {
-            const now = new Date();
-            
-            // Месяц: 3-буквенное сокращение на английском
-            const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-            const month = months[now.getMonth()];
-            
-            // День
-            const day = String(now.getDate()).padStart(2, '0');
-            
-            // Часы, минуты и секунды
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            
-            const prefix = modalityPrefixMap[modality] || 'UNKNOWN';
-            return `${prefix}___${day}${month}_${hours}-${minutes}-${seconds}`;
-        }
-
-        // Функция для форматирования имени файла для сохранения текста
-        function formatTextFilename() {
-            const now = new Date();
-            const selectedModality = getSelectedModality();
-            
-            // Месяц: 3-буквенное сокращение на английском
-            const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-            const month = months[now.getMonth()];
-            
-            // День
-            const day = String(now.getDate()).padStart(2, '0');
-            
-            // Часы, минуты и секунды
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            
-            const prefix = modalityPrefixMap[selectedModality] || 'UNKNOWN';
-            
-            // Обрабатываем ФИО: заменяем пробелы на подчеркивания
-            const patientNameText = patientName.value.trim();
-            let namePart = patientNameText.replace(/\s+/g, '_');
-            if (namePart === '') {
-                namePart = 'без_имени';
-            }
-            
-            // Формат: префикс___дата-время_фио.txt
-            return `${prefix}___${day}${month}_${hours}-${minutes}-${seconds}_${namePart}.txt`;
-        }
-
-        // Обновление превью имени файла на основе выбранной модальности
-        function updateFilenamePreview() {
-            const selectedModality = getSelectedModality();
-            filenamePreview.textContent = formatFilenameWithModality(selectedModality) + '.json';
-        }
-
-        // Получение выбранной модальности (значение радио-кнопки)
-        function getSelectedModality() {
-            for (const radio of modalityRadios) {
-                if (radio.checked) {
-                    return radio.value;
-                }
-            }
-            return 'rg'; // По умолчанию РГ
-        }
-
-        // Установка модальности по префиксу из имени файла
-        function setModalityByPrefix(prefix) {
-            const modality = prefixToModalityMap[prefix];
-            if (modality) {
-                modalityRadios.forEach(radio => {
-                    if (radio.value === modality) {
-                        radio.checked = true;
-                    }
-                });
-                updateFilenamePreview();
-                return true;
-            }
-            return false;
-        }
-
-        // Получение префикса из имени файла (ищем префикс до трёх подчёркиваний)
-        function getPrefixFromFilename(filename) {
-            // Поддерживаем оба формата: с тремя подчёркиваниями и с одним (для обратной совместимости)
-            let match = filename.match(/^([A-Z]+)___/i);
-            if (!match) {
-                // Если нет трёх подчёркиваний, ищем один подчёркивание (старый формат)
-                match = filename.match(/^([A-Z]+)_/i);
-            }
-            return match ? match[1].toUpperCase() : null;
-        }
-
-        // Получение текста выбранной модальности БЕЗ ЭМОДЗИ для title
-        function getSelectedModalityText() {
-            for (const radio of modalityRadios) {
-                if (radio.checked) {
-                    // Получаем текст метки и убираем эмодзи
-                    const labelText = radio.parentElement.textContent.trim();
-                    // Удаляем эмодзи (оставляем только буквы)
-                    return labelText.replace(/[🖥️🧠📦🫁\s]/g, '').trim();
-                }
-            }
-            return 'РГ'; // По умолчанию
-        }
-
-        // Обновление отображения следующего ID
-        function updateNextIdDisplay() {
-            if (nextId === null) {
-                nextIdDisplay.textContent = '—';
-                nextIdDisplay.className = 'unknown-id';
-            } else {
-                nextIdDisplay.textContent = nextId;
-                nextIdDisplay.className = '';
-                nextIdDisplay.style.fontSize = '18px';
-                nextIdDisplay.style.fontWeight = '600';
-                nextIdDisplay.style.color = '#0067c0';
-            }
-        }
-
-        // Отображение списка сокращений
-        function renderAbbreviations() {
-            abbrList.innerHTML = '';
-
-            for (const [abbr, phrase] of Object.entries(abbreviations)) {
-                const item = document.createElement('div');
-                item.className = 'win11-list-item';
-
-                const text = document.createElement('span');
-                text.textContent = `${abbr} → ${phrase}`;
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.textContent = '×';
-                deleteBtn.className = 'win11-delete-btn';
-                deleteBtn.onclick = () => deleteAbbreviation(abbr);
-
-                item.appendChild(text);
-                item.appendChild(deleteBtn);
-                abbrList.appendChild(item);
-            }
-        }
-
-        // Добавление нового сокращения
-        function addAbbreviation() {
-            const abbr = abbrInput.value.trim();
-            const phrase = phraseInput.value.trim();
-
-            if (abbr && phrase) {
-                abbreviations[abbr] = phrase;
-                saveAbbreviations();
-
-                abbrInput.value = '';
-                phraseInput.value = '';
-
-                renderAbbreviations();
-                showButtonMessage(addBtn, '✓ Добавлено');
-            } else {
-                showButtonMessage(addBtn, '✗ Заполните поля', true);
-            }
-        }
-
-        // Очистка всех сокращений
-        function clearAbbreviations() {
-            if (confirm('Вы уверены, что хотите очистить весь список сокращений?')) {
-                abbreviations = {};
-                saveAbbreviations();
-                renderAbbreviations();
-                showButtonMessage(clearBtn, '✓ Очищено');
-            }
-        }
-
-        // Сохранение сокращений в localStorage
-        function saveAbbreviations() {
-            localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
-        }
-
-        // Удаление сокращения
-        function deleteAbbreviation(abbr) {
-            delete abbreviations[abbr];
-            saveAbbreviations();
-            renderAbbreviations();
-        }
-
-        // Замена сокращений при нажатии пробела или Enter
-        function replaceOnKeyPress(event) {
-            if (event.key === ' ' || event.key === 'Enter') {
-                event.preventDefault();
-
-                const text = textInput.value;
-                const cursorPos = textInput.selectionStart;
-
-                // Находим последнее слово
-                const textBeforeCursor = text.substring(0, cursorPos);
-                const lastSpaceIndex = Math.max(
-                    textBeforeCursor.lastIndexOf(' '),
-                    textBeforeCursor.lastIndexOf('\n')
-                );
-                const lastWord = textBeforeCursor.substring(lastSpaceIndex + 1);
-
-                // Проверяем есть ли такое сокращение
-                if (abbreviations.hasOwnProperty(lastWord)) {
-                    // Формируем замену
-                    let replacement = abbreviations[lastWord];
-                    let appendChar = '';
-
-                    if (event.key === ' ') {
-                        appendChar = ' ';
-                    } else if (event.key === 'Enter') {
-                        replacement += '\n';
-                    }
-
-                    // Собираем новый текст
-                    const newText = textBeforeCursor.substring(0, lastSpaceIndex + 1) +
-                        replacement +
-                        appendChar +
-                        text.substring(cursorPos);
-
-                    // Устанавливаем новый текст
-                    textInput.value = newText;
-
-                    // Позиция курсора после замены
-                    const newCursorPos = lastSpaceIndex + 1 + replacement.length + appendChar.length;
-                    textInput.setSelectionRange(newCursorPos, newCursorPos);
-                } else {
-                    // Если не было замены, вставляем оригинальный символ
-                    if (event.key === ' ') {
-                        document.execCommand('insertText', false, ' ');
-                    } else if (event.key === 'Enter') {
-                        document.execCommand('insertText', false, '\n');
-                    }
-                }
-            }
-        }
-
-        // Замена всех сокращений в тексте
-        function replaceAllAbbreviations() {
-            let text = textInput.value;
-
-            // Сортируем сокращения по длине (от самых длинных к самым коротким)
-            const sortedAbbrs = Object.keys(abbreviations).sort((a, b) => b.length - a.length);
-
-            for (const abbr of sortedAbbrs) {
-                const regex = new RegExp(`\\b${escapeRegExp(abbr)}\\b`, 'g');
-                text = text.replace(regex, abbreviations[abbr]);
-            }
-
-            textInput.value = text;
-            textInput.selectionStart = text.length;
-            textInput.selectionEnd = text.length;
-        }
-
-        // Экранирование специальных символов
-        function escapeRegExp(string) {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-
-        // Экспорт сокращений в JSON
-        function exportAbbreviations() {
-            const data = JSON.stringify(abbreviations, null, 2);
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            const dateTime = formatDateTimeForFilename();
-            a.download = `abbreviations_${dateTime}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showButtonMessage(exportBtn, `✓ ${Object.keys(abbreviations).length} экспортировано`);
-        }
-
-        // Экспорт текста в TXT
-        function exportText() {
-            const text = textInput.value;
-            if (!text.trim()) {
-                showButtonMessage(exportTextBtn, '✗ Текст пуст', true);
-                return;
-            }
-
-            const filename = formatTextFilename();
-
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            updateAutoSaveStatus(`Текст сохранен в ${filename}`);
-            showButtonMessage(exportTextBtn, '✓ Сохранено');
-        }
-
-        // Форматирование даты для имени файла (только дата и часы)
-        function formatDate(date) {
-            const pad = num => num.toString().padStart(2, '0');
-            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}_${pad(date.getHours())}`;
-        }
-
-        // Автосохранение текста
-        function autoSaveText() {
-            const text = textInput.value;
-            if (text.trim()) {
-                exportText();
-            }
-        }
-
-        // Обновление статуса автосохранения
-        function updateAutoSaveStatus(message) {
-            autoSaveStatus.textContent = message;
-            setTimeout(() => {
-                autoSaveStatus.textContent = `⏺ Автосохранение каждые 20 мин`;
-            }, 3000);
-        }
-
-        // Импорт сокращений
-        function importAbbreviations(file) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-
-                    if (typeof imported !== 'object' || imported === null) {
-                        throw new Error('Неверный формат файла');
-                    }
-
-                    const count = Object.keys(imported).length;
-                    abbreviations = { ...abbreviations, ...imported };
-                    saveAbbreviations();
-                    renderAbbreviations();
-                    showButtonMessage(importBtn, `✓ ${count} импортировано`);
-                } catch (error) {
-                    showButtonMessage(importBtn, '✗ Ошибка импорта', true);
-                }
-            };
-
-            reader.readAsText(file);
-        }
-
-        // Загрузка JSON-файла с данными
-        function loadDataFile(file) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    if (Array.isArray(data)) {
-                        jsonData = data;
-                        jsonFileName = file.name;
-                        
-                        // Определяем следующий доступный ID
-                        const maxId = jsonData.reduce((max, item) => {
-                            return item.id && item.id > max ? item.id : max;
-                        }, 0);
-                        nextId = maxId + 1;
-                        
-                        dataFileInfo.innerHTML = `<span style="color: #107c10;">✅ Загружен: ${jsonFileName}</span>`;
-                        jsonStatusBadge.textContent = `Файл загружен`;
-                        jsonStatusBadge.style.backgroundColor = 'rgba(16, 124, 16, 0.1)';
-                        jsonStatusBadge.style.color = '#107c10';
-                        
-                        // Обновляем отображение ID
-                        updateNextIdDisplay();
-                        
-                        // Автоматически выбираем модальность по префиксу имени файла
-                        const prefix = getPrefixFromFilename(file.name);
-                        if (prefix) {
-                            setModalityByPrefix(prefix);
-                        }
-                        
-                        showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
-                    } else {
-                        throw new Error('Файл должен быть массивом данных');
-                    }
-                } catch (error) {
-                    showButtonMessage(loadDataFileBtn, '✗ Ошибка загрузки', true);
-                    jsonData = null;
-                    nextId = null;
-                    dataFileInfo.innerHTML = '<span style="color: #d13438;">❌ Ошибка загрузки файла</span>';
-                    jsonStatusBadge.textContent = 'Ошибка загрузки';
-                    jsonStatusBadge.style.backgroundColor = 'rgba(209, 52, 56, 0.1)';
-                    jsonStatusBadge.style.color = '#d13438';
+    // === ЗАГРУЗКА JSON ===
+    function loadDataFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target.result);
+                if(Array.isArray(data)) {
+                    jsonData = data;
+                    jsonFileName = file.name;
+                    const maxId = jsonData.reduce((max,item) => Math.max(max, item.id || 0), 0);
+                    nextId = maxId + 1;
+                    dataFileInfo.innerHTML = `<span style="color:#107c10;">✅ Загружен: ${jsonFileName}</span>`;
+                    jsonStatusBadge.textContent = 'Файл загружен';
                     updateNextIdDisplay();
+                    const prefix = getPrefixFromFilename(file.name);
+                    if(prefix) setModalityByPrefix(prefix);
+                    showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
+                    renderViewer(); // ОБНОВЛЯЕМ ПРОСМОТРЩИК
+                } else throw new Error('Файл должен быть массивом');
+            } catch(err) {
+                showButtonMessage(loadDataFileBtn, '✗ Ошибка', true);
+                jsonData = null;
+                nextId = null;
+                dataFileInfo.innerHTML = '<span style="color:#d13438;">❌ Ошибка загрузки</span>';
+                jsonStatusBadge.textContent = 'Ошибка';
+                updateNextIdDisplay();
+                renderViewer();
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // === ДОБАВЛЕНИЕ НОВОЙ ЗАПИСИ ===
+    function submitToJson() {
+        if(!jsonData) {
+            showButtonMessage(submitBtn, '✗ Сначала загрузите файл', true);
+            return;
+        }
+        const text = textInput.value.trim();
+        if(!text) {
+            showButtonMessage(submitBtn, '✗ Текст пустой', true);
+            return;
+        }
+        let title = titleField.value.trim();
+        if(!title) {
+            const modalityText = getSelectedModalityText();
+            const formattedDate = dateField.value.split('-').reverse().slice(0,2).join('.');
+            title = `${modalityText} от ${formattedDate}`;
+        }
+        const selectedModality = getSelectedModality();
+        const modalityForJson = modalityJsonMap[selectedModality];
+        const newEntry = {
+            id: nextId,
+            title: title,
+            text: text,
+            modality: modalityForJson,
+            patient: patientName.value.trim() || '',
+            date: dateField.value
+        };
+        jsonData.push(newEntry);
+        nextId++;
+        updateNextIdDisplay();
+        textInput.value = '';
+        titleField.value = '';
+        setTodayDate();
+        patientName.value = '';
+        saveJsonToDisk();
+        renderViewer(); // ОБНОВЛЯЕМ ПРОСМОТРЩИК
+        showButtonMessage(submitBtn, `✓ ID: ${nextId-1} сохранен`);
+    }
+
+    // === РЕДАКТИРОВАНИЕ ЗАПИСИ ===
+    function updateRecord(recordId, updatedFields) {
+        const index = jsonData.findIndex(r => r.id === recordId);
+        if(index !== -1) {
+            Object.assign(jsonData[index], updatedFields);
+            saveJsonToDisk();
+            renderViewer();
+            showNotification(`Запись ${recordId} обновлена`);
+        }
+    }
+
+    function showNotification(msg) {
+        const div = document.createElement('div');
+        div.textContent = `✅ ${msg}`;
+        div.style.cssText = 'position:fixed; bottom:80px; right:20px; background:#107c10; color:white; padding:8px 16px; border-radius:30px; z-index:1000;';
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 2000);
+    }
+
+    // === ПРОСМОТРЩИК ЗАКЛЮЧЕНИЙ (отдельный блок) ===
+    let viewerConclusions = [];
+    let viewerFiltered = [];
+    let viewerSortDesc = true;
+    let viewerDateFilter = '';
+    let viewerSearchQuery = '';
+    let viewerEditingId = null;
+
+    function normalizeForViewer(item) {
+        return {
+            id: item.id,
+            patient: item.patient || 'Без имени',
+            text: item.text || '',
+            modality: item.modality || '',
+            title: item.title || '',
+            date: item.date || ''
+        };
+    }
+
+    function getModalityEmoji(mod) {
+        const m = String(mod).toLowerCase();
+        if(m.includes('mri') || m.includes('мрт')) return '🧠';
+        if(m.includes('ct') || m.includes('кт')) return '🖥️';
+        if(m.includes('rg') || m.includes('рг')) return '📦';
+        if(m.includes('flg') || m.includes('флг')) return '🫁';
+        return '🔬';
+    }
+
+    function escapeHtml(str) {
+        if(!str) return '';
+        return String(str).replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function highlightText(text, query) {
+        if(!query.trim() || !text) return escapeHtml(text);
+        const words = query.toLowerCase().split(/\s+/).filter(w => w);
+        let result = escapeHtml(text);
+        for(const w of words) {
+            const regex = new RegExp(`(${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            result = result.replace(regex, `<span class="highlight">$1</span>`);
+        }
+        return result;
+    }
+
+    function filterViewer() {
+        let filtered = [...viewerConclusions];
+        if(viewerDateFilter) filtered = filtered.filter(i => i.date === viewerDateFilter);
+        if(viewerSearchQuery.trim()) {
+            const q = viewerSearchQuery.toLowerCase();
+            filtered = filtered.filter(i => 
+                i.patient.toLowerCase().includes(q) ||
+                i.text.toLowerCase().includes(q) ||
+                i.title.toLowerCase().includes(q)
+            );
+        }
+        filtered.sort((a,b) => {
+            const idA = Number(a.id) || 0, idB = Number(b.id) || 0;
+            return viewerSortDesc ? idB - idA : idA - idB;
+        });
+        viewerFiltered = filtered;
+        document.getElementById('viewerFilterStats').textContent = `${viewerFiltered.length} / ${viewerConclusions.length}`;
+        return viewerFiltered;
+    }
+
+    function renderViewer() {
+        if(!jsonData) {
+            document.getElementById('viewerConclusionsList').innerHTML = '<div class="placeholder-message">📭 Загрузите JSON-файл в левом верхнем углу</div>';
+            viewerConclusions = [];
+            return;
+        }
+        viewerConclusions = jsonData.map(normalizeForViewer);
+        const filtered = filterViewer();
+        const container = document.getElementById('viewerConclusionsList');
+        if(filtered.length === 0) {
+            container.innerHTML = '<div class="placeholder-message">🔍 Ничего не найдено</div>';
+            return;
+        }
+        container.innerHTML = '';
+        for(let item of filtered) {
+            const isEditing = (viewerEditingId === item.id);
+            const modalityEmoji = getModalityEmoji(item.modality);
+            const safeId = escapeHtml(String(item.id));
+            const safeDate = item.date ? item.date.split('-').reverse().join('.') : '—';
+            const highlightedPatient = highlightText(item.patient, viewerSearchQuery);
+            const highlightedTitle = highlightText(item.title, viewerSearchQuery);
+            const highlightedText = highlightText(item.text, viewerSearchQuery);
+            
+            const card = document.createElement('div');
+            card.className = `conclusion-card ${isEditing ? 'editing' : ''}`;
+            card.dataset.id = item.id;
+            
+            if(isEditing) {
+                card.innerHTML = `
+                    <div class="row-patient">
+                        <input type="text" class="patient-edit" id="edit-patient-${item.id}" value="${escapeHtml(item.patient)}">
+                    </div>
+                    <div class="row-modality-study-actions">
+                        <div class="left-group">
+                            <span class="modality-badge">${modalityEmoji}</span>
+                            <input type="text" class="study-title-edit" id="edit-title-${item.id}" value="${escapeHtml(item.title)}">
+                            <input type="date" class="date-edit-input" id="edit-date-${item.id}" value="${item.date || ''}">
+                            <span class="conclusion-id">🆔 ${safeId}</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="save-button" data-id="${item.id}">💾 Сохранить</button>
+                            <button class="cancel-button" data-id="${item.id}">✕ Отмена</button>
+                        </div>
+                    </div>
+                    <textarea class="conclusion-text-edit" id="edit-text-${item.id}">${escapeHtml(item.text)}</textarea>
+                `;
+            } else {
+                card.innerHTML = `
+                    <div class="row-patient">
+                        <span class="patient-name" data-id="${item.id}">${highlightedPatient}</span>
+                    </div>
+                    <div class="row-modality-study-actions">
+                        <div class="left-group">
+                            <span class="modality-badge">${modalityEmoji}</span>
+                            <span class="study-title" data-id="${item.id}">${highlightedTitle || '—'}</span>
+                            <span class="study-date" data-id="${item.id}">📅 ${safeDate}</span>
+                            <span class="conclusion-id">🆔 ${safeId}</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="edit-button" data-id="${item.id}">✏️ Редактировать</button>
+                            <button class="copy-button" data-id="${item.id}">📋 Копировать</button>
+                        </div>
+                    </div>
+                    <div class="conclusion-text" data-id="${item.id}">${highlightedText}</div>
+                `;
+            }
+            container.appendChild(card);
+        }
+        
+        // Обработчики
+        document.querySelectorAll('.edit-button').forEach(btn => {
+            btn.onclick = () => { viewerEditingId = Number(btn.dataset.id); renderViewer(); };
+        });
+        document.querySelectorAll('.cancel-button').forEach(btn => {
+            btn.onclick = () => { viewerEditingId = null; renderViewer(); };
+        });
+        document.querySelectorAll('.save-button').forEach(btn => {
+            btn.onclick = () => {
+                const id = Number(btn.dataset.id);
+                const newPatient = document.getElementById(`edit-patient-${id}`)?.value;
+                const newTitle = document.getElementById(`edit-title-${id}`)?.value;
+                const newDate = document.getElementById(`edit-date-${id}`)?.value;
+                const newText = document.getElementById(`edit-text-${id}`)?.value;
+                if(newText !== undefined && newText.trim()) {
+                    updateRecord(id, {
+                        patient: newPatient || '',
+                        title: newTitle || '',
+                        date: newDate || '',
+                        text: newText
+                    });
+                } else if(newText !== undefined && !newText.trim()) {
+                    showNotification('Текст не может быть пустым');
                 }
+                viewerEditingId = null;
             };
-
-            reader.readAsText(file);
-        }
-
-        // Отправка данных в JSON
-        function submitToJson() {
-            // Проверяем, загружен ли файл
-            if (!jsonData) {
-                showButtonMessage(submitBtn, '✗ Сначала загрузите файл', true);
-                return;
-            }
-
-            // Проверяем, заполнено ли текстовое поле
-            const text = textInput.value.trim();
-            if (!text) {
-                showButtonMessage(submitBtn, '✗ Текст пустой', true);
-                return;
-            }
-
-            // Получаем значение поля "Название"
-            let title = titleField.value.trim();
-            if (title === '') {
-                // Формируем название по умолчанию (БЕЗ ЭМОДЗИ)
-                const modalityText = getSelectedModalityText();
-                const date = dateField.value;
-                const formattedDate = date.split('-').reverse().slice(0, 2).join('.');
-                title = `${modalityText} от ${formattedDate}`;
-            }
-
-            // Получаем выбранную модальность (значение радио-кнопки: rg, flg, ct, mri)
-            const selectedModality = getSelectedModality();
-            
-            // Получаем значение для поля modality в JSON (согласно маппингу)
-            const modalityForJson = modalityJsonMap[selectedModality] || selectedModality;
-
-            // Создаем новый объект
-            const newEntry = {
-                id: nextId,
-                title: title,
-                text: text,
-                modality: modalityForJson, // В JSON сохраняется: rg, flg, ct, mri
-                patient: patientName.value.trim() || '',
-                date: dateField.value
+        });
+        document.querySelectorAll('.copy-button').forEach(btn => {
+            btn.onclick = () => {
+                const id = Number(btn.dataset.id);
+                const item = viewerConclusions.find(i => i.id === id);
+                if(item) navigator.clipboard.writeText(item.text);
+                showNotification('Текст скопирован');
             };
-
-            // Добавляем в массив
-            jsonData.push(newEntry);
-
-            // Сохраняем файл
-            const data = JSON.stringify(jsonData, null, 2);
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            
-            // Генерируем имя файла с префиксом модальности и секундами
-            const filename = formatFilenameWithModality(selectedModality) + '.json';
-            a.download = filename;
-            
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            // Увеличиваем ID для следующей записи
-            nextId++;
-            updateNextIdDisplay();
-
-            // Очищаем поля (НО НЕ СБРАСЫВАЕМ МОДАЛЬНОСТЬ)
-            textInput.value = '';
-            titleField.value = '';
-            setTodayDate();
-
-            // Устанавливаем курсор в поле ФИО
-            patientName.value = '';
-            patientName.focus();
-
-            // Обновляем информацию о файле
-            dataFileInfo.innerHTML = `<span style="color: #107c10;">✅ Загружен: ${jsonFileName} (обновлен)</span>`;
-            
-            // Показываем сообщение на кнопке
-            showButtonMessage(submitBtn, `✓ ID: ${nextId-1} сохранен`);
-        }
-
-        // Инициализация автосохранения
-        function initAutoSave() {
-            if (autoSaveInterval) clearInterval(autoSaveInterval);
-            autoSaveInterval = setInterval(autoSaveText, AUTO_SAVE_INTERVAL);
-            updateAutoSaveStatus(`⏺ Автосохранение каждые 20 мин`);
-        }
-
-        // Обработчики событий
-        addBtn.addEventListener('click', addAbbreviation);
-        clearBtn.addEventListener('click', clearAbbreviations);
-        replaceBtn.addEventListener('click', replaceAllAbbreviations);
-        exportBtn.addEventListener('click', exportAbbreviations);
-        exportTextBtn.addEventListener('click', exportText);
-        importBtn.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                importAbbreviations(e.target.files[0]);
-                fileInput.value = '';
+        });
+        document.querySelectorAll('.patient-name, .study-title, .study-date, .conclusion-text').forEach(el => {
+            if(el.classList.contains('conclusion-text') || el.classList.contains('patient-name') || 
+               el.classList.contains('study-title') || el.classList.contains('study-date')) {
+                el.onclick = (e) => {
+                    const id = Number(el.dataset.id);
+                    viewerEditingId = id;
+                    renderViewer();
+                };
             }
         });
-        
-        // Обработчики для работы с JSON-файлом
-        loadDataFileBtn.addEventListener('click', () => dataFileInput.click());
-        dataFileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                loadDataFile(e.target.files[0]);
-                dataFileInput.value = '';
-            }
-        });
-        
-        submitBtn.addEventListener('click', submitToJson);
-        
-        textInput.addEventListener('keydown', replaceOnKeyPress);
-        
-        // Обновляем превью при смене модальности
-        modalityRadios.forEach(radio => {
-            radio.addEventListener('change', updateFilenamePreview);
-        });
+    }
 
-        function copy_to_clipboard(textInput) {
-            const textarea = document.getElementById(textInput);
-            textarea.select();
-            document.execCommand('copy');
-            
-            // Визуальная обратная связь
-            const btn = event.target.closest('.win11-button');
-            showButtonMessage(btn, '✓ Скопировано');
+    // === ОСТАЛЬНЫЕ ФУНКЦИИ ===
+    function renderAbbreviations() {
+        abbrList.innerHTML = '';
+        for(let [abbr, phrase] of Object.entries(abbreviations)) {
+            const div = document.createElement('div');
+            div.className = 'win11-list-item';
+            div.innerHTML = `<span>${abbr} → ${phrase}</span><button class="win11-delete-btn" data-abbr="${abbr}">×</button>`;
+            div.querySelector('.win11-delete-btn').onclick = () => {
+                delete abbreviations[abbr];
+                localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
+                renderAbbreviations();
+            };
+            abbrList.appendChild(div);
         }
+    }
 
-        // Обновляем превью имени файла каждую секунду (для отображения актуальных секунд)
-        setInterval(updateFilenamePreview, 1000);
-        
-        // Установка сегодняшней даты при загрузке
+    function addAbbreviation() {
+        const abbr = abbrInput.value.trim();
+        const phrase = phraseInput.value.trim();
+        if(abbr && phrase) {
+            abbreviations[abbr] = phrase;
+            localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
+            renderAbbreviations();
+            abbrInput.value = '';
+            phraseInput.value = '';
+            showButtonMessage(addBtn, '✓ Добавлено');
+        } else showButtonMessage(addBtn, '✗ Заполните поля', true);
+    }
+
+    function clearAbbreviations() {
+        if(confirm('Очистить все сокращения?')) {
+            abbreviations = {};
+            localStorage.setItem('abbreviations', '{}');
+            renderAbbreviations();
+            showButtonMessage(clearBtn, '✓ Очищено');
+        }
+    }
+
+    function exportAbbreviations() {
+        const data = JSON.stringify(abbreviations, null, 2);
+        const blob = new Blob([data], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `abbreviations_${formatDateTimeForFilename()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showButtonMessage(exportBtn, `✓ ${Object.keys(abbreviations).length} экспортировано`);
+    }
+
+    function importAbbreviations(file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                const imported = JSON.parse(e.target.result);
+                if(typeof imported === 'object' && imported !== null && !Array.isArray(imported)) {
+                    Object.assign(abbreviations, imported);
+                    localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
+                    renderAbbreviations();
+                    showButtonMessage(importBtn, `✓ Импортировано ${Object.keys(imported).length}`);
+                } else throw new Error();
+            } catch(err) { showButtonMessage(importBtn, '✗ Ошибка', true); }
+        };
+        reader.readAsText(file);
+    }
+
+    function exportText() {
+        const text = textInput.value.trim();
+        if(!text) { showButtonMessage(exportTextBtn, '✗ Текст пуст', true); return; }
+        const blob = new Blob([text], {type:'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `text_${formatDateTimeForFilename()}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showButtonMessage(exportTextBtn, '✓ Сохранено');
+    }
+
+    function autoSaveText() { if(textInput.value.trim()) exportText(); }
+
+    function copy_to_clipboard(id) {
+        const el = document.getElementById(id);
+        el.select();
+        document.execCommand('copy');
+        const btn = event?.target?.closest('.win11-button');
+        if(btn) showButtonMessage(btn, '✓ Скопировано');
+    }
+
+    window.copy_to_clipboard = copy_to_clipboard;
+
+    // === ИНИЦИАЛИЗАЦИЯ ===
+    function init() {
         setTodayDate();
         updateFilenamePreview();
-        updateNextIdDisplay(); // Показываем прочерк
-
-        // Инициализация
         renderAbbreviations();
-        initAutoSave();
-    </script>
+        setInterval(updateFilenamePreview, 1000);
+        setInterval(autoSaveText, 20*60*1000);
+        
+        loadDataFileBtn.onclick = () => dataFileInput.click();
+        dataFileInput.onchange = (e) => { if(e.target.files.length) loadDataFile(e.target.files[0]); dataFileInput.value = ''; };
+        submitBtn.onclick = submitToJson;
+        exportTextBtn.onclick = exportText;
+        addBtn.onclick = addAbbreviation;
+        clearBtn.onclick = clearAbbreviations;
+        exportBtn.onclick = exportAbbreviations;
+        importBtn.onclick = () => fileInput.click();
+        fileInput.onchange = (e) => { if(e.target.files.length) importAbbreviations(e.target.files[0]); fileInput.value = ''; };
+        modalityRadios.forEach(r => r.addEventListener('change', updateFilenamePreview));
+        
+        // Просмотрщик
+        document.getElementById('viewerSearchInput').addEventListener('input', (e) => {
+            viewerSearchQuery = e.target.value;
+            viewerEditingId = null;
+            renderViewer();
+        });
+        document.getElementById('viewerClearSearchBtn').onclick = () => {
+            document.getElementById('viewerSearchInput').value = '';
+            viewerSearchQuery = '';
+            viewerEditingId = null;
+            renderViewer();
+        };
+        document.getElementById('viewerDateFilter').addEventListener('change', (e) => {
+            viewerDateFilter = e.target.value;
+            viewerEditingId = null;
+            renderViewer();
+        });
+        document.getElementById('viewerSortBtn').onclick = () => {
+            viewerSortDesc = !viewerSortDesc;
+            document.getElementById('viewerSortBtn').innerHTML = viewerSortDesc ? '⬇️ По ID (новые сверху)' : '⬆️ По ID (старые сверху)';
+            viewerEditingId = null;
+            renderViewer();
+        };
+        document.getElementById('viewerClearFiltersBtn').onclick = () => {
+            viewerDateFilter = '';
+            viewerSearchQuery = '';
+            document.getElementById('viewerSearchInput').value = '';
+            document.getElementById('viewerDateFilter').value = '';
+            viewerEditingId = null;
+            renderViewer();
+        };
+        
+        // Скролл
+        window.addEventListener('scroll', () => {
+            if(window.scrollY > 300) scrollToTopBtn.classList.add('visible');
+            else scrollToTopBtn.classList.remove('visible');
+        });
+        scrollToTopBtn.onclick = () => window.scrollTo({top:0, behavior:'smooth'});
+        
+        renderViewer();
+    }
+    
+    init();
+</script>
 </body>
-
 </html>
