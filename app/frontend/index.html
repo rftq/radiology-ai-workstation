@@ -574,6 +574,23 @@
                 <input type="text" id="patientName" class="win11-input" placeholder="ФИО пациента">
                 <input type="text" id="titleField" class="win11-input" placeholder="Название">
             </div>
+			
+			
+			
+			        <!-- <div class="win11-card"> -->
+            <!-- НОВАЯ ГОЛОВА С ЗАГОЛОВКОМ И КНОПКАМИ -->
+            <div class="editor-header">
+                <h3 class="section-title">📝 Новое заключение</h3>
+                <div class="compact-actions">
+                    <button id="submitBtn" class="win11-button success" style="background-color:#107c10;">📨 Отправить в JSON</button>
+                    <button class="win11-button" onclick="copy_to_clipboard('textInput')">📋 Скопировать</button>
+                    <button id="exportTextBtn" class="win11-button">💾 Сохранить текст</button>
+                </div>
+            </div>
+            <textarea id="textInput" class="win11-textarea" rows="8" placeholder="Введите текст заключения..."></textarea>
+        <!-- </div> -->
+			
+			
         </div>
     </div>
 
@@ -597,22 +614,11 @@
             </div>
             <div id="autoSaveStatus" style="font-size:11px; text-align:center; margin-top:8px">⏺ Автосохранение каждые 20 мин</div>
         </div>
-
-        <div class="win11-card">
-            <!-- НОВАЯ ГОЛОВА С ЗАГОЛОВКОМ И КНОПКАМИ -->
-            <div class="editor-header">
-                <h3 class="section-title">📝 Новое заключение</h3>
-                <div class="compact-actions">
-                    <button id="submitBtn" class="win11-button success" style="background-color:#107c10;">📨 Отправить в JSON</button>
-                    <button class="win11-button" onclick="copy_to_clipboard('textInput')">📋 Скопировать</button>
-                    <button id="exportTextBtn" class="win11-button">💾 Сохранить текст</button>
-                </div>
-            </div>
-            <textarea id="textInput" class="win11-textarea" rows="8" placeholder="Введите текст заключения..."></textarea>
-        </div>
-    </div>
-
-    <!-- ОТДЕЛЬНЫЙ БЛОК ПРОСМОТРА (как в view.html, без своих кнопок загрузки/экспорта) -->
+		
+		
+		
+		
+		    <!-- ОТДЕЛЬНЫЙ БЛОК ПРОСМОТРА (как в view.html, без своих кнопок загрузки/экспорта) -->
     <div class="win11-card" style="padding: 0; background: transparent; backdrop-filter: none; box-shadow: none;">
         <div class="viewer-container" style="background: white; padding: 1.8rem 2rem 2.5rem;">
             <div class="viewer-header">
@@ -638,6 +644,14 @@
             </div>
         </div>
     </div>
+		
+		
+		
+
+
+    </div>
+
+
 </div>
 
 <button id="scrollToTopBtn" class="scroll-to-top">↑</button>
