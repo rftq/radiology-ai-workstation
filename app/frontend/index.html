@@ -395,20 +395,20 @@
             <!-- Правый верхний блок: Мета-поля в два ряда -->
             <div class="win11-card compact-card">
                 <div class="meta-fields">
-                    <!-- Первый ряд: модальность и дата (новый порядок: РГ, ФЛГ, КТ, МРТ) -->
+                    <!-- Первый ряд: модальность и дата -->
                     <div class="meta-row">
                         <div class="win11-radio-group" id="modalityGroup">
                             <label>
                                 <input type="radio" name="modality" value="rg" checked> 📦 РГ
                             </label>
                             <label>
-                                <input type="radio" name="modality" value="fl"> 🫁 ФЛГ
+                                <input type="radio" name="modality" value="flg"> 🫁 ФЛГ
                             </label>
                             <label>
                                 <input type="radio" name="modality" value="ct"> 🖥️ КТ
                             </label>
                             <label>
-                                <input type="radio" name="modality" value="mr"> 🧠 МРТ
+                                <input type="radio" name="modality" value="mri"> 🧠 МРТ
                             </label>
                         </div>
                         
@@ -536,19 +536,28 @@
         const filenamePreview = document.getElementById('filenamePreview');
         const submitBtn = document.getElementById('submitBtn');
 
-        // Маппинг модальностей для префиксов (НОВЫЕ ПРЕФИКСЫ)
+        // Маппинг модальностей для префиксов в имени файла (ПРОПИСНЫЕ для файла)
         const modalityPrefixMap = {
             'rg': 'RG',
-            'fl': 'FLG',
+            'flg': 'FLG',
             'ct': 'CT',
-            'mr': 'MRT'
+            'mri': 'MRI'
         };
         
+        // Маппинг модальностей для значения в JSON (как должно сохраняться в поле modality)
+        const modalityJsonMap = {
+            'rg': 'rg',
+            'flg': 'flg',
+            'ct': 'ct',
+            'mri': 'mri'
+        };
+        
+        // Обратный маппинг для загрузки (из префикса файла в значение радио-кнопки)
         const prefixToModalityMap = {
             'RG': 'rg',
-            'FLG': 'fl',
+            'FLG': 'flg',
             'CT': 'ct',
-            'MRT': 'mr'
+            'MRI': 'mri'
         };
 
         // Функция для форматирования даты и времени для имени файла
@@ -592,7 +601,7 @@
             }, 2000);
         }
 
-        // Функция для форматирования даты и времени для имени файла с префиксом модальности (НОВЫЕ ПРЕФИКСЫ + ТРИ ПОДЧЕРКИВАНИЯ)
+        // Функция для форматирования даты и времени для имени файла с префиксом модальности (ТРИ ПОДЧЕРКИВАНИЯ)
         function formatFilenameWithModality(modality) {
             const now = new Date();
             
@@ -648,7 +657,7 @@
             filenamePreview.textContent = formatFilenameWithModality(selectedModality) + '.json';
         }
 
-        // Получение выбранной модальности
+        // Получение выбранной модальности (значение радио-кнопки)
         function getSelectedModality() {
             for (const radio of modalityRadios) {
                 if (radio.checked) {
@@ -658,7 +667,7 @@
             return 'rg'; // По умолчанию РГ
         }
 
-        // Установка модальности по префиксу (НОВЫЕ ПРЕФИКСЫ)
+        // Установка модальности по префиксу из имени файла
         function setModalityByPrefix(prefix) {
             const modality = prefixToModalityMap[prefix];
             if (modality) {
@@ -675,7 +684,12 @@
 
         // Получение префикса из имени файла (ищем префикс до трёх подчёркиваний)
         function getPrefixFromFilename(filename) {
-            const match = filename.match(/^([A-Z]+)___/i);
+            // Поддерживаем оба формата: с тремя подчёркиваниями и с одним (для обратной совместимости)
+            let match = filename.match(/^([A-Z]+)___/i);
+            if (!match) {
+                // Если нет трёх подчёркиваний, ищем один подчёркивание (старый формат)
+                match = filename.match(/^([A-Z]+)_/i);
+            }
             return match ? match[1].toUpperCase() : null;
         }
 
@@ -842,7 +856,7 @@
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
-        // Экспорт сокращений в JSON с новым форматом имени
+        // Экспорт сокращений в JSON
         function exportAbbreviations() {
             const data = JSON.stringify(abbreviations, null, 2);
             const blob = new Blob([data], { type: 'application/json' });
@@ -860,7 +874,7 @@
             showButtonMessage(exportBtn, `✓ ${Object.keys(abbreviations).length} экспортировано`);
         }
 
-        // Экспорт текста в TXT с новым форматом имени
+        // Экспорт текста в TXT
         function exportText() {
             const text = textInput.value;
             if (!text.trim()) {
@@ -868,7 +882,6 @@
                 return;
             }
 
-            // Генерируем имя файла в формате: RG___02apr_19-17-34_Петрова_Катя.txt
             const filename = formatTextFilename();
 
             const blob = new Blob([text], { type: 'text/plain' });
@@ -1009,15 +1022,18 @@
                 title = `${modalityText} от ${formattedDate}`;
             }
 
-            // Получаем выбранную модальность
+            // Получаем выбранную модальность (значение радио-кнопки: rg, flg, ct, mri)
             const selectedModality = getSelectedModality();
+            
+            // Получаем значение для поля modality в JSON (согласно маппингу)
+            const modalityForJson = modalityJsonMap[selectedModality] || selectedModality;
 
-            // Создаем новый объект (БЕЗ ЭМОДЗИ В TITLE)
+            // Создаем новый объект
             const newEntry = {
                 id: nextId,
                 title: title,
                 text: text,
-                modality: selectedModality,
+                modality: modalityForJson, // В JSON сохраняется: rg, flg, ct, mri
                 patient: patientName.value.trim() || '',
                 date: dateField.value
             };
@@ -1033,7 +1049,7 @@
             const a = document.createElement('a');
             a.href = url;
             
-            // Генерируем имя файла с префиксом модальности и секундами (НОВЫЙ ФОРМАТ)
+            // Генерируем имя файла с префиксом модальности и секундами
             const filename = formatFilenameWithModality(selectedModality) + '.json';
             a.download = filename;
             
