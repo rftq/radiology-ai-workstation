@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Протокол — единая система</title>
+    <title>Протокол</title>
     <style>
         * {
             margin: 0;
@@ -52,6 +52,8 @@
 
         .win11-button.primary { background-color: #0067c0; color: white; }
         .win11-button.success { background-color: #107c10; color: white; }
+        .win11-button.danger { background-color: #d13438; color: white; border-color: #d13438; }
+        .win11-button.danger:hover { background-color: #b02a2e; }
 
         .win11-button .button-message {
             position: absolute;
@@ -116,11 +118,10 @@
             border: 1px solid #cbd9e8;
             border-radius: 12px;
             padding: 14px;
-            font-size: 15px;
+            font-size: 16px;
             width: 100%;
             resize: vertical;
-            font-family: monospace;
-            min-height: 280px;
+            min-height: 300px;
             transition: all 0.2s;
         }
 
@@ -229,7 +230,7 @@
 
         .viewer-container {
             background: white;
-            border-radius: 24px;
+            border-radius: 12px;
             padding: 1.8rem 2rem 2.5rem;
             margin-top: 0;
         }
@@ -416,7 +417,7 @@
         .conclusion-id { font-size: 0.8rem; color: #666; }
         .action-buttons { display: flex; gap: 8px; }
         
-        .edit-button, .save-button, .cancel-button, .copy-button {
+        .edit-button, .save-button, .cancel-button, .copy-button, .delete-conclusion-btn {
             background: white;
             border: 1px solid #c9dbf0;
             border-radius: 8px;
@@ -438,6 +439,16 @@
             background: #ffeeee;
             border-color: #aa2647;
             color: #aa2647;
+        }
+
+        .delete-conclusion-btn {
+            color: #d13438;
+            border-color: #f5c6c6;
+        }
+        .delete-conclusion-btn:hover {
+            background: #d13438;
+            border-color: #d13438;
+            color: white;
         }
 
         .copy-button.copied {
@@ -513,7 +524,6 @@
             to { transform: translateX(0); opacity: 1; }
         }
         
-        /* Подсказка при автозамене */
         .abbr-hint {
             position: fixed;
             background: #2b4f6e;
@@ -532,11 +542,17 @@
             70% { opacity: 0.8; }
             100% { opacity: 0; transform: translateY(-10px); visibility: hidden; }
         }
+        
+        .loading-indicator {
+            text-align: center;
+            padding: 1rem;
+            color: #6b8bb0;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
 <div class="app-container">
-    <!-- Верхний ряд: JSON блок и мета-поля -->
     <div class="top-row">
         <div class="win11-card compact-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -570,10 +586,18 @@
                 <input type="text" id="patientName" class="win11-input" placeholder="ФИО пациента">
                 <input type="text" id="titleField" class="win11-input" placeholder="Название">
             </div>
+            <div class="editor-header">
+                <h3 class="section-title">📝 Новое заключение</h3>
+                <div class="compact-actions">
+                    <button id="submitBtn" class="win11-button success" style="background-color:#107c10;">📨 Отправить в JSON</button>
+                    <button class="win11-button" id="copyTextBtn">📋 Скопировать</button>
+                    <button id="exportTextBtn" class="win11-button">💾 Сохранить текст</button>
+                </div>
+            </div>
+            <textarea id="textInput" class="win11-textarea" rows="6" placeholder="Введите текст заключения..."></textarea>
         </div>
     </div>
 
-    <!-- Основной ряд: сокращения + рабочее поле -->
     <div class="main-row">
         <div class="win11-card">
             <h3 class="section-title">➕ Добавить сокращение</h3>
@@ -593,42 +617,28 @@
             </div>
             <div id="autoSaveStatus" style="font-size:11px; text-align:center; margin-top:8px">⏺ Автосохранение каждые 20 мин</div>
         </div>
-
-        <div class="win11-card">
-            <div class="editor-header">
-                <h3 class="section-title">📝 Новое заключение</h3>
-                <div class="compact-actions">
-                    <button id="submitBtn" class="win11-button success" style="background-color:#107c10;">📨 Отправить в JSON</button>
-                    <button class="win11-button" id="copyTextBtn">📋 Скопировать</button>
-                    <button id="exportTextBtn" class="win11-button">💾 Сохранить текст</button>
+		
+        <div class="win11-card" style="padding: 0; background: transparent; backdrop-filter: none; box-shadow: none;">
+            <div class="viewer-container" style="background: white; padding: 1.8rem 2rem 2.5rem;">
+                <div class="viewer-header">
+                    <div class="viewer-search-container">
+                        <span>🔍</span>
+                        <input type="text" id="viewerSearchInput" placeholder="Поиск...">
+                        <button id="viewerClearSearchBtn">Очистить</button>
+                    </div>
                 </div>
-            </div>
-            <textarea id="textInput" class="win11-textarea" rows="8" placeholder="Введите текст заключения..."></textarea>
-            <div style="font-size:11px; color:#5f7b9c; margin-top:6px;">💡 Подсказка: используйте сокращения из списка слева — они автоматически заменятся при нажатии Пробела или Enter</div>
-        </div>
-    </div>
-
-    <!-- Блок просмотра -->
-    <div class="win11-card" style="padding: 0; background: transparent; backdrop-filter: none; box-shadow: none;">
-        <div class="viewer-container" style="background: white; padding: 1.8rem 2rem 2.5rem;">
-            <div class="viewer-header">
-                <div class="viewer-search-container">
-                    <span>🔍</span>
-                    <input type="text" id="viewerSearchInput" placeholder="Поиск...">
-                    <button id="viewerClearSearchBtn">Очистить</button>
+                <div class="viewer-filter-panel">
+                    <div class="viewer-date-filter">
+                        <label>📅</label>
+                        <input type="date" id="viewerDateFilter" class="viewer-date-input">
+                    </div>
+                    <button id="viewerSortBtn" class="viewer-sort-button">⬇️ По ID (новые сверху)</button>
+                    <button id="viewerClearFiltersBtn" class="viewer-clear-filters-btn">✕ Сбросить фильтры</button>
+                    <span id="viewerFilterStats" class="viewer-filter-stats"></span>
                 </div>
-            </div>
-            <div class="viewer-filter-panel">
-                <div class="viewer-date-filter">
-                    <label>📅</label>
-                    <input type="date" id="viewerDateFilter" class="viewer-date-input">
+                <div id="viewerConclusionsList" class="viewer-conclusions-list">
+                    <div class="placeholder-message">📭 Загрузите JSON-файл в левом верхнем углу</div>
                 </div>
-                <button id="viewerSortBtn" class="viewer-sort-button">⬇️ По ID (новые сверху)</button>
-                <button id="viewerClearFiltersBtn" class="viewer-clear-filters-btn">✕ Сбросить фильтры</button>
-                <span id="viewerFilterStats" class="viewer-filter-stats"></span>
-            </div>
-            <div id="viewerConclusionsList" class="viewer-conclusions-list">
-                <div class="placeholder-message">📭 Загрузите JSON-файл в левом верхнем углу</div>
             </div>
         </div>
     </div>
@@ -640,72 +650,37 @@
     // === АВТОЗАМЕНА СОКРАЩЕНИЙ ===
     function setupAutoReplace(textarea, abbreviations) {
         if (!textarea) return;
-        
-        let lastWord = '';
-        let lastCaretPos = 0;
-        
-        function getCurrentWord(text, caretPos) {
-            let start = caretPos;
-            while (start > 0 && /[a-zA-Zа-яА-Я0-9_]/.test(text[start - 1])) {
-                start--;
-            }
-            return { word: text.substring(start, caretPos), startPos: start };
-        }
-        
-        function showHint(word, phrase, event) {
-            const rect = textarea.getBoundingClientRect();
-            const hint = document.createElement('div');
-            hint.className = 'abbr-hint';
-            hint.textContent = `✨ "${word}" → ${phrase.substring(0, 30)}${phrase.length > 30 ? '…' : ''}`;
-            hint.style.left = rect.left + 10 + 'px';
-            hint.style.bottom = window.innerHeight - rect.top + 10 + 'px';
-            document.body.appendChild(hint);
-            setTimeout(() => hint.remove(), 800);
-        }
-        
-        function replaceWord(event) {
-            const caretPos = textarea.selectionStart;
-            const text = textarea.value;
-            const { word, startPos } = getCurrentWord(text, caretPos);
-            
-            if (word && abbreviations[word]) {
-                const phrase = abbreviations[word];
-                const before = text.substring(0, startPos);
-                const after = text.substring(caretPos);
-                const replacement = phrase + ' ';
-                const newText = before + replacement + after;
-                textarea.value = newText;
-                const newCaretPos = startPos + replacement.length;
-                textarea.selectionStart = textarea.selectionEnd = newCaretPos;
-                textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                showHint(word, phrase, event);
-                return true;
-            }
-            return false;
-        }
-        
-        textarea.addEventListener('keydown', (e) => {
-            // Замена по пробелу или Enter
+        textarea.removeEventListener('keydown', window._autoReplaceHandler);
+        const handler = (e) => {
             if (e.key === ' ' || e.key === 'Enter') {
                 const caretPos = textarea.selectionStart;
                 const text = textarea.value;
-                const { word, startPos } = getCurrentWord(text, caretPos);
-                
+                let start = caretPos;
+                while (start > 0 && /[a-zA-Zа-яА-Я0-9_]/.test(text[start - 1])) start--;
+                const word = text.substring(start, caretPos);
                 if (word && abbreviations[word]) {
                     e.preventDefault();
                     const phrase = abbreviations[word];
-                    const before = text.substring(0, startPos);
+                    const before = text.substring(0, start);
                     const after = text.substring(caretPos);
                     const replacement = phrase + (e.key === ' ' ? ' ' : '\n');
-                    const newText = before + replacement + after;
-                    textarea.value = newText;
-                    const newCaretPos = startPos + replacement.length;
+                    textarea.value = before + replacement + after;
+                    const newCaretPos = start + replacement.length;
                     textarea.selectionStart = textarea.selectionEnd = newCaretPos;
                     textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                    showHint(word, phrase, e);
+                    const rect = textarea.getBoundingClientRect();
+                    const hint = document.createElement('div');
+                    hint.className = 'abbr-hint';
+                    hint.textContent = `✨ "${word}" → ${phrase.substring(0, 30)}${phrase.length > 30 ? '…' : ''}`;
+                    hint.style.left = rect.left + 10 + 'px';
+                    hint.style.bottom = window.innerHeight - rect.top + 10 + 'px';
+                    document.body.appendChild(hint);
+                    setTimeout(() => hint.remove(), 800);
                 }
             }
-        });
+        };
+        textarea.addEventListener('keydown', handler);
+        window._autoReplaceHandler = handler;
     }
     
     // === ОСНОВНЫЕ ПЕРЕМЕННЫЕ ===
@@ -716,6 +691,8 @@
     let jsonDirty = false;
     let autoBackupTimer = null;
     let viewerRenderLimit = 50;
+    let isLoadingMore = false;
+    let currentFilteredList = [];
 
     // DOM элементы
     const abbrInput = document.getElementById('abbrInput');
@@ -743,7 +720,6 @@
     const copyTextBtn = document.getElementById('copyTextBtn');
     const scrollToTopBtn = document.getElementById('scrollToTopBtn');
 
-    // === ФУНКЦИИ ===
     function formatDateTimeForFilename() {
         const now = new Date();
         const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
@@ -755,9 +731,7 @@
         return `${day}${month}_${hours}-${minutes}-${seconds}`;
     }
 
-    function setTodayDate() {
-        dateField.value = new Date().toISOString().slice(0,10);
-    }
+    function setTodayDate() { dateField.value = new Date().toISOString().slice(0,10); }
 
     function showButtonMessage(button, message, isError = false) {
         if(!button) return;
@@ -767,13 +741,8 @@
             const originalText = button.dataset.originalText || button.textContent;
             button.dataset.originalText = originalText;
             button.textContent = message;
-            if(isError) {
-                button.style.backgroundColor = '#d13438';
-                button.style.color = 'white';
-            } else {
-                button.style.backgroundColor = '#107c10';
-                button.style.color = 'white';
-            }
+            button.style.backgroundColor = isError ? '#d13438' : '#107c10';
+            button.style.color = 'white';
             setTimeout(() => {
                 button.textContent = button.dataset.originalText;
                 button.style.backgroundColor = '';
@@ -812,38 +781,13 @@
         const month = months[now.getMonth()];
         const day = String(now.getDate()).padStart(2,'0');
         const hms = `${String(now.getHours()).padStart(2,'0')}-${String(now.getMinutes()).padStart(2,'0')}-${String(now.getSeconds()).padStart(2,'0')}`;
-        return `${modalityPrefixMap[modality]}___${day}${month}_${hms}`;
+        return `${modalityPrefixMap[modality]}___${month}${day}_${hms}`;
     }
 
-    function updateFilenamePreview() {
-        filenamePreview.textContent = formatFilenameWithModality(getSelectedModality()) + '.json';
-    }
+    function updateFilenamePreview() { filenamePreview.textContent = formatFilenameWithModality(getSelectedModality()) + '.json'; }
+    function updateNextIdDisplay() { nextIdDisplay.textContent = nextId === null ? '—' : nextId; }
+    function markJsonDirty() { jsonDirty = true; jsonStatusBadge.textContent = 'Есть несохранённые изменения'; }
 
-    function updateNextIdDisplay() {
-        nextIdDisplay.textContent = nextId === null ? '—' : nextId;
-    }
-    
-    function markJsonDirty() {
-        jsonDirty = true;
-        jsonStatusBadge.textContent = 'Есть несохранённые изменения';
-    }
-
-    function getPrefixFromFilename(filename) {
-        let match = filename.match(/^([A-Z]+)___/i);
-        if(!match) match = filename.match(/^([A-Z]+)_/i);
-        return match ? match[1].toUpperCase() : null;
-    }
-
-    function setModalityByPrefix(prefix) {
-        const modality = prefixToModalityMap[prefix];
-        if(modality) {
-            for(let r of modalityRadios) if(r.value === modality) r.checked = true;
-            updateFilenamePreview();
-            return true;
-        }
-        return false;
-    }
-    
     function scheduleAutoBackup() {
         clearTimeout(autoBackupTimer);
         autoBackupTimer = setTimeout(() => {
@@ -887,10 +831,9 @@
                     dataFileInfo.innerHTML = `<span style="color:#107c10;">✅ Загружен: ${jsonFileName}</span>`;
                     jsonStatusBadge.textContent = 'Файл загружен';
                     updateNextIdDisplay();
-                    const prefix = getPrefixFromFilename(file.name);
-                    if(prefix) setModalityByPrefix(prefix);
                     updateFilenamePreview();
                     showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
+                    viewerRenderLimit = 50;
                     renderViewer();
                 } else throw new Error('Файл должен быть массивом');
             } catch(err) {
@@ -907,28 +850,20 @@
     }
 
     function submitToJson() {
-        if(!jsonData) {
-            showButtonMessage(submitBtn, '✗ Сначала загрузите файл', true);
-            return;
-        }
+        if(!jsonData) { showButtonMessage(submitBtn, '✗ Сначала загрузите файл', true); return; }
         const text = textInput.value.trim();
-        if(!text) {
-            showButtonMessage(submitBtn, '✗ Текст пустой', true);
-            return;
-        }
+        if(!text) { showButtonMessage(submitBtn, '✗ Текст пустой', true); return; }
         let title = titleField.value.trim();
         if(!title) {
             const modalityText = getSelectedModalityText();
             const formattedDate = dateField.value.split('-').reverse().slice(0,2).join('.');
             title = `${modalityText} от ${formattedDate}`;
         }
-        const selectedModality = getSelectedModality();
-        const modalityForJson = modalityJsonMap[selectedModality];
         const newEntry = {
             id: nextId,
             title: title,
             text: text,
-            modality: modalityForJson,
+            modality: modalityJsonMap[getSelectedModality()],
             patient: patientName.value.trim() || '',
             date: dateField.value
         };
@@ -941,8 +876,28 @@
         patientName.value = '';
         markJsonDirty();
         scheduleAutoBackup();
+        viewerRenderLimit = 50;
         renderViewer();
         showButtonMessage(submitBtn, `✓ ID ${nextId - 1} добавлен`);
+    }
+
+    function deleteConclusion(recordId) {
+        if(!jsonData) return;
+        if(confirm('Удалить это заключение?')) {
+            const index = jsonData.findIndex(r => r.id === recordId);
+            if(index !== -1) {
+                jsonData.splice(index, 1);
+                markJsonDirty();
+                scheduleAutoBackup();
+                if(jsonData.length === 0) {
+                    nextId = 1;
+                    updateNextIdDisplay();
+                }
+                viewerRenderLimit = 50;
+                renderViewer();
+                showNotification(`Заключение ID ${recordId} удалено`);
+            }
+        }
     }
 
     function updateRecord(recordId, updatedFields) {
@@ -993,12 +948,7 @@
 
     function escapeHtml(str) {
         if(!str) return '';
-        return String(str).replace(/[&<>]/g, function(m) {
-            if(m === '&') return '&amp;';
-            if(m === '<') return '&lt;';
-            if(m === '>') return '&gt;';
-            return m;
-        });
+        return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
     }
 
     function highlightText(text, query) {
@@ -1006,8 +956,7 @@
         const keywords = query.toLowerCase().split(/\s+/).filter(Boolean);
         let result = escapeHtml(text);
         for(const kw of keywords) {
-            const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const regex = new RegExp(`(${escaped})`, 'gi');
+            const regex = new RegExp(`(${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
             result = result.replace(regex, '<span class="highlight">$1</span>');
         }
         return result;
@@ -1019,8 +968,8 @@
         if(viewerSearchQuery.trim()) {
             const keywords = viewerSearchQuery.toLowerCase().split(/\s+/).filter(Boolean);
             filtered = filtered.filter(i => {
-                const combinedText = [i.patient || '', i.text || '', i.title || ''].join(' ').toLowerCase();
-                return keywords.every(keyword => combinedText.includes(keyword));
+                const combined = [i.patient, i.text, i.title].join(' ').toLowerCase();
+                return keywords.every(kw => combined.includes(kw));
             });
         }
         filtered.sort((a,b) => (viewerSortDesc ? (Number(b.id)||0)-(Number(a.id)||0) : (Number(a.id)||0)-(Number(b.id)||0)));
@@ -1036,11 +985,14 @@
             return;
         }
         viewerConclusions = jsonData.map(normalizeForViewer);
-        const filtered = filterViewerConclusions();
+        currentFilteredList = filterViewerConclusions();
         const container = document.getElementById('viewerConclusionsList');
-        if(filtered.length === 0) { container.innerHTML = '<div class="placeholder-message">🔍 Ничего не найдено</div>'; return; }
+        if(currentFilteredList.length === 0) { 
+            container.innerHTML = '<div class="placeholder-message">🔍 Ничего не найдено</div>'; 
+            return; 
+        }
+        const visibleItems = currentFilteredList.slice(0, viewerRenderLimit);
         container.innerHTML = '';
-        const visibleItems = filtered.slice(0, viewerRenderLimit);
         for(let item of visibleItems) {
             const isEditing = (viewerEditingId === item.id);
             const modalityEmoji = getModalityEmoji(item.modality);
@@ -1057,18 +1009,47 @@
             } else {
                 card.innerHTML = `
                     <div class="row-patient"><span class="patient-name" data-id="${item.id}">${highlightText(item.patient, viewerSearchQuery)}</span></div>
-                    <div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><span class="study-title" data-id="${item.id}">${highlightText(item.title || '', viewerSearchQuery)}</span><span class="study-date" data-id="${item.id}">📅 ${safeDate}</span><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="edit-button" data-id="${item.id}">✏️ Редактировать</button><button class="copy-button" data-id="${item.id}">📋 Копировать</button></div></div>
+                    <div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><span class="study-title" data-id="${item.id}">${highlightText(item.title || '', viewerSearchQuery)}</span><span class="study-date" data-id="${item.id}">📅 ${safeDate}</span><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="edit-button" data-id="${item.id}">✏️ Редактировать</button><button class="copy-button" data-id="${item.id}">📋 Копировать</button><button class="delete-conclusion-btn" data-id="${item.id}">✖ Удалить</button></div></div>
                     <div class="conclusion-text" data-id="${item.id}">${highlightText(item.text, viewerSearchQuery)}</div>
                 `;
             }
             container.appendChild(card);
         }
         attachViewerEvents();
+        
+        if (viewerRenderLimit < currentFilteredList.length) {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading-indicator';
+            loadingDiv.id = 'loading-more-indicator';
+            loadingDiv.innerHTML = '⬇️ Прокрутите для загрузки ещё...';
+            container.appendChild(loadingDiv);
+        }
+    }
+    
+    function loadMoreConclusions() {
+        if (isLoadingMore) return;
+        if (!currentFilteredList.length || viewerRenderLimit >= currentFilteredList.length) return;
+        
+        isLoadingMore = true;
+        const loadingIndicator = document.getElementById('loading-more-indicator');
+        if (loadingIndicator) loadingIndicator.innerHTML = '<span class="loading-spinner" style="display:inline-block;width:14px;height:14px;border:2px solid #cbd9e8;border-top-color:#0067c0;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;"></span> Загрузка...';
+        
+        setTimeout(() => {
+            viewerRenderLimit = Math.min(viewerRenderLimit + 30, currentFilteredList.length);
+            renderViewer();
+            isLoadingMore = false;
+        }, 100);
     }
     
     function attachViewerEvents() {
-        document.querySelectorAll('.edit-button').forEach(btn => { btn.onclick = () => { viewerEditingId = Number(btn.dataset.id); renderViewer(); }; });
-        document.querySelectorAll('.cancel-button').forEach(btn => { btn.onclick = () => { viewerEditingId = null; renderViewer(); }; });
+        const container = document.getElementById('viewerConclusionsList');
+        
+        document.querySelectorAll('.edit-button').forEach(btn => { 
+            btn.onclick = () => { viewerEditingId = Number(btn.dataset.id); renderViewer(); }; 
+        });
+        document.querySelectorAll('.cancel-button').forEach(btn => { 
+            btn.onclick = () => { viewerEditingId = null; renderViewer(); }; 
+        });
         document.querySelectorAll('.save-button').forEach(btn => {
             btn.onclick = () => {
                 const id = Number(btn.dataset.id);
@@ -1076,7 +1057,7 @@
                 const newTitle = document.getElementById(`edit-title-${id}`)?.value;
                 const newDate = document.getElementById(`edit-date-${id}`)?.value;
                 const newText = document.getElementById(`edit-text-${id}`)?.value;
-                if(newText !== undefined && newText.trim()) {
+                if(newText && newText.trim()) {
                     viewerEditingId = null;
                     updateRecord(id, { patient: newPatient || '', title: newTitle || '', date: newDate || '', text: newText });
                 }
@@ -1093,9 +1074,26 @@
                 setTimeout(() => { btn.innerHTML = original; btn.classList.remove('copied'); }, 1500);
             };
         });
+        document.querySelectorAll('.delete-conclusion-btn').forEach(btn => {
+            btn.onclick = () => {
+                const id = Number(btn.dataset.id);
+                deleteConclusion(id);
+            };
+        });
         document.querySelectorAll('.patient-name, .study-title, .study-date, .conclusion-text').forEach(el => {
             el.onclick = () => { viewerEditingId = Number(el.dataset.id); renderViewer(); };
         });
+        
+        const handleScroll = () => {
+            if (!container) return;
+            const nearBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 150;
+            if (nearBottom && viewerRenderLimit < currentFilteredList.length && !isLoadingMore) {
+                loadMoreConclusions();
+            }
+        };
+        container.removeEventListener('scroll', window._scrollHandler);
+        window._scrollHandler = handleScroll;
+        container.addEventListener('scroll', handleScroll);
     }
 
     function exportText() {
@@ -1129,7 +1127,6 @@
                 delete abbreviations[abbr];
                 localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
                 renderAbbreviations();
-                // Обновляем автозамену
                 setupAutoReplace(textInput, abbreviations);
             };
             abbrList.appendChild(div);
@@ -1146,7 +1143,6 @@
             abbrInput.value = '';
             phraseInput.value = '';
             showButtonMessage(addBtn, '✓ Добавлено');
-            // Обновляем автозамену
             setupAutoReplace(textInput, abbreviations);
         } else showButtonMessage(addBtn, '✗ Заполните поля', true);
     }
@@ -1178,7 +1174,7 @@
         reader.onload = e => {
             try {
                 const imported = JSON.parse(e.target.result);
-                if(typeof imported === 'object' && imported !== null && !Array.isArray(imported)) {
+                if(typeof imported === 'object' && !Array.isArray(imported)) {
                     Object.assign(abbreviations, imported);
                     localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
                     renderAbbreviations();
@@ -1195,8 +1191,6 @@
         updateFilenamePreview();
         renderAbbreviations();
         setInterval(updateFilenamePreview, 1000);
-        
-        // Инициализация автозамены
         setupAutoReplace(textInput, abbreviations);
         
         loadDataFileBtn.onclick = () => dataFileInput.click();
@@ -1213,12 +1207,12 @@
         modalityRadios.forEach(r => r.addEventListener('change', updateFilenamePreview));
         
         document.getElementById('viewerSearchInput').addEventListener('input', (e) => { viewerSearchQuery = e.target.value; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); });
-        document.getElementById('viewerClearSearchBtn').onclick = () => { document.getElementById('viewerSearchInput').value = ''; viewerSearchQuery = ''; viewerEditingId = null; renderViewer(); };
-        document.getElementById('viewerDateFilter').addEventListener('change', (e) => { viewerDateFilter = e.target.value; viewerEditingId = null; renderViewer(); });
-        document.getElementById('viewerSortBtn').onclick = () => { viewerSortDesc = !viewerSortDesc; document.getElementById('viewerSortBtn').innerHTML = viewerSortDesc ? '⬇️ По ID (новые сверху)' : '⬆️ По ID (старые сверху)'; viewerEditingId = null; renderViewer(); };
-        document.getElementById('viewerClearFiltersBtn').onclick = () => { viewerDateFilter = ''; viewerSearchQuery = ''; document.getElementById('viewerSearchInput').value = ''; document.getElementById('viewerDateFilter').value = ''; viewerEditingId = null; renderViewer(); };
+        document.getElementById('viewerClearSearchBtn').onclick = () => { document.getElementById('viewerSearchInput').value = ''; viewerSearchQuery = ''; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); };
+        document.getElementById('viewerDateFilter').addEventListener('change', (e) => { viewerDateFilter = e.target.value; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); });
+        document.getElementById('viewerSortBtn').onclick = () => { viewerSortDesc = !viewerSortDesc; document.getElementById('viewerSortBtn').innerHTML = viewerSortDesc ? '⬇️ По ID (новые сверху)' : '⬆️ По ID (старые сверху)'; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); };
+        document.getElementById('viewerClearFiltersBtn').onclick = () => { viewerDateFilter = ''; viewerSearchQuery = ''; document.getElementById('viewerSearchInput').value = ''; document.getElementById('viewerDateFilter').value = ''; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); };
         
-        window.addEventListener('scroll', () => { if(window.scrollY > 300) scrollToTopBtn.classList.add('visible'); else scrollToTopBtn.classList.remove('visible'); });
+        window.addEventListener('scroll', () => { scrollToTopBtn.classList.toggle('visible', window.scrollY > 300); });
         scrollToTopBtn.onclick = () => window.scrollTo({top:0, behavior:'smooth'});
         
         const backup = localStorage.getItem('jsonBackup');
