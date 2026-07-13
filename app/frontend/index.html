@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Протокол — единая система</title>
+    <title>Протокол</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+			font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-            background-color: #f2f5f9;
+            /* font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; */
+            background-color: #f0f0f0;
             padding: 20px;
             min-height: 100vh;
         }
@@ -33,57 +34,27 @@
             margin-bottom: 12px;
         }
 
-        /* Стили кнопок — единые с view.html */
         .win11-button {
-            background: white;
-            border: 1px solid #c9dbf0;
-            border-radius: 30px;
-            padding: 8px 18px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 8px 16px;
             font-size: 14px;
-            font-weight: 500;
+            
             cursor: pointer;
-            transition: all 0.2s ease;
-            color: #1f4e7a;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            transition: all 0.2s;
             position: relative;
             overflow: hidden;
         }
 
         .win11-button:hover {
-            background: #e1efff;
+                        background: #e1efff;
             border-color: #3070a5;
-            transform: translateY(-1px);
         }
 
-        .win11-button:active {
-            transform: translateY(1px);
-        }
+        .win11-button.primary { background-color: #0067c0; color: white; }
+        .win11-button.success { background-color: #107c10; color: white; }
 
-        .win11-button.primary {
-            background: #0067c0;
-            border-color: #0067c0;
-            color: white;
-        }
-
-        .win11-button.primary:hover {
-            background: #0052a0;
-            border-color: #0052a0;
-        }
-
-        .win11-button.success {
-            background: #107c10;
-            border-color: #107c10;
-            color: white;
-        }
-
-        .win11-button.success:hover {
-            background: #0c650c;
-            border-color: #0c650c;
-        }
-
-        /* Эффект сообщения поверх кнопки */
         .win11-button .button-message {
             position: absolute;
             top: 0;
@@ -98,63 +69,42 @@
             opacity: 0;
             transition: opacity 0.2s;
             pointer-events: none;
-            font-weight: 500;
         }
 
-        .win11-button.show-message .button-message {
-            opacity: 1;
-        }
-
-        .win11-button.show-message .button-text {
-            opacity: 0;
-        }
-
-        .win11-button.success .button-message {
-            background-color: #107c10;
-        }
-
-        .win11-button.primary .button-message {
-            background-color: #0067c0;
-        }
-
-        .win11-button .button-message.error-message {
-            background-color: #d13438;
-            color: white;
-        }
+        .win11-button.show-message .button-message { opacity: 1; }
+        .win11-button.show-message .button-text { opacity: 0; }
 
         .win11-input {
             background-color: rgba(255, 255, 255, 0.9);
-            border: 1px solid #cbd9e8;
-            border-radius: 12px;
-            padding: 10px 14px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 10px 12px;
             font-size: 14px;
             width: 100%;
-            transition: all 0.2s;
         }
 
         .win11-input:focus {
             outline: none;
             border-color: #0067c0;
-            box-shadow: 0 0 0 3px rgba(0, 103, 192, 0.15);
+            box-shadow: 0 0 0 3px rgba(0, 103, 192, 0.2);
         }
 
         .win11-radio-group {
             background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 40px;
-            padding: 6px 16px;
+            border-radius: 8px;
+            padding: 8px 12px;
             display: flex;
-            gap: 24px;
+            gap: 20px;
             flex-wrap: wrap;
-            border: 1px solid #cbd9e8;
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .win11-radio-group label {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             font-size: 14px;
             cursor: pointer;
-            color: #1f3b54;
         }
 
         .win11-radio-group input[type="radio"] {
@@ -164,51 +114,43 @@
         }
 
         .win11-textarea {
-            background-color: white;
-            border: 1px solid #cbd9e8;
-            border-radius: 16px;
-            padding: 14px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 12px;
             font-size: 15px;
             width: 100%;
             resize: vertical;
             font-family: monospace;
             min-height: 280px;
-            transition: all 0.2s;
-        }
-
-        .win11-textarea:focus {
-            outline: none;
-            border-color: #0067c0;
-            box-shadow: 0 0 0 3px rgba(0, 103, 192, 0.15);
         }
 
         .win11-list {
-            background-color: white;
-            border-radius: 16px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
             padding: 8px;
             max-height: 200px;
             overflow-y: auto;
-            border: 1px solid #e3ecf5;
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .win11-list-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 12px;
-            border-bottom: 1px solid #eef2f7;
-            font-size: 13px;
+            padding: 6px 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 12px;
         }
 
         .win11-delete-btn {
             background: none;
             border: none;
-            color: #8a9bb0;
+            color: #888;
             font-size: 22px;
             cursor: pointer;
-            padding: 2px 12px;
-            border-radius: 20px;
-            transition: all 0.2s;
+            padding: 2px 10px;
+            border-radius: 6px;
         }
 
         .win11-delete-btn:hover {
@@ -219,10 +161,9 @@
         .win11-badge {
             background-color: rgba(0, 103, 192, 0.1);
             color: #0067c0;
-            padding: 4px 12px;
-            border-radius: 40px;
+            padding: 4px 8px;
+            border-radius: 16px;
             font-size: 12px;
-            font-weight: 500;
         }
 
         .top-row {
@@ -242,76 +183,48 @@
         .meta-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
+		
+		
+		        .file-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px;
+            padding: 6px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 6px;
+        }
+		
 
-        /* Новая группа для заголовка и кнопок */
+        /* Новая группа для заголовка и компактных кнопок */
         .editor-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            gap: 12px;
+            margin-bottom: 5px;
         }
-
         .section-title {
             font-size: 13px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #2b4f6e;
-            margin: 0;
+            margin-bottom: 8px;
         }
-
         .compact-actions {
             display: flex;
-            gap: 10px;
-            align-items: center;
+            gap: 8px;
         }
-
-        /* Стили для кнопок в компактной панели — такие же как в view */
         .compact-actions .win11-button {
-            padding: 6px 16px;
-            font-size: 13px;
-            border-radius: 30px;
-            background: white;
-            border: 1px solid #c9dbf0;
-            color: #1f4e7a;
+            padding: 4px 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            min-height: 28px;
         }
+        .compact-card { padding: 14px; }
+        .unknown-id { color: #999; font-size: 18px; font-weight: 500; }
 
-        .compact-actions .win11-button.success {
-            background: #107c10;
-            border-color: #107c10;
-            color: white;
-        }
-
-        .compact-actions .win11-button.success:hover {
-            background: #0c650c;
-        }
-
-        .compact-actions .win11-button:hover {
-            background: #e1efff;
-            border-color: #3070a5;
-            transform: translateY(-1px);
-        }
-
-        .compact-actions .win11-button:active {
-            transform: translateY(1px);
-        }
-
-        .compact-card { 
-            padding: 16px; 
-        }
-
-        .unknown-id { 
-            color: #5f7b9c; 
-            font-size: 20px; 
-            font-weight: 600;
-        }
-
-        /* Стили для блока просмотра */
+        /* Стили для блока просмотра (как в view.html) */
         .viewer-container {
             background: white;
             border-radius: 24px;
@@ -333,10 +246,11 @@
             min-width: 250px;
             display: flex;
             align-items: center;
+			gap: 8px;
             background: white;
             border: 1px solid #cbd9e8;
-            border-radius: 40px;
-            padding: 0.2rem 0.2rem 0.2rem 1.2rem;
+            border-radius: 30px;
+            padding: 0.2rem 0.2rem 0.2rem 1rem;
         }
 
         .viewer-search-container input {
@@ -352,10 +266,12 @@
             background: transparent;
             border: none;
             color: #6b8bb0;
+            font-size: 0.8rem;
             cursor: pointer;
-            padding: 0.4rem 1.2rem;
-            border-radius: 40px;
-            transition: all 0.2s;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            white-space: nowrap;
+			
         }
 
         .viewer-search-container button:hover {
@@ -370,18 +286,17 @@
             flex-wrap: wrap;
             background: #f8fafd;
             padding: 1rem 1.5rem;
-            border-radius: 20px;
+            border-radius: 16px;
             margin-bottom: 20px;
-            border: 1px solid #e3ecf5;
         }
 
         .viewer-date-filter {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: white;
             border: 1px solid #cbd9e8;
-            border-radius: 40px;
+            border-radius: 30px;
             padding: 0.2rem 0.2rem 0.2rem 1rem;
         }
 
@@ -393,7 +308,7 @@
 
         .viewer-date-input {
             border: none;
-            border-radius: 40px;
+            border-radius: 30px;
             padding: 0.4rem 0.8rem;
             font-size: 0.85rem;
             background: #f0f5fc;
@@ -404,15 +319,13 @@
         .viewer-sort-button {
             background: white;
             border: 1px solid #cbd9e8;
-            border-radius: 40px;
-            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            padding: 0.4rem 1rem;
             font-size: 0.9rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-            color: #1f4e7a;
+            gap: 4px;
         }
 
         .viewer-sort-button:hover {
@@ -423,13 +336,19 @@
         .viewer-clear-filters-btn {
             background: transparent;
             border: 1px solid #d8dde3;
-            border-radius: 40px;
-            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            padding: 0.4rem 1rem;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.2s;
-            color: #6b8bb0;
+			 color: #6b8bb0;
+    transition: 0.1s;
+    white-space: nowrap;
         }
+		
+
+		
+		
+		
 
         .viewer-clear-filters-btn:hover {
             background: #ffeeee;
@@ -454,9 +373,9 @@
 
         .conclusion-card {
             padding: 1.2rem;
-            background: #fefefe;
-            border-radius: 20px;
-            border: 1px solid #e3ecf5;
+           /* background: #fefefe; */
+            border-radius: 16px;
+            /* border: 1px solid #e3ecf5; */
             transition: all 0.2s;
         }
 
@@ -470,17 +389,16 @@
             font-weight: 600;
             font-size: 1.1rem;
             cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 8px;
-            transition: background 0.2s;
+            padding: 2px 4px;
+            border-radius: 4px;
         }
         .patient-name:hover { background-color: #e1efff; }
         .patient-edit {
             font-weight: 600;
-            font-size: 1rem;
-            padding: 6px 12px;
+            font-size: 1.1rem;
+            padding: 6px 10px;
             border: 1px solid #0067c0;
-            border-radius: 12px;
+            border-radius: 8px;
             width: 100%;
             max-width: 400px;
         }
@@ -495,82 +413,81 @@
         }
         .left-group { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
         .modality-badge { font-size: 1.1rem; }
-        .study-title { cursor: pointer; padding: 2px 6px; font-size: 0.9rem; border-radius: 6px; }
-        .study-title:hover { background: #e1efff; }
-        .study-title-edit { padding: 4px 8px; border: 1px solid #0067c0; border-radius: 8px; width: 200px; }
-        .study-date { cursor: pointer; padding: 2px 6px; font-size: 0.85rem; border-radius: 6px; }
-        .study-date:hover { background: #e1efff; }
-        .date-edit-input { padding: 4px 8px; border: 1px solid #0067c0; border-radius: 8px; }
-        .conclusion-id { font-size: 0.8rem; color: #5f7b9c; }
+        .study-title { cursor: pointer; padding: 2px 6px; font-size: 0.9rem; }
+        .study-title:hover { background: #e1efff; border-radius: 4px; }
+        .study-title-edit { padding: 4px 8px; border: 1px solid #0067c0; border-radius: 6px; width: 200px; }
+        .study-date { cursor: pointer; padding: 2px 6px; font-size: 0.85rem; }
+        .study-date:hover { background: #e1efff; border-radius: 4px; }
+        .date-edit-input { padding: 4px 8px; border: 1px solid #0067c0; border-radius: 6px; }
+        .conclusion-id { font-size: 0.8rem; color: #666; }
         .action-buttons { display: flex; gap: 8px; }
-        
-        /* Стили кнопок как в view.html */
+		
         .edit-button, .save-button, .cancel-button, .copy-button {
             background: white;
             border: 1px solid #c9dbf0;
             border-radius: 8px;
-            padding: 0.3rem 0.9rem;
+            padding: 0.3rem 0.8rem;
             font-size: 0.75rem;
-            font-weight: 500;
-            color: #1f4e7a;
+            
+           
             cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 4px;
+            transition: 0.1s;
         }
-        .edit-button:hover {
+		
+		.edit-button:hover {
             background: #e1efff;
             border-color: #3070a5;
         }
-        .save-button {
-            background: #0067c0;
-            border-color: #0067c0;
-            color: white;
+
+		.save-button:hover {
+            background: #e1efff;
+            border-color: #3070a5;
         }
-        .save-button:hover {
-            background: #0052a0;
-        }
+
         .cancel-button:hover {
             background: #ffeeee;
             border-color: #aa2647;
             color: #aa2647;
         }
+
         .copy-button:hover {
             background: #e1efff;
             border-color: #3070a5;
         }
+
         .copy-button.copied {
             background: #dff0d9;
             border-color: #2a8e5c;
             color: #136b3a;
         }
-
+		
+		
+        
+		
         .conclusion-text {
-            padding: 12px 16px;
-            background: #f9f9f9;
-            border-radius: 14px;
+            padding: 12px;
+            /* background: #f9f9f9; */
+            border-radius: 10px;
             white-space: pre-wrap;
             cursor: pointer;
             border: 1px solid #e3ecf5;
-            transition: background 0.2s;
-        }
-        .conclusion-text:hover {
-            background: #f5f8fc;
         }
         .conclusion-text-edit {
             width: 100%;
-            min-height: 120px;
+            min-height: 100px;
             padding: 12px;
             border: 1px solid #0067c0;
-            border-radius: 14px;
+            border-radius: 10px;
             font-family: monospace;
             resize: vertical;
         }
         .highlight {
             background-color: #ffeb3b;
             padding: 0 2px;
-            border-radius: 4px;
+            border-radius: 3px;
             font-weight: 700;
         }
         .placeholder-message {
@@ -586,8 +503,8 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            width: 48px;
-            height: 48px;
+            width: 45px;
+            height: 45px;
             background: #0067c0;
             color: white;
             border: none;
@@ -597,15 +514,10 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,103,192,0.3);
-            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,103,192,0.3);
             z-index: 100;
         }
         .scroll-to-top.visible { display: flex; }
-        .scroll-to-top:hover {
-            background: #0052a0;
-            transform: translateY(-3px);
-        }
         .export-notification {
             position: fixed;
             bottom: 20px;
@@ -617,19 +529,10 @@
             font-size: 0.9rem;
             z-index: 1000;
             animation: slideIn 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
-        }
-        .file-info {
-            font-size: 12px;
-            color: #5f7b9c;
-            margin-top: 8px;
-            padding: 6px 10px;
-            background: rgba(255,255,255,0.7);
-            border-radius: 12px;
         }
     </style>
 </head>
@@ -638,25 +541,24 @@
     <!-- Верхний ряд: JSON блок и мета-поля -->
     <div class="top-row">
         <div class="win11-card compact-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <h3 style="font-size: 15px;">📁 Работа с JSON</h3>
                 <span class="win11-badge" id="jsonStatusBadge">Файл не загружен</span>
             </div>
-            <button id="loadDataFileBtn" class="win11-button" style="width: 100%; border-radius: 40px;">
+            <button id="loadDataFileBtn" class="win11-button" style="width: 100%;">
                 <span class="button-text">📂 Загрузить файл</span>
                 <span class="button-message"></span>
             </button>
             <input type="file" id="dataFileInput" accept=".json" style="display:none">
-            <input type="file" id="fileInput" accept=".json" style="display:none">
-            <button id="saveJsonBtn" class="win11-button success" style="width:100%; margin-top:10px; border-radius: 40px;">
-                <span class="button-text">💾 Сохранить JSON</span>
-                <span class="button-message"></span>
-            </button>
+			<input type="file" id="fileInput" accept=".json" style="display:none">
+			<button id="saveJsonBtn" class="win11-button success" style="width:100%; margin-top:8px">💾 Сохранить JSON</button>
             <div class="file-info" id="dataFileInfo">⏺ Файл не загружен</div>
-            <div style="margin: 10px 0; height:1px; background:#e3ecf5;"></div>
-            <div><div style="font-size:11px; color:#5f7b9c;">Следующий ID</div><div id="nextIdDisplay" class="unknown-id">—</div></div>
-            <div style="margin-top:8px"><div style="font-size:11px; color:#5f7b9c;">Имя файла</div><div id="filenamePreview" style="font-size:12px; font-weight:500;">—</div></div>
+            <div style="margin: 8px 0; height:1px; background:#ddd;"></div>
+			
+            <div><div style="font-size:10px">Следующий ID</div><div id="nextIdDisplay" class="unknown-id">—</div></div>
+            <div style="margin-top:6px"><div style="font-size:10px">Имя файла</div><div id="filenamePreview" style="font-size:11px">—</div></div>
         </div>
+		
 
         <div class="win11-card compact-card">
             <div class="meta-row">
@@ -670,7 +572,7 @@
             </div>
             <div class="meta-row">
                 <input type="text" id="patientName" class="win11-input" placeholder="ФИО пациента">
-                <input type="text" id="titleField" class="win11-input" placeholder="Название исследования">
+                <input type="text" id="titleField" class="win11-input" placeholder="Название">
             </div>
         </div>
     </div>
@@ -679,63 +581,44 @@
     <div class="main-row">
         <div class="win11-card">
             <h3 class="section-title">➕ Добавить сокращение</h3>
-            <input type="text" id="abbrInput" class="win11-input" placeholder="Сокращение" style="margin-bottom:12px">
-            <input type="text" id="phraseInput" class="win11-input" placeholder="Полная фраза" style="margin-bottom:12px">
-            <button id="addBtn" class="win11-button primary" style="width:100%; border-radius: 40px;">
-                <span class="button-text">Добавить</span>
-                <span class="button-message"></span>
-            </button>
+            <input type="text" id="abbrInput" class="win11-input" placeholder="Сокращение" style="margin-bottom:10px">
+            <input type="text" id="phraseInput" class="win11-input" placeholder="Полная фраза" style="margin-bottom:10px">
+            <button id="addBtn" class="win11-button primary" style="width:100%">Добавить</button>
 
-            <div style="margin-top:20px">
+            <div style="margin-top:16px">
                 <h3 class="section-title">📋 Мои сокращения</h3>
                 <div id="abbreviationList" class="win11-list"></div>
-                <button id="clearBtn" class="win11-button" style="width:100%; margin-top:12px; border-radius: 40px;">
-                    <span class="button-text">Очистить все</span>
-                    <span class="button-message"></span>
-                </button>
+                <button id="clearBtn" class="win11-button" style="width:100%; margin-top:8px">Очистить все</button>
             </div>
-            <div style="margin:16px 0; height:1px; background:#e3ecf5;"></div>
-            <div style="display:flex; gap:12px">
-                <button id="importBtn" class="win11-button" style="flex:1; border-radius: 40px;">
-                    <span class="button-text">📥 Импорт</span>
-                    <span class="button-message"></span>
-                </button>
-                <button id="exportBtn" class="win11-button" style="flex:1; border-radius: 40px;">
-                    <span class="button-text">📤 Экспорт</span>
-                    <span class="button-message"></span>
-                </button>
+            <div style="margin:12px 0; height:1px; background:#ddd;"></div>
+            <div style="display:flex; gap:10px">
+                <button id="importBtn" class="win11-button" style="flex:1">📥 Импорт</button>
+                <button id="exportBtn" class="win11-button" style="flex:1">📤 Экспорт</button>
             </div>
-            <div id="autoSaveStatus" style="font-size:11px; text-align:center; margin-top:12px; color:#5f7b9c;">⏺ Автосохранение каждые 20 мин</div>
+            <div id="autoSaveStatus" style="font-size:11px; text-align:center; margin-top:8px">⏺ Автосохранение каждые 20 мин</div>
         </div>
 
         <div class="win11-card">
+            <!-- НОВАЯ ГОЛОВА С ЗАГОЛОВКОМ И КНОПКАМИ -->
             <div class="editor-header">
                 <h3 class="section-title">📝 Новое заключение</h3>
                 <div class="compact-actions">
-                    <button id="submitBtn" class="win11-button success" style="background:#107c10; border-color:#107c10;">
-                        <span class="button-text">📨 Отправить в JSON</span>
-                        <span class="button-message"></span>
-                    </button>
-                    <button id="copyTextBtn" class="win11-button">
-                        <span class="button-text">📋 Скопировать</span>
-                        <span class="button-message"></span>
-                    </button>
-                    <button id="exportTextBtn" class="win11-button">
-                        <span class="button-text">💾 Сохранить текст</span>
-                        <span class="button-message"></span>
-                    </button>
+                    <button id="submitBtn" class="win11-button success" style="background-color:#107c10;">📨 Отправить в JSON</button>
+                    <button class="win11-button" onclick="copy_to_clipboard('textInput')">📋 Скопировать</button>
+                    <button id="exportTextBtn" class="win11-button">💾 Сохранить текст</button>
                 </div>
             </div>
             <textarea id="textInput" class="win11-textarea" rows="8" placeholder="Введите текст заключения..."></textarea>
         </div>
     </div>
 
-    <!-- Блок просмотра заключений -->
+    <!-- ОТДЕЛЬНЫЙ БЛОК ПРОСМОТРА (как в view.html, без своих кнопок загрузки/экспорта) -->
     <div class="win11-card" style="padding: 0; background: transparent; backdrop-filter: none; box-shadow: none;">
         <div class="viewer-container" style="background: white; padding: 1.8rem 2rem 2.5rem;">
             <div class="viewer-header">
                 <div class="viewer-search-container">
-                    <input type="text" id="viewerSearchInput" placeholder="🔍 Поиск по тексту, ФИО, названию...">
+				<span class="header-search-icon">🔍</span>
+                    <input type="text" id="viewerSearchInput" placeholder="Поиск...">
                     <button id="viewerClearSearchBtn">Очистить</button>
                 </div>
             </div>
@@ -765,9 +648,9 @@
     let jsonData = null;
     let jsonFileName = '';
     let nextId = null;
-    let jsonDirty = false;
-    let autoBackupTimer = null;
-    let viewerRenderLimit = 50;
+	let jsonDirty = false;
+let autoBackupTimer = null;
+let viewerRenderLimit = 50;
 
     // DOM элементы
     const abbrInput = document.getElementById('abbrInput');
@@ -792,55 +675,9 @@
     const nextIdDisplay = document.getElementById('nextIdDisplay');
     const filenamePreview = document.getElementById('filenamePreview');
     const submitBtn = document.getElementById('submitBtn');
-    const copyTextBtn = document.getElementById('copyTextBtn');
     const scrollToTopBtn = document.getElementById('scrollToTopBtn');
 
-    // Универсальная функция показа сообщения на кнопке (как в view, но с текстовой анимацией)
-    function showButtonMessage(button, message, isError = false) {
-        if (!button) return;
-        
-        // Ищем внутренние span'ы для современной структуры
-        let msgSpan = button.querySelector('.button-message');
-        let textSpan = button.querySelector('.button-text');
-        
-        if (!msgSpan || !textSpan) {
-            // fallback: меняем текст напрямую
-            const original = button.dataset.originalText || button.textContent;
-            button.dataset.originalText = original;
-            button.textContent = message;
-            button.style.backgroundColor = isError ? '#d13438' : '#107c10';
-            button.style.color = 'white';
-            setTimeout(() => {
-                button.textContent = button.dataset.originalText;
-                button.style.backgroundColor = '';
-                button.style.color = '';
-            }, 1800);
-            return;
-        }
-        
-        msgSpan.textContent = message;
-        if (isError) msgSpan.classList.add('error-message');
-        button.classList.add('show-message');
-        
-        setTimeout(() => {
-            button.classList.remove('show-message');
-            msgSpan.classList.remove('error-message');
-        }, 1800);
-    }
-
-    function copyTextToClipboard() {
-        const text = textInput.value.trim();
-        if (!text) {
-            showButtonMessage(copyTextBtn, '✗ Нет текста', true);
-            return;
-        }
-        navigator.clipboard.writeText(text).then(() => {
-            showButtonMessage(copyTextBtn, '✓ Скопировано');
-        }).catch(() => {
-            showButtonMessage(copyTextBtn, '✗ Ошибка', true);
-        });
-    }
-
+    // === ФУНКЦИИ ===
     function formatDateTimeForFilename() {
         const now = new Date();
         const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
@@ -856,6 +693,37 @@
         dateField.value = new Date().toISOString().slice(0,10);
     }
 
+function showButtonMessage(button, message, isError = false) {
+    if(!button) return;
+    let msgSpan = button.querySelector('.button-message');
+    let textSpan = button.querySelector('.button-text');
+    if(!msgSpan || !textSpan) {
+        const originalText = button.dataset.originalText || button.textContent;
+        button.dataset.originalText = originalText;
+        button.textContent = message;
+        if(isError) {
+            button.style.backgroundColor = '#d13438';
+            button.style.color = 'white';
+        } else {
+            button.style.backgroundColor = '#107c10';
+            button.style.color = 'white';
+        }
+        setTimeout(() => {
+            button.textContent = button.dataset.originalText;
+            button.style.backgroundColor = '';
+            button.style.color = '';
+        }, 2000);
+        return;
+    }
+    msgSpan.textContent = message;
+    button.classList.add('show-message');
+    if(isError) button.classList.add('error-message');
+    setTimeout(() => {
+        button.classList.remove('show-message');
+        button.classList.remove('error-message');
+    }, 2000);
+}
+
     function getSelectedModality() {
         for(let r of modalityRadios) if(r.checked) return r.value;
         return 'rg';
@@ -863,7 +731,7 @@
 
     function getSelectedModalityText() {
         for(let r of modalityRadios) if(r.checked) {
-            return r.parentElement.textContent.trim().replace(/[🖥️🧠📦🫁\s]/g,'');
+            return r.parentElement.textContent.trim().replace(/[🖥️🧠📦🫁\s]/g,'').trim();
         }
         return 'РГ';
     }
@@ -888,81 +756,93 @@
     function updateNextIdDisplay() {
         nextIdDisplay.textContent = nextId === null ? '—' : nextId;
     }
-    
-    function markJsonDirty() {
-        jsonDirty = true;
-        jsonStatusBadge.textContent = 'Есть несохранённые изменения';
+	function markJsonDirty() {
+    jsonDirty = true;
+    jsonStatusBadge.textContent = 'Есть несохранённые изменения';
+}
+
+    function getPrefixFromFilename(filename) {
+        let match = filename.match(/^([A-Z]+)___/i);
+        if(!match) match = filename.match(/^([A-Z]+)_/i);
+        return match ? match[1].toUpperCase() : null;
     }
 
-    function scheduleAutoBackup() {
-        clearTimeout(autoBackupTimer);
-        autoBackupTimer = setTimeout(() => {
-            if(jsonData) {
-                localStorage.setItem('jsonBackup', JSON.stringify(jsonData));
-                localStorage.setItem('jsonBackupTime', new Date().toISOString());
-                autoSaveStatus.textContent = '✓ Backup сохранён';
-                setTimeout(() => { autoSaveStatus.textContent = '⏺ Автосохранение активно'; }, 2000);
-            }
-        }, 3000);
-    }
-
-    function saveJsonToDisk() {
-        if(!jsonData) {
-            showButtonMessage(document.getElementById('saveJsonBtn'), '✗ Нет данных', true);
-            return false;
+    function setModalityByPrefix(prefix) {
+        const modality = prefixToModalityMap[prefix];
+        if(modality) {
+            for(let r of modalityRadios) if(r.value === modality) r.checked = true;
+            updateFilenamePreview();
+            return true;
         }
-        const modality = getSelectedModality();
-        jsonFileName = formatFilenameWithModality(modality) + '.json';
-        const dataStr = JSON.stringify(jsonData, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = jsonFileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        filenamePreview.textContent = jsonFileName;
-        showButtonMessage(document.getElementById('saveJsonBtn'), '✓ JSON сохранён');
-        return true;
+        return false;
     }
+	
+	function scheduleAutoBackup() {
+    clearTimeout(autoBackupTimer);
+    autoBackupTimer = setTimeout(() => {
+        if(jsonData) {
+            localStorage.setItem('jsonBackup', JSON.stringify(jsonData));
+            localStorage.setItem('jsonBackupTime', new Date().toISOString());
+            autoSaveStatus.textContent = '✓ Backup сохранён';
+            setTimeout(() => { autoSaveStatus.textContent = '⏺ Автосохранение активно'; }, 2000);
+        }
+    }, 3000);
+}
 
-    function loadDataFile(file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const data = JSON.parse(e.target.result);
-                if(Array.isArray(data)) {
-                    jsonData = data;
-                    jsonFileName = file.name;
-                    const maxId = jsonData.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
-                    nextId = maxId + 1;
-                    dataFileInfo.innerHTML = `<span style="color:#107c10;">✅ Загружен: ${jsonFileName}</span>`;
-                    jsonStatusBadge.textContent = 'Файл загружен';
-                    updateNextIdDisplay();
-                    const prefix = file.name.match(/^([A-Z]+)___/i)?.[1]?.toUpperCase();
-                    if(prefix && prefixToModalityMap[prefix]) {
-                        const mod = prefixToModalityMap[prefix];
-                        for(let r of modalityRadios) if(r.value === mod) r.checked = true;
-                        updateFilenamePreview();
-                    }
-                    showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
-                    renderViewer();
-                } else throw new Error('Файл должен быть массивом');
-            } catch(err) {
-                showButtonMessage(loadDataFileBtn, '✗ Ошибка', true);
-                jsonData = null;
-                nextId = null;
-                dataFileInfo.innerHTML = '<span style="color:#d13438;">❌ Ошибка загрузки</span>';
-                jsonStatusBadge.textContent = 'Ошибка';
+
+    // СОХРАНЕНИЕ JSON НА ДИСК
+function saveJsonToDisk() {
+    if(!jsonData) return false;
+    const modality = getSelectedModality();
+    jsonFileName = formatFilenameWithModality(modality) + '.json';
+    const dataStr = JSON.stringify(jsonData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = jsonFileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    filenamePreview.textContent = jsonFileName;
+    return true;
+}
+
+   // ЗАГРУЗКА JSON
+function loadDataFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            if(Array.isArray(data)) {
+                jsonData = data;
+                jsonFileName = file.name;
+                const maxId = jsonData.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
+                nextId = maxId + 1;
+                dataFileInfo.innerHTML = `<span style="color:#107c10;">✅ Загружен: ${jsonFileName}</span>`;
+                jsonStatusBadge.textContent = 'Файл загружен';
                 updateNextIdDisplay();
+                const prefix = getPrefixFromFilename(file.name);
+                if(prefix) setModalityByPrefix(prefix);
+                updateFilenamePreview();
+                showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
                 renderViewer();
-            }
-        };
-        reader.readAsText(file);
-    }
+            } else throw new Error('Файл должен быть массивом');
+        } catch(err) {
+            showButtonMessage(loadDataFileBtn, '✗ Ошибка', true);
+            jsonData = null;
+            nextId = null;
+            dataFileInfo.innerHTML = '<span style="color:#d13438;">❌ Ошибка загрузки</span>';
+            jsonStatusBadge.textContent = 'Ошибка';
+            updateNextIdDisplay();
+            renderViewer();
+        }
+    };
+    reader.readAsText(file);
+}
 
+    // ДОБАВЛЕНИЕ НОВОЙ ЗАПИСИ
     function submitToJson() {
         if(!jsonData) {
             showButtonMessage(submitBtn, '✗ Сначала загрузите файл', true);
@@ -1002,6 +882,7 @@
         showButtonMessage(submitBtn, `✓ ID ${nextId - 1} добавлен`);
     }
 
+    // РЕДАКТИРОВАНИЕ ЗАПИСИ
     function updateRecord(recordId, updatedFields) {
         const index = jsonData.findIndex(r => r.id === recordId);
         if(index !== -1) {
@@ -1009,10 +890,20 @@
             markJsonDirty();
             scheduleAutoBackup();
             renderViewer();
+            const saveBtn = document.querySelector(`.save-button[data-id="${recordId}"]`);
+            if(saveBtn) showButtonMessage(saveBtn, '✓ Сохранено');
         }
     }
 
-    // === ПРОСМОТРЩИК (как в view.html, адаптирован) ===
+    function showNotification(msg) {
+        const div = document.createElement('div');
+        div.textContent = `✅ ${msg}`;
+        div.className = 'export-notification';
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 2000);
+    }
+
+    // === ПРОСМОТРЩИК (полностью как в view.html) ===
     let viewerConclusions = [];
     let viewerFiltered = [];
     let viewerSortDesc = true;
@@ -1033,16 +924,21 @@
 
     function getModalityEmoji(mod) {
         const m = String(mod).toLowerCase();
-        if(m.includes('mri')) return '🧠';
-        if(m.includes('ct')) return '🖥️';
-        if(m.includes('rg')) return '📦';
-        if(m.includes('flg')) return '🫁';
+        if(m.includes('mri') || m.includes('мрт')) return '🧠';
+        if(m.includes('ct') || m.includes('кт')) return '🖥️';
+        if(m.includes('rg') || m.includes('рг')) return '📦';
+        if(m.includes('flg') || m.includes('флг')) return '🫁';
         return '🔬';
     }
 
     function escapeHtml(str) {
         if(!str) return '';
-        return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+        return String(str).replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
     }
 
     function highlightText(text, query) {
@@ -1050,7 +946,8 @@
         const keywords = query.toLowerCase().split(/\s+/).filter(Boolean);
         let result = escapeHtml(text);
         for(const kw of keywords) {
-            const regex = new RegExp(`(${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${escaped})`, 'gi');
             result = result.replace(regex, '<span class="highlight">$1</span>');
         }
         return result;
@@ -1062,8 +959,8 @@
         if(viewerSearchQuery.trim()) {
             const keywords = viewerSearchQuery.toLowerCase().split(/\s+/).filter(Boolean);
             filtered = filtered.filter(i => {
-                const combined = [i.patient, i.text, i.title].join(' ').toLowerCase();
-                return keywords.every(kw => combined.includes(kw));
+                const combinedText = [i.patient || '', i.text || '', i.title || ''].join(' ').toLowerCase();
+                return keywords.every(keyword => combinedText.includes(keyword));
             });
         }
         filtered.sort((a,b) => (viewerSortDesc ? (Number(b.id)||0)-(Number(a.id)||0) : (Number(a.id)||0)-(Number(b.id)||0)));
@@ -1083,14 +980,18 @@
         const container = document.getElementById('viewerConclusionsList');
         if(filtered.length === 0) { container.innerHTML = '<div class="placeholder-message">🔍 Ничего не найдено</div>'; return; }
         container.innerHTML = '';
-        const visible = filtered.slice(0, viewerRenderLimit);
-        for(let item of visible) {
+        const visibleItems = filtered.slice(0, viewerRenderLimit);
+        for(let item of visibleItems) {
             const isEditing = (viewerEditingId === item.id);
             const modalityEmoji = getModalityEmoji(item.modality);
             const safeId = escapeHtml(String(item.id));
             const safeDate = item.date ? item.date.split('-').reverse().join('.') : '—';
+            const highlightedPatient = highlightText(item.patient, viewerSearchQuery);
+            const highlightedTitle = highlightText(item.title, viewerSearchQuery);
+            const highlightedText = highlightText(item.text, viewerSearchQuery);
             const card = document.createElement('div');
             card.className = `conclusion-card ${isEditing ? 'editing' : ''}`;
+            card.dataset.id = item.id;
             if(isEditing) {
                 card.innerHTML = `
                     <div class="row-patient"><input type="text" class="patient-edit" id="edit-patient-${item.id}" value="${escapeHtml(item.patient)}"></div>
@@ -1099,9 +1000,9 @@
                 `;
             } else {
                 card.innerHTML = `
-                    <div class="row-patient"><span class="patient-name" data-id="${item.id}">${highlightText(item.patient, viewerSearchQuery)}</span></div>
-                    <div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><span class="study-title" data-id="${item.id}">${highlightText(item.title || '', viewerSearchQuery)}</span><span class="study-date" data-id="${item.id}">📅 ${safeDate}</span><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="edit-button" data-id="${item.id}">✏️ Редактировать</button><button class="copy-button" data-id="${item.id}">📋 Копировать</button></div></div>
-                    <div class="conclusion-text" data-id="${item.id}">${highlightText(item.text, viewerSearchQuery)}</div>
+                    <div class="row-patient"><span class="patient-name" data-id="${item.id}">${highlightedPatient}</span></div>
+                    <div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><span class="study-title" data-id="${item.id}">${highlightedTitle || '—'}</span><span class="study-date" data-id="${item.id}">📅 ${safeDate}</span><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="edit-button" data-id="${item.id}">✏️ Редактировать</button><button class="copy-button" data-id="${item.id}">📋 Копировать</button></div></div>
+                    <div class="conclusion-text" data-id="${item.id}">${highlightedText}</div>
                 `;
             }
             container.appendChild(card);
@@ -1115,10 +1016,10 @@
                 const newTitle = document.getElementById(`edit-title-${id}`)?.value;
                 const newDate = document.getElementById(`edit-date-${id}`)?.value;
                 const newText = document.getElementById(`edit-text-${id}`)?.value;
-                if(newText && newText.trim()) {
+                if(newText !== undefined && newText.trim()) {
                     viewerEditingId = null;
                     updateRecord(id, { patient: newPatient || '', title: newTitle || '', date: newDate || '', text: newText });
-                }
+                } else if(newText !== undefined && !newText.trim()) showNotification('Текст не может быть пустым');
             };
         });
         document.querySelectorAll('.copy-button').forEach(btn => {
@@ -1126,20 +1027,22 @@
                 const id = Number(btn.dataset.id);
                 const item = viewerConclusions.find(i => i.id === id);
                 if(item) navigator.clipboard.writeText(item.text);
-                const original = btn.innerHTML;
-                btn.innerHTML = '✓ Скопировано';
-                btn.classList.add('copied');
-                setTimeout(() => { btn.innerHTML = original; btn.classList.remove('copied'); }, 1500);
+                showButtonMessage(btn, '✓ Скопировано');
+				
             };
         });
         document.querySelectorAll('.patient-name, .study-title, .study-date, .conclusion-text').forEach(el => {
-            el.onclick = () => { viewerEditingId = Number(el.dataset.id); renderViewer(); };
+            el.onclick = (e) => { const id = Number(el.dataset.id); viewerEditingId = id; renderViewer(); };
         });
+        container.onscroll = () => {
+            const nearBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 200;
+            if(nearBottom && viewerRenderLimit < filtered.length) { viewerRenderLimit += 50; renderViewer(); }
+        };
     }
 
-    function exportTextFile() {
+    function exportText() {
         const text = textInput.value.trim();
-        if(!text) { showButtonMessage(exportTextBtn, '✗ Текст пуст', true); return; }
+        if(!text) { showButtonMessage(exportTextBtn, '✗ Текст пустой', true); return; }
         const blob = new Blob([text], {type:'text/plain'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1150,12 +1053,20 @@
         showButtonMessage(exportTextBtn, '✓ Сохранено');
     }
 
+    function copy_to_clipboard(id) {
+        const el = document.getElementById(id);
+        el.select();
+        document.execCommand('copy');
+        const btn = event?.target?.closest('.win11-button');
+        if(btn) showButtonMessage(btn, '✓ Скопировано');
+    }
+    window.copy_to_clipboard = copy_to_clipboard;
     function renderAbbreviations() {
         abbrList.innerHTML = '';
         for(let [abbr, phrase] of Object.entries(abbreviations)) {
             const div = document.createElement('div');
             div.className = 'win11-list-item';
-            div.innerHTML = `<span><b>${abbr}</b> → ${phrase}</span><button class="win11-delete-btn" data-abbr="${abbr}">×</button>`;
+            div.innerHTML = `<span>${abbr} → ${phrase}</span><button class="win11-delete-btn" data-abbr="${abbr}">×</button>`;
             div.querySelector('.win11-delete-btn').onclick = () => {
                 delete abbreviations[abbr];
                 localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
@@ -1164,7 +1075,6 @@
             abbrList.appendChild(div);
         }
     }
-
     function addAbbreviation() {
         const abbr = abbrInput.value.trim();
         const phrase = phraseInput.value.trim();
@@ -1177,7 +1087,6 @@
             showButtonMessage(addBtn, '✓ Добавлено');
         } else showButtonMessage(addBtn, '✗ Заполните поля', true);
     }
-
     function clearAbbreviations() {
         if(confirm('Очистить все сокращения?')) {
             abbreviations = {};
@@ -1186,7 +1095,6 @@
             showButtonMessage(clearBtn, '✓ Очищено');
         }
     }
-
     function exportAbbreviations() {
         const data = JSON.stringify(abbreviations, null, 2);
         const blob = new Blob([data], {type:'application/json'});
@@ -1196,19 +1104,18 @@
         a.download = `abbreviations_${formatDateTimeForFilename()}.json`;
         a.click();
         URL.revokeObjectURL(url);
-        showButtonMessage(exportBtn, `✓ Экспорт`);
+        showButtonMessage(exportBtn, `✓ ${Object.keys(abbreviations).length} экспортировано`);
     }
-
     function importAbbreviations(file) {
         const reader = new FileReader();
         reader.onload = e => {
             try {
                 const imported = JSON.parse(e.target.result);
-                if(typeof imported === 'object' && !Array.isArray(imported)) {
+                if(typeof imported === 'object' && imported !== null && !Array.isArray(imported)) {
                     Object.assign(abbreviations, imported);
                     localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
                     renderAbbreviations();
-                    showButtonMessage(importBtn, `✓ Импорт`);
+                    showButtonMessage(importBtn, `✓ Импортировано ${Object.keys(imported).length}`);
                 } else throw new Error();
             } catch(err) { showButtonMessage(importBtn, '✗ Ошибка', true); }
         };
@@ -1220,32 +1127,27 @@
         updateFilenamePreview();
         renderAbbreviations();
         setInterval(updateFilenamePreview, 1000);
-        
         loadDataFileBtn.onclick = () => dataFileInput.click();
         dataFileInput.onchange = (e) => { if(e.target.files.length) loadDataFile(e.target.files[0]); dataFileInput.value = ''; };
         submitBtn.onclick = submitToJson;
-        copyTextBtn.onclick = copyTextToClipboard;
-        document.getElementById('saveJsonBtn').onclick = saveJsonToDisk;
-        exportTextBtn.onclick = exportTextFile;
+        document.getElementById('saveJsonBtn').onclick = () => { saveJsonToDisk(); jsonDirty = false; jsonStatusBadge.textContent = 'JSON сохранён'; };
+        exportTextBtn.onclick = exportText;
         addBtn.onclick = addAbbreviation;
         clearBtn.onclick = clearAbbreviations;
         exportBtn.onclick = exportAbbreviations;
         importBtn.onclick = () => fileInput.click();
         fileInput.onchange = (e) => { if(e.target.files.length) importAbbreviations(e.target.files[0]); fileInput.value = ''; };
         modalityRadios.forEach(r => r.addEventListener('change', updateFilenamePreview));
-        
-        document.getElementById('viewerSearchInput').addEventListener('input', (e) => { viewerSearchQuery = e.target.value; viewerEditingId = null; renderViewer(); });
+        document.getElementById('viewerSearchInput').addEventListener('input', (e) => { viewerSearchQuery = e.target.value; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); });
         document.getElementById('viewerClearSearchBtn').onclick = () => { document.getElementById('viewerSearchInput').value = ''; viewerSearchQuery = ''; viewerEditingId = null; renderViewer(); };
         document.getElementById('viewerDateFilter').addEventListener('change', (e) => { viewerDateFilter = e.target.value; viewerEditingId = null; renderViewer(); });
         document.getElementById('viewerSortBtn').onclick = () => { viewerSortDesc = !viewerSortDesc; document.getElementById('viewerSortBtn').innerHTML = viewerSortDesc ? '⬇️ По ID (новые сверху)' : '⬆️ По ID (старые сверху)'; viewerEditingId = null; renderViewer(); };
         document.getElementById('viewerClearFiltersBtn').onclick = () => { viewerDateFilter = ''; viewerSearchQuery = ''; document.getElementById('viewerSearchInput').value = ''; document.getElementById('viewerDateFilter').value = ''; viewerEditingId = null; renderViewer(); };
-        
-        window.addEventListener('scroll', () => { scrollToTopBtn.classList.toggle('visible', window.scrollY > 300); });
+        window.addEventListener('scroll', () => { if(window.scrollY > 300) scrollToTopBtn.classList.add('visible'); else scrollToTopBtn.classList.remove('visible'); });
         scrollToTopBtn.onclick = () => window.scrollTo({top:0, behavior:'smooth'});
-        
         const backup = localStorage.getItem('jsonBackup');
         if(backup && !jsonData && confirm('Найден backup. Восстановить?')) {
-            try { jsonData = JSON.parse(backup); nextId = Math.max(...jsonData.map(i=>Number(i.id)||0),0)+1; updateNextIdDisplay(); renderViewer(); jsonStatusBadge.textContent = 'Backup восстановлен'; } catch(e) {}
+            try { jsonData = JSON.parse(backup); viewerConclusions = jsonData.map(normalizeForViewer); nextId = jsonData.reduce((m,i)=>Math.max(m,Number(i.id)||0),0)+1; updateNextIdDisplay(); renderViewer(); jsonStatusBadge.textContent = 'Backup восстановлен'; } catch(err){ console.error(err); }
         }
         renderViewer();
     }
