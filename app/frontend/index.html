@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Описать</title>
+    <title>Протокол</title>
     <style>
         * {
             margin: 0;
@@ -176,7 +176,7 @@
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             transition: all 0.2s ease;
-            min-height: 340px;
+            min-height: 280px;
         }
 
         .win11-textarea:focus {
@@ -387,7 +387,7 @@
                     </div>
                     <div style="flex: 2;">
                         <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Имя файла</div>
-                        <div style="font-family: monospace; background: rgba(0,0,0,0.02); padding: 4px; border-radius: 6px; font-size: 11px;" id="filenamePreview">rg_18mar_15-30-45.json</div>
+                        <div style="font-family: monospace; background: rgba(0,0,0,0.02); padding: 4px; border-radius: 6px; font-size: 11px;" id="filenamePreview">RG___02apr_19-17-34.json</div>
                     </div>
                 </div>
             </div>
@@ -463,13 +463,13 @@
                     <input type="file" id="fileInput" class="file-input" accept=".json">
                 </div>
 
-                <div id="autoSaveStatus" class="status-badge">⏺ Автосохранение каждые 10 мин</div>
+                <div id="autoSaveStatus" class="status-badge">⏺ Автосохранение каждые 20 мин</div>
             </div>
 
             <!-- Правая колонка: Основное рабочее поле -->
             <div class="win11-card">
                 <h3 class="section-title">📝 Текстовое поле</h3>
-                <textarea id="textInput" class="win11-textarea" rows="12"
+                <textarea id="textInput" class="win11-textarea" rows="8"
                     placeholder="Введите текст здесь... Сокращения заменяются при нажатии пробела или Enter."></textarea>
                 
                 <!-- Кнопка отправки ВЫШЕ остальных кнопок -->
@@ -500,7 +500,7 @@
         // Загрузка сокращений из localStorage
         let abbreviations = JSON.parse(localStorage.getItem('abbreviations')) || {};
         let autoSaveInterval;
-        const AUTO_SAVE_INTERVAL = 10 * 60 * 1000; // 10 минут в миллисекундах
+        const AUTO_SAVE_INTERVAL = 20 * 60 * 1000; // 20 минут в миллисекундах
 
         // Переменные для работы с JSON-файлом
         let jsonData = null;
@@ -535,6 +535,21 @@
         const nextIdDisplay = document.getElementById('nextIdDisplay');
         const filenamePreview = document.getElementById('filenamePreview');
         const submitBtn = document.getElementById('submitBtn');
+
+        // Маппинг модальностей для префиксов (НОВЫЕ ПРЕФИКСЫ)
+        const modalityPrefixMap = {
+            'rg': 'RG',
+            'fl': 'FLG',
+            'ct': 'CT',
+            'mr': 'MRT'
+        };
+        
+        const prefixToModalityMap = {
+            'RG': 'rg',
+            'FLG': 'fl',
+            'CT': 'ct',
+            'MRT': 'mr'
+        };
 
         // Функция для форматирования даты и времени для имени файла
         function formatDateTimeForFilename() {
@@ -577,7 +592,7 @@
             }, 2000);
         }
 
-        // Функция для форматирования даты и времени для имени файла с префиксом модальности
+        // Функция для форматирования даты и времени для имени файла с префиксом модальности (НОВЫЕ ПРЕФИКСЫ + ТРИ ПОДЧЕРКИВАНИЯ)
         function formatFilenameWithModality(modality) {
             const now = new Date();
             
@@ -593,16 +608,8 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             
-            // Маппинг модальностей для префикса
-            const modalityPrefix = {
-                'rg': 'rg',
-                'fl': 'fl',
-                'ct': 'ct',
-                'mr': 'mr'
-            };
-            
-            const prefix = modalityPrefix[modality] || 'unknown';
-            return `${prefix}_${day}${month}_${hours}-${minutes}-${seconds}`;
+            const prefix = modalityPrefixMap[modality] || 'UNKNOWN';
+            return `${prefix}___${day}${month}_${hours}-${minutes}-${seconds}`;
         }
 
         // Функция для форматирования имени файла для сохранения текста
@@ -622,15 +629,7 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             
-            // Маппинг модальностей для префикса
-            const modalityPrefix = {
-                'rg': 'rg',
-                'fl': 'fl',
-                'ct': 'ct',
-                'mr': 'mr'
-            };
-            
-            const prefix = modalityPrefix[selectedModality] || 'unknown';
+            const prefix = modalityPrefixMap[selectedModality] || 'UNKNOWN';
             
             // Обрабатываем ФИО: заменяем пробелы на подчеркивания
             const patientNameText = patientName.value.trim();
@@ -639,8 +638,8 @@
                 namePart = 'без_имени';
             }
             
-            // Формат: префикс_дата-время_фио.txt
-            return `${prefix}_${day}${month}_${hours}-${minutes}-${seconds}_${namePart}.txt`;
+            // Формат: префикс___дата-время_фио.txt
+            return `${prefix}___${day}${month}_${hours}-${minutes}-${seconds}_${namePart}.txt`;
         }
 
         // Обновление превью имени файла на основе выбранной модальности
@@ -659,16 +658,9 @@
             return 'rg'; // По умолчанию РГ
         }
 
-        // Установка модальности по префиксу
+        // Установка модальности по префиксу (НОВЫЕ ПРЕФИКСЫ)
         function setModalityByPrefix(prefix) {
-            const modalityMap = {
-                'rg': 'rg',
-                'fl': 'fl',
-                'ct': 'ct',
-                'mr': 'mr'
-            };
-            
-            const modality = modalityMap[prefix];
+            const modality = prefixToModalityMap[prefix];
             if (modality) {
                 modalityRadios.forEach(radio => {
                     if (radio.value === modality) {
@@ -681,10 +673,10 @@
             return false;
         }
 
-        // Получение префикса из имени файла
+        // Получение префикса из имени файла (ищем префикс до трёх подчёркиваний)
         function getPrefixFromFilename(filename) {
-            const match = filename.match(/^([a-z]{2})_/i);
-            return match ? match[1].toLowerCase() : null;
+            const match = filename.match(/^([A-Z]+)___/i);
+            return match ? match[1].toUpperCase() : null;
         }
 
         // Получение текста выбранной модальности БЕЗ ЭМОДЗИ для title
@@ -876,7 +868,7 @@
                 return;
             }
 
-            // Генерируем имя файла в формате: rg_18mar_15-30-45_Петрова_Катя.txt
+            // Генерируем имя файла в формате: RG___02apr_19-17-34_Петрова_Катя.txt
             const filename = formatTextFilename();
 
             const blob = new Blob([text], { type: 'text/plain' });
@@ -912,7 +904,7 @@
         function updateAutoSaveStatus(message) {
             autoSaveStatus.textContent = message;
             setTimeout(() => {
-                autoSaveStatus.textContent = `⏺ Автосохранение каждые 10 мин`;
+                autoSaveStatus.textContent = `⏺ Автосохранение каждые 20 мин`;
             }, 3000);
         }
 
@@ -1023,9 +1015,9 @@
             // Создаем новый объект (БЕЗ ЭМОДЗИ В TITLE)
             const newEntry = {
                 id: nextId,
-                title: title, // Без эмодзи
+                title: title,
                 text: text,
-                modality: selectedModality, // Латинские значения: rg, fl, ct, mr
+                modality: selectedModality,
                 patient: patientName.value.trim() || '',
                 date: dateField.value
             };
@@ -1041,7 +1033,7 @@
             const a = document.createElement('a');
             a.href = url;
             
-            // Генерируем имя файла с префиксом модальности и секундами
+            // Генерируем имя файла с префиксом модальности и секундами (НОВЫЙ ФОРМАТ)
             const filename = formatFilenameWithModality(selectedModality) + '.json';
             a.download = filename;
             
@@ -1074,7 +1066,7 @@
         function initAutoSave() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
             autoSaveInterval = setInterval(autoSaveText, AUTO_SAVE_INTERVAL);
-            updateAutoSaveStatus(`⏺ Автосохранение каждые 10 мин`);
+            updateAutoSaveStatus(`⏺ Автосохранение каждые 20 мин`);
         }
 
         // Обработчики событий
