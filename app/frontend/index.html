@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Протокол</title>
+    <title>Протокол — единая система</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-			font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            /* font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; */
-            background-color: #f0f0f0;
+            background-color: #f2f5f9;
             padding: 20px;
             min-height: 100vh;
         }
@@ -40,7 +39,6 @@
             border-radius: 8px;
             padding: 8px 16px;
             font-size: 14px;
-            
             cursor: pointer;
             transition: all 0.2s;
             position: relative;
@@ -48,7 +46,7 @@
         }
 
         .win11-button:hover {
-                        background: #e1efff;
+            background: #e1efff;
             border-color: #3070a5;
         }
 
@@ -114,43 +112,50 @@
         }
 
         .win11-textarea {
-            background-color: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            padding: 12px;
+            background-color: white;
+            border: 1px solid #cbd9e8;
+            border-radius: 12px;
+            padding: 14px;
             font-size: 15px;
             width: 100%;
             resize: vertical;
             font-family: monospace;
             min-height: 280px;
+            transition: all 0.2s;
+        }
+
+        .win11-textarea:focus {
+            outline: none;
+            border-color: #0067c0;
+            box-shadow: 0 0 0 3px rgba(0, 103, 192, 0.15);
         }
 
         .win11-list {
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 8px;
+            background-color: white;
+            border-radius: 12px;
             padding: 8px;
             max-height: 200px;
             overflow-y: auto;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            border: 1px solid #e3ecf5;
         }
 
         .win11-list-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 10px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            font-size: 12px;
+            padding: 8px 12px;
+            border-bottom: 1px solid #eef2f7;
+            font-size: 13px;
         }
 
         .win11-delete-btn {
             background: none;
             border: none;
-            color: #888;
+            color: #8a9bb0;
             font-size: 22px;
             cursor: pointer;
-            padding: 2px 10px;
-            border-radius: 6px;
+            padding: 2px 12px;
+            border-radius: 20px;
         }
 
         .win11-delete-btn:hover {
@@ -161,8 +166,8 @@
         .win11-badge {
             background-color: rgba(0, 103, 192, 0.1);
             color: #0067c0;
-            padding: 4px 8px;
-            border-radius: 16px;
+            padding: 4px 12px;
+            border-radius: 20px;
             font-size: 12px;
         }
 
@@ -186,19 +191,16 @@
             gap: 10px;
             margin-bottom: 10px;
         }
-		
-		
-		        .file-info {
+
+        .file-info {
             font-size: 12px;
-            color: #666;
-            margin-top: 6px;
+            color: #5f7b9c;
+            margin-top: 8px;
             padding: 6px;
             background: rgba(255,255,255,0.5);
-            border-radius: 6px;
+            border-radius: 8px;
         }
-		
 
-        /* Новая группа для заголовка и компактных кнопок */
         .editor-header {
             display: flex;
             justify-content: space-between;
@@ -210,6 +212,7 @@
             font-weight: 600;
             text-transform: uppercase;
             margin-bottom: 8px;
+            color: #2b4f6e;
         }
         .compact-actions {
             display: flex;
@@ -222,9 +225,8 @@
             min-height: 28px;
         }
         .compact-card { padding: 14px; }
-        .unknown-id { color: #999; font-size: 18px; font-weight: 500; }
+        .unknown-id { color: #5f7b9c; font-size: 18px; font-weight: 600; }
 
-        /* Стили для блока просмотра (как в view.html) */
         .viewer-container {
             background: white;
             border-radius: 24px;
@@ -246,7 +248,7 @@
             min-width: 250px;
             display: flex;
             align-items: center;
-			gap: 8px;
+            gap: 8px;
             background: white;
             border: 1px solid #cbd9e8;
             border-radius: 30px;
@@ -271,7 +273,6 @@
             padding: 0.3rem 1rem;
             border-radius: 30px;
             white-space: nowrap;
-			
         }
 
         .viewer-search-container button:hover {
@@ -340,15 +341,10 @@
             padding: 0.4rem 1rem;
             font-size: 0.85rem;
             cursor: pointer;
-			 color: #6b8bb0;
-    transition: 0.1s;
-    white-space: nowrap;
+            color: #6b8bb0;
+            transition: 0.1s;
+            white-space: nowrap;
         }
-		
-
-		
-		
-		
 
         .viewer-clear-filters-btn:hover {
             background: #ffeeee;
@@ -373,9 +369,7 @@
 
         .conclusion-card {
             padding: 1.2rem;
-           /* background: #fefefe; */
             border-radius: 16px;
-            /* border: 1px solid #e3ecf5; */
             transition: all 0.2s;
         }
 
@@ -421,28 +415,21 @@
         .date-edit-input { padding: 4px 8px; border: 1px solid #0067c0; border-radius: 6px; }
         .conclusion-id { font-size: 0.8rem; color: #666; }
         .action-buttons { display: flex; gap: 8px; }
-		
+        
         .edit-button, .save-button, .cancel-button, .copy-button {
             background: white;
             border: 1px solid #c9dbf0;
             border-radius: 8px;
             padding: 0.3rem 0.8rem;
             font-size: 0.75rem;
-            
-           
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 4px;
             transition: 0.1s;
         }
-		
-		.edit-button:hover {
-            background: #e1efff;
-            border-color: #3070a5;
-        }
-
-		.save-button:hover {
+        
+        .edit-button:hover, .copy-button:hover, .save-button:hover {
             background: #e1efff;
             border-color: #3070a5;
         }
@@ -453,23 +440,14 @@
             color: #aa2647;
         }
 
-        .copy-button:hover {
-            background: #e1efff;
-            border-color: #3070a5;
-        }
-
         .copy-button.copied {
             background: #dff0d9;
             border-color: #2a8e5c;
             color: #136b3a;
         }
-		
-		
         
-		
         .conclusion-text {
             padding: 12px;
-            /* background: #f9f9f9; */
             border-radius: 10px;
             white-space: pre-wrap;
             cursor: pointer;
@@ -534,6 +512,26 @@
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
+        
+        /* Подсказка при автозамене */
+        .abbr-hint {
+            position: fixed;
+            background: #2b4f6e;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            animation: fadeOut 0.5s ease forwards;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translateY(0); }
+            70% { opacity: 0.8; }
+            100% { opacity: 0; transform: translateY(-10px); visibility: hidden; }
+        }
     </style>
 </head>
 <body>
@@ -550,15 +548,13 @@
                 <span class="button-message"></span>
             </button>
             <input type="file" id="dataFileInput" accept=".json" style="display:none">
-			<input type="file" id="fileInput" accept=".json" style="display:none">
-			<button id="saveJsonBtn" class="win11-button success" style="width:100%; margin-top:8px">💾 Сохранить JSON</button>
+            <input type="file" id="fileInput" accept=".json" style="display:none">
+            <button id="saveJsonBtn" class="win11-button success" style="width:100%; margin-top:8px">💾 Сохранить JSON</button>
             <div class="file-info" id="dataFileInfo">⏺ Файл не загружен</div>
             <div style="margin: 8px 0; height:1px; background:#ddd;"></div>
-			
             <div><div style="font-size:10px">Следующий ID</div><div id="nextIdDisplay" class="unknown-id">—</div></div>
             <div style="margin-top:6px"><div style="font-size:10px">Имя файла</div><div id="filenamePreview" style="font-size:11px">—</div></div>
         </div>
-		
 
         <div class="win11-card compact-card">
             <div class="meta-row">
@@ -574,23 +570,6 @@
                 <input type="text" id="patientName" class="win11-input" placeholder="ФИО пациента">
                 <input type="text" id="titleField" class="win11-input" placeholder="Название">
             </div>
-			
-			
-			
-			        <!-- <div class="win11-card"> -->
-            <!-- НОВАЯ ГОЛОВА С ЗАГОЛОВКОМ И КНОПКАМИ -->
-            <div class="editor-header">
-                <h3 class="section-title">📝 Новое заключение</h3>
-                <div class="compact-actions">
-                    <button id="submitBtn" class="win11-button success" style="background-color:#107c10;">📨 Отправить в JSON</button>
-                    <button class="win11-button" onclick="copy_to_clipboard('textInput')">📋 Скопировать</button>
-                    <button id="exportTextBtn" class="win11-button">💾 Сохранить текст</button>
-                </div>
-            </div>
-            <textarea id="textInput" class="win11-textarea" rows="8" placeholder="Введите текст заключения..."></textarea>
-        <!-- </div> -->
-			
-			
         </div>
     </div>
 
@@ -614,21 +593,31 @@
             </div>
             <div id="autoSaveStatus" style="font-size:11px; text-align:center; margin-top:8px">⏺ Автосохранение каждые 20 мин</div>
         </div>
-		
-		
-		
-		
-		    <!-- ОТДЕЛЬНЫЙ БЛОК ПРОСМОТРА (как в view.html, без своих кнопок загрузки/экспорта) -->
+
+        <div class="win11-card">
+            <div class="editor-header">
+                <h3 class="section-title">📝 Новое заключение</h3>
+                <div class="compact-actions">
+                    <button id="submitBtn" class="win11-button success" style="background-color:#107c10;">📨 Отправить в JSON</button>
+                    <button class="win11-button" id="copyTextBtn">📋 Скопировать</button>
+                    <button id="exportTextBtn" class="win11-button">💾 Сохранить текст</button>
+                </div>
+            </div>
+            <textarea id="textInput" class="win11-textarea" rows="8" placeholder="Введите текст заключения..."></textarea>
+            <div style="font-size:11px; color:#5f7b9c; margin-top:6px;">💡 Подсказка: используйте сокращения из списка слева — они автоматически заменятся при нажатии Пробела или Enter</div>
+        </div>
+    </div>
+
+    <!-- Блок просмотра -->
     <div class="win11-card" style="padding: 0; background: transparent; backdrop-filter: none; box-shadow: none;">
         <div class="viewer-container" style="background: white; padding: 1.8rem 2rem 2.5rem;">
             <div class="viewer-header">
                 <div class="viewer-search-container">
-				<span class="header-search-icon">🔍</span>
+                    <span>🔍</span>
                     <input type="text" id="viewerSearchInput" placeholder="Поиск...">
                     <button id="viewerClearSearchBtn">Очистить</button>
                 </div>
             </div>
-
             <div class="viewer-filter-panel">
                 <div class="viewer-date-filter">
                     <label>📅</label>
@@ -638,33 +627,95 @@
                 <button id="viewerClearFiltersBtn" class="viewer-clear-filters-btn">✕ Сбросить фильтры</button>
                 <span id="viewerFilterStats" class="viewer-filter-stats"></span>
             </div>
-
             <div id="viewerConclusionsList" class="viewer-conclusions-list">
                 <div class="placeholder-message">📭 Загрузите JSON-файл в левом верхнем углу</div>
             </div>
         </div>
     </div>
-		
-		
-		
-
-
-    </div>
-
-
 </div>
 
 <button id="scrollToTopBtn" class="scroll-to-top">↑</button>
 
 <script>
+    // === АВТОЗАМЕНА СОКРАЩЕНИЙ ===
+    function setupAutoReplace(textarea, abbreviations) {
+        if (!textarea) return;
+        
+        let lastWord = '';
+        let lastCaretPos = 0;
+        
+        function getCurrentWord(text, caretPos) {
+            let start = caretPos;
+            while (start > 0 && /[a-zA-Zа-яА-Я0-9_]/.test(text[start - 1])) {
+                start--;
+            }
+            return { word: text.substring(start, caretPos), startPos: start };
+        }
+        
+        function showHint(word, phrase, event) {
+            const rect = textarea.getBoundingClientRect();
+            const hint = document.createElement('div');
+            hint.className = 'abbr-hint';
+            hint.textContent = `✨ "${word}" → ${phrase.substring(0, 30)}${phrase.length > 30 ? '…' : ''}`;
+            hint.style.left = rect.left + 10 + 'px';
+            hint.style.bottom = window.innerHeight - rect.top + 10 + 'px';
+            document.body.appendChild(hint);
+            setTimeout(() => hint.remove(), 800);
+        }
+        
+        function replaceWord(event) {
+            const caretPos = textarea.selectionStart;
+            const text = textarea.value;
+            const { word, startPos } = getCurrentWord(text, caretPos);
+            
+            if (word && abbreviations[word]) {
+                const phrase = abbreviations[word];
+                const before = text.substring(0, startPos);
+                const after = text.substring(caretPos);
+                const replacement = phrase + ' ';
+                const newText = before + replacement + after;
+                textarea.value = newText;
+                const newCaretPos = startPos + replacement.length;
+                textarea.selectionStart = textarea.selectionEnd = newCaretPos;
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                showHint(word, phrase, event);
+                return true;
+            }
+            return false;
+        }
+        
+        textarea.addEventListener('keydown', (e) => {
+            // Замена по пробелу или Enter
+            if (e.key === ' ' || e.key === 'Enter') {
+                const caretPos = textarea.selectionStart;
+                const text = textarea.value;
+                const { word, startPos } = getCurrentWord(text, caretPos);
+                
+                if (word && abbreviations[word]) {
+                    e.preventDefault();
+                    const phrase = abbreviations[word];
+                    const before = text.substring(0, startPos);
+                    const after = text.substring(caretPos);
+                    const replacement = phrase + (e.key === ' ' ? ' ' : '\n');
+                    const newText = before + replacement + after;
+                    textarea.value = newText;
+                    const newCaretPos = startPos + replacement.length;
+                    textarea.selectionStart = textarea.selectionEnd = newCaretPos;
+                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    showHint(word, phrase, e);
+                }
+            }
+        });
+    }
+    
     // === ОСНОВНЫЕ ПЕРЕМЕННЫЕ ===
     let abbreviations = JSON.parse(localStorage.getItem('abbreviations')) || {};
     let jsonData = null;
     let jsonFileName = '';
     let nextId = null;
-	let jsonDirty = false;
-let autoBackupTimer = null;
-let viewerRenderLimit = 50;
+    let jsonDirty = false;
+    let autoBackupTimer = null;
+    let viewerRenderLimit = 50;
 
     // DOM элементы
     const abbrInput = document.getElementById('abbrInput');
@@ -689,6 +740,7 @@ let viewerRenderLimit = 50;
     const nextIdDisplay = document.getElementById('nextIdDisplay');
     const filenamePreview = document.getElementById('filenamePreview');
     const submitBtn = document.getElementById('submitBtn');
+    const copyTextBtn = document.getElementById('copyTextBtn');
     const scrollToTopBtn = document.getElementById('scrollToTopBtn');
 
     // === ФУНКЦИИ ===
@@ -707,36 +759,36 @@ let viewerRenderLimit = 50;
         dateField.value = new Date().toISOString().slice(0,10);
     }
 
-function showButtonMessage(button, message, isError = false) {
-    if(!button) return;
-    let msgSpan = button.querySelector('.button-message');
-    let textSpan = button.querySelector('.button-text');
-    if(!msgSpan || !textSpan) {
-        const originalText = button.dataset.originalText || button.textContent;
-        button.dataset.originalText = originalText;
-        button.textContent = message;
-        if(isError) {
-            button.style.backgroundColor = '#d13438';
-            button.style.color = 'white';
-        } else {
-            button.style.backgroundColor = '#107c10';
-            button.style.color = 'white';
+    function showButtonMessage(button, message, isError = false) {
+        if(!button) return;
+        let msgSpan = button.querySelector('.button-message');
+        let textSpan = button.querySelector('.button-text');
+        if(!msgSpan || !textSpan) {
+            const originalText = button.dataset.originalText || button.textContent;
+            button.dataset.originalText = originalText;
+            button.textContent = message;
+            if(isError) {
+                button.style.backgroundColor = '#d13438';
+                button.style.color = 'white';
+            } else {
+                button.style.backgroundColor = '#107c10';
+                button.style.color = 'white';
+            }
+            setTimeout(() => {
+                button.textContent = button.dataset.originalText;
+                button.style.backgroundColor = '';
+                button.style.color = '';
+            }, 2000);
+            return;
         }
+        msgSpan.textContent = message;
+        button.classList.add('show-message');
+        if(isError) button.classList.add('error-message');
         setTimeout(() => {
-            button.textContent = button.dataset.originalText;
-            button.style.backgroundColor = '';
-            button.style.color = '';
+            button.classList.remove('show-message');
+            button.classList.remove('error-message');
         }, 2000);
-        return;
     }
-    msgSpan.textContent = message;
-    button.classList.add('show-message');
-    if(isError) button.classList.add('error-message');
-    setTimeout(() => {
-        button.classList.remove('show-message');
-        button.classList.remove('error-message');
-    }, 2000);
-}
 
     function getSelectedModality() {
         for(let r of modalityRadios) if(r.checked) return r.value;
@@ -770,10 +822,11 @@ function showButtonMessage(button, message, isError = false) {
     function updateNextIdDisplay() {
         nextIdDisplay.textContent = nextId === null ? '—' : nextId;
     }
-	function markJsonDirty() {
-    jsonDirty = true;
-    jsonStatusBadge.textContent = 'Есть несохранённые изменения';
-}
+    
+    function markJsonDirty() {
+        jsonDirty = true;
+        jsonStatusBadge.textContent = 'Есть несохранённые изменения';
+    }
 
     function getPrefixFromFilename(filename) {
         let match = filename.match(/^([A-Z]+)___/i);
@@ -790,73 +843,69 @@ function showButtonMessage(button, message, isError = false) {
         }
         return false;
     }
-	
-	function scheduleAutoBackup() {
-    clearTimeout(autoBackupTimer);
-    autoBackupTimer = setTimeout(() => {
-        if(jsonData) {
-            localStorage.setItem('jsonBackup', JSON.stringify(jsonData));
-            localStorage.setItem('jsonBackupTime', new Date().toISOString());
-            autoSaveStatus.textContent = '✓ Backup сохранён';
-            setTimeout(() => { autoSaveStatus.textContent = '⏺ Автосохранение активно'; }, 2000);
-        }
-    }, 3000);
-}
+    
+    function scheduleAutoBackup() {
+        clearTimeout(autoBackupTimer);
+        autoBackupTimer = setTimeout(() => {
+            if(jsonData) {
+                localStorage.setItem('jsonBackup', JSON.stringify(jsonData));
+                localStorage.setItem('jsonBackupTime', new Date().toISOString());
+                autoSaveStatus.textContent = '✓ Backup сохранён';
+                setTimeout(() => { autoSaveStatus.textContent = '⏺ Автосохранение активно'; }, 2000);
+            }
+        }, 3000);
+    }
 
+    function saveJsonToDisk() {
+        if(!jsonData) return false;
+        const modality = getSelectedModality();
+        jsonFileName = formatFilenameWithModality(modality) + '.json';
+        const dataStr = JSON.stringify(jsonData, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = jsonFileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        filenamePreview.textContent = jsonFileName;
+        return true;
+    }
 
-    // СОХРАНЕНИЕ JSON НА ДИСК
-function saveJsonToDisk() {
-    if(!jsonData) return false;
-    const modality = getSelectedModality();
-    jsonFileName = formatFilenameWithModality(modality) + '.json';
-    const dataStr = JSON.stringify(jsonData, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = jsonFileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    filenamePreview.textContent = jsonFileName;
-    return true;
-}
-
-   // ЗАГРУЗКА JSON
-function loadDataFile(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            const data = JSON.parse(e.target.result);
-            if(Array.isArray(data)) {
-                jsonData = data;
-                jsonFileName = file.name;
-                const maxId = jsonData.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
-                nextId = maxId + 1;
-                dataFileInfo.innerHTML = `<span style="color:#107c10;">✅ Загружен: ${jsonFileName}</span>`;
-                jsonStatusBadge.textContent = 'Файл загружен';
+    function loadDataFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target.result);
+                if(Array.isArray(data)) {
+                    jsonData = data;
+                    jsonFileName = file.name;
+                    const maxId = jsonData.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
+                    nextId = maxId + 1;
+                    dataFileInfo.innerHTML = `<span style="color:#107c10;">✅ Загружен: ${jsonFileName}</span>`;
+                    jsonStatusBadge.textContent = 'Файл загружен';
+                    updateNextIdDisplay();
+                    const prefix = getPrefixFromFilename(file.name);
+                    if(prefix) setModalityByPrefix(prefix);
+                    updateFilenamePreview();
+                    showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
+                    renderViewer();
+                } else throw new Error('Файл должен быть массивом');
+            } catch(err) {
+                showButtonMessage(loadDataFileBtn, '✗ Ошибка', true);
+                jsonData = null;
+                nextId = null;
+                dataFileInfo.innerHTML = '<span style="color:#d13438;">❌ Ошибка загрузки</span>';
+                jsonStatusBadge.textContent = 'Ошибка';
                 updateNextIdDisplay();
-                const prefix = getPrefixFromFilename(file.name);
-                if(prefix) setModalityByPrefix(prefix);
-                updateFilenamePreview();
-                showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
                 renderViewer();
-            } else throw new Error('Файл должен быть массивом');
-        } catch(err) {
-            showButtonMessage(loadDataFileBtn, '✗ Ошибка', true);
-            jsonData = null;
-            nextId = null;
-            dataFileInfo.innerHTML = '<span style="color:#d13438;">❌ Ошибка загрузки</span>';
-            jsonStatusBadge.textContent = 'Ошибка';
-            updateNextIdDisplay();
-            renderViewer();
-        }
-    };
-    reader.readAsText(file);
-}
+            }
+        };
+        reader.readAsText(file);
+    }
 
-    // ДОБАВЛЕНИЕ НОВОЙ ЗАПИСИ
     function submitToJson() {
         if(!jsonData) {
             showButtonMessage(submitBtn, '✗ Сначала загрузите файл', true);
@@ -896,7 +945,6 @@ function loadDataFile(file) {
         showButtonMessage(submitBtn, `✓ ID ${nextId - 1} добавлен`);
     }
 
-    // РЕДАКТИРОВАНИЕ ЗАПИСИ
     function updateRecord(recordId, updatedFields) {
         const index = jsonData.findIndex(r => r.id === recordId);
         if(index !== -1) {
@@ -904,8 +952,6 @@ function loadDataFile(file) {
             markJsonDirty();
             scheduleAutoBackup();
             renderViewer();
-            const saveBtn = document.querySelector(`.save-button[data-id="${recordId}"]`);
-            if(saveBtn) showButtonMessage(saveBtn, '✓ Сохранено');
         }
     }
 
@@ -917,7 +963,7 @@ function loadDataFile(file) {
         setTimeout(() => div.remove(), 2000);
     }
 
-    // === ПРОСМОТРЩИК (полностью как в view.html) ===
+    // === ПРОСМОТРЩИК ===
     let viewerConclusions = [];
     let viewerFiltered = [];
     let viewerSortDesc = true;
@@ -1000,12 +1046,8 @@ function loadDataFile(file) {
             const modalityEmoji = getModalityEmoji(item.modality);
             const safeId = escapeHtml(String(item.id));
             const safeDate = item.date ? item.date.split('-').reverse().join('.') : '—';
-            const highlightedPatient = highlightText(item.patient, viewerSearchQuery);
-            const highlightedTitle = highlightText(item.title, viewerSearchQuery);
-            const highlightedText = highlightText(item.text, viewerSearchQuery);
             const card = document.createElement('div');
             card.className = `conclusion-card ${isEditing ? 'editing' : ''}`;
-            card.dataset.id = item.id;
             if(isEditing) {
                 card.innerHTML = `
                     <div class="row-patient"><input type="text" class="patient-edit" id="edit-patient-${item.id}" value="${escapeHtml(item.patient)}"></div>
@@ -1014,13 +1056,17 @@ function loadDataFile(file) {
                 `;
             } else {
                 card.innerHTML = `
-                    <div class="row-patient"><span class="patient-name" data-id="${item.id}">${highlightedPatient}</span></div>
-                    <div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><span class="study-title" data-id="${item.id}">${highlightedTitle || '—'}</span><span class="study-date" data-id="${item.id}">📅 ${safeDate}</span><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="edit-button" data-id="${item.id}">✏️ Редактировать</button><button class="copy-button" data-id="${item.id}">📋 Копировать</button></div></div>
-                    <div class="conclusion-text" data-id="${item.id}">${highlightedText}</div>
+                    <div class="row-patient"><span class="patient-name" data-id="${item.id}">${highlightText(item.patient, viewerSearchQuery)}</span></div>
+                    <div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><span class="study-title" data-id="${item.id}">${highlightText(item.title || '', viewerSearchQuery)}</span><span class="study-date" data-id="${item.id}">📅 ${safeDate}</span><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="edit-button" data-id="${item.id}">✏️ Редактировать</button><button class="copy-button" data-id="${item.id}">📋 Копировать</button></div></div>
+                    <div class="conclusion-text" data-id="${item.id}">${highlightText(item.text, viewerSearchQuery)}</div>
                 `;
             }
             container.appendChild(card);
         }
+        attachViewerEvents();
+    }
+    
+    function attachViewerEvents() {
         document.querySelectorAll('.edit-button').forEach(btn => { btn.onclick = () => { viewerEditingId = Number(btn.dataset.id); renderViewer(); }; });
         document.querySelectorAll('.cancel-button').forEach(btn => { btn.onclick = () => { viewerEditingId = null; renderViewer(); }; });
         document.querySelectorAll('.save-button').forEach(btn => {
@@ -1033,7 +1079,7 @@ function loadDataFile(file) {
                 if(newText !== undefined && newText.trim()) {
                     viewerEditingId = null;
                     updateRecord(id, { patient: newPatient || '', title: newTitle || '', date: newDate || '', text: newText });
-                } else if(newText !== undefined && !newText.trim()) showNotification('Текст не может быть пустым');
+                }
             };
         });
         document.querySelectorAll('.copy-button').forEach(btn => {
@@ -1041,17 +1087,15 @@ function loadDataFile(file) {
                 const id = Number(btn.dataset.id);
                 const item = viewerConclusions.find(i => i.id === id);
                 if(item) navigator.clipboard.writeText(item.text);
-                showButtonMessage(btn, '✓ Скопировано');
-				
+                const original = btn.innerHTML;
+                btn.innerHTML = '✓ Скопировано';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.innerHTML = original; btn.classList.remove('copied'); }, 1500);
             };
         });
         document.querySelectorAll('.patient-name, .study-title, .study-date, .conclusion-text').forEach(el => {
-            el.onclick = (e) => { const id = Number(el.dataset.id); viewerEditingId = id; renderViewer(); };
+            el.onclick = () => { viewerEditingId = Number(el.dataset.id); renderViewer(); };
         });
-        container.onscroll = () => {
-            const nearBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 200;
-            if(nearBottom && viewerRenderLimit < filtered.length) { viewerRenderLimit += 50; renderViewer(); }
-        };
     }
 
     function exportText() {
@@ -1067,28 +1111,31 @@ function loadDataFile(file) {
         showButtonMessage(exportTextBtn, '✓ Сохранено');
     }
 
-    function copy_to_clipboard(id) {
-        const el = document.getElementById(id);
-        el.select();
-        document.execCommand('copy');
-        const btn = event?.target?.closest('.win11-button');
-        if(btn) showButtonMessage(btn, '✓ Скопировано');
+    function copyToClipboard() {
+        const text = textInput.value.trim();
+        if(!text) { showButtonMessage(copyTextBtn, '✗ Нет текста', true); return; }
+        navigator.clipboard.writeText(text).then(() => {
+            showButtonMessage(copyTextBtn, '✓ Скопировано');
+        }).catch(() => showButtonMessage(copyTextBtn, '✗ Ошибка', true));
     }
-    window.copy_to_clipboard = copy_to_clipboard;
+
     function renderAbbreviations() {
         abbrList.innerHTML = '';
         for(let [abbr, phrase] of Object.entries(abbreviations)) {
             const div = document.createElement('div');
             div.className = 'win11-list-item';
-            div.innerHTML = `<span>${abbr} → ${phrase}</span><button class="win11-delete-btn" data-abbr="${abbr}">×</button>`;
+            div.innerHTML = `<span><strong>${abbr}</strong> → ${phrase}</span><button class="win11-delete-btn" data-abbr="${abbr}">×</button>`;
             div.querySelector('.win11-delete-btn').onclick = () => {
                 delete abbreviations[abbr];
                 localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
                 renderAbbreviations();
+                // Обновляем автозамену
+                setupAutoReplace(textInput, abbreviations);
             };
             abbrList.appendChild(div);
         }
     }
+    
     function addAbbreviation() {
         const abbr = abbrInput.value.trim();
         const phrase = phraseInput.value.trim();
@@ -1099,16 +1146,21 @@ function loadDataFile(file) {
             abbrInput.value = '';
             phraseInput.value = '';
             showButtonMessage(addBtn, '✓ Добавлено');
+            // Обновляем автозамену
+            setupAutoReplace(textInput, abbreviations);
         } else showButtonMessage(addBtn, '✗ Заполните поля', true);
     }
+    
     function clearAbbreviations() {
         if(confirm('Очистить все сокращения?')) {
             abbreviations = {};
             localStorage.setItem('abbreviations', '{}');
             renderAbbreviations();
             showButtonMessage(clearBtn, '✓ Очищено');
+            setupAutoReplace(textInput, abbreviations);
         }
     }
+    
     function exportAbbreviations() {
         const data = JSON.stringify(abbreviations, null, 2);
         const blob = new Blob([data], {type:'application/json'});
@@ -1120,6 +1172,7 @@ function loadDataFile(file) {
         URL.revokeObjectURL(url);
         showButtonMessage(exportBtn, `✓ ${Object.keys(abbreviations).length} экспортировано`);
     }
+    
     function importAbbreviations(file) {
         const reader = new FileReader();
         reader.onload = e => {
@@ -1130,6 +1183,7 @@ function loadDataFile(file) {
                     localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
                     renderAbbreviations();
                     showButtonMessage(importBtn, `✓ Импортировано ${Object.keys(imported).length}`);
+                    setupAutoReplace(textInput, abbreviations);
                 } else throw new Error();
             } catch(err) { showButtonMessage(importBtn, '✗ Ошибка', true); }
         };
@@ -1141,9 +1195,14 @@ function loadDataFile(file) {
         updateFilenamePreview();
         renderAbbreviations();
         setInterval(updateFilenamePreview, 1000);
+        
+        // Инициализация автозамены
+        setupAutoReplace(textInput, abbreviations);
+        
         loadDataFileBtn.onclick = () => dataFileInput.click();
         dataFileInput.onchange = (e) => { if(e.target.files.length) loadDataFile(e.target.files[0]); dataFileInput.value = ''; };
         submitBtn.onclick = submitToJson;
+        copyTextBtn.onclick = copyToClipboard;
         document.getElementById('saveJsonBtn').onclick = () => { saveJsonToDisk(); jsonDirty = false; jsonStatusBadge.textContent = 'JSON сохранён'; };
         exportTextBtn.onclick = exportText;
         addBtn.onclick = addAbbreviation;
@@ -1152,16 +1211,19 @@ function loadDataFile(file) {
         importBtn.onclick = () => fileInput.click();
         fileInput.onchange = (e) => { if(e.target.files.length) importAbbreviations(e.target.files[0]); fileInput.value = ''; };
         modalityRadios.forEach(r => r.addEventListener('change', updateFilenamePreview));
+        
         document.getElementById('viewerSearchInput').addEventListener('input', (e) => { viewerSearchQuery = e.target.value; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); });
         document.getElementById('viewerClearSearchBtn').onclick = () => { document.getElementById('viewerSearchInput').value = ''; viewerSearchQuery = ''; viewerEditingId = null; renderViewer(); };
         document.getElementById('viewerDateFilter').addEventListener('change', (e) => { viewerDateFilter = e.target.value; viewerEditingId = null; renderViewer(); });
         document.getElementById('viewerSortBtn').onclick = () => { viewerSortDesc = !viewerSortDesc; document.getElementById('viewerSortBtn').innerHTML = viewerSortDesc ? '⬇️ По ID (новые сверху)' : '⬆️ По ID (старые сверху)'; viewerEditingId = null; renderViewer(); };
         document.getElementById('viewerClearFiltersBtn').onclick = () => { viewerDateFilter = ''; viewerSearchQuery = ''; document.getElementById('viewerSearchInput').value = ''; document.getElementById('viewerDateFilter').value = ''; viewerEditingId = null; renderViewer(); };
+        
         window.addEventListener('scroll', () => { if(window.scrollY > 300) scrollToTopBtn.classList.add('visible'); else scrollToTopBtn.classList.remove('visible'); });
         scrollToTopBtn.onclick = () => window.scrollTo({top:0, behavior:'smooth'});
+        
         const backup = localStorage.getItem('jsonBackup');
         if(backup && !jsonData && confirm('Найден backup. Восстановить?')) {
-            try { jsonData = JSON.parse(backup); viewerConclusions = jsonData.map(normalizeForViewer); nextId = jsonData.reduce((m,i)=>Math.max(m,Number(i.id)||0),0)+1; updateNextIdDisplay(); renderViewer(); jsonStatusBadge.textContent = 'Backup восстановлен'; } catch(err){ console.error(err); }
+            try { jsonData = JSON.parse(backup); nextId = jsonData.reduce((m,i)=>Math.max(m,Number(i.id)||0),0)+1; updateNextIdDisplay(); renderViewer(); jsonStatusBadge.textContent = 'Backup восстановлен'; } catch(err){ console.error(err); }
         }
         renderViewer();
     }
