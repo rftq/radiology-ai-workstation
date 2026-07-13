@@ -216,6 +216,50 @@
             background: white;
             border-radius: 24px;
             padding: 1.8rem 2rem 2.5rem;
+            margin-top: 0;
+        }
+
+        .viewer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .viewer-search-container {
+            flex: 2;
+            min-width: 250px;
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #cbd9e8;
+            border-radius: 30px;
+            padding: 0.2rem 0.2rem 0.2rem 1rem;
+        }
+
+        .viewer-search-container input {
+            flex: 1;
+            border: none;
+            padding: 0.6rem 0;
+            font-size: 0.9rem;
+            outline: none;
+            background: transparent;
+        }
+
+        .viewer-search-container button {
+            background: transparent;
+            border: none;
+            color: #6b8bb0;
+            cursor: pointer;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+        }
+
+        .viewer-search-container button:hover {
+            background: #f0f5fc;
+            color: #0067c0;
         }
 
         .viewer-filter-panel {
@@ -229,7 +273,7 @@
             margin-bottom: 20px;
         }
 
-        .date-filter {
+        .viewer-date-filter {
             display: flex;
             align-items: center;
             gap: 6px;
@@ -239,13 +283,13 @@
             padding: 0.2rem 0.2rem 0.2rem 1rem;
         }
 
-        .date-filter label {
+        .viewer-date-filter label {
             font-size: 0.85rem;
             color: #2b4f6e;
             font-weight: 500;
         }
 
-        .date-input {
+        .viewer-date-input {
             border: none;
             border-radius: 30px;
             padding: 0.4rem 0.8rem;
@@ -255,7 +299,7 @@
             width: 130px;
         }
 
-        .sort-button {
+        .viewer-sort-button {
             background: white;
             border: 1px solid #cbd9e8;
             border-radius: 30px;
@@ -267,12 +311,12 @@
             gap: 4px;
         }
 
-        .sort-button:hover {
+        .viewer-sort-button:hover {
             background: #e1efff;
             border-color: #3070a5;
         }
 
-        .clear-filters-btn {
+        .viewer-clear-filters-btn {
             background: transparent;
             border: 1px solid #d8dde3;
             border-radius: 30px;
@@ -281,13 +325,13 @@
             cursor: pointer;
         }
 
-        .clear-filters-btn:hover {
+        .viewer-clear-filters-btn:hover {
             background: #ffeeee;
             border-color: #aa2647;
             color: #aa2647;
         }
 
-        .filter-stats {
+        .viewer-filter-stats {
             font-size: 0.85rem;
             color: #5f7b9c;
             margin-left: auto;
@@ -428,30 +472,6 @@
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
-        
-        /* Строка поиска */
-        .viewer-search-container {
-            margin-bottom: 20px;
-        }
-        .viewer-search-container input {
-            width: 100%;
-            padding: 12px 20px;
-            font-size: 1rem;
-            border: 1px solid #cbd9e8;
-            border-radius: 30px;
-            outline: none;
-            background: white;
-        }
-        .viewer-search-container input:focus {
-            border-color: #0067c0;
-            box-shadow: 0 0 0 3px rgba(0,103,192,0.1);
-        }
-        .search-hint {
-            font-size: 0.75rem;
-            color: #6b8bb0;
-            margin-top: 5px;
-            margin-left: 15px;
-        }
     </style>
 </head>
 <body>
@@ -468,6 +488,14 @@
                 <span class="button-message"></span>
             </button>
             <input type="file" id="dataFileInput" accept=".json" style="display:none">
+			<input type="file" id="fileInput" accept=".json" style="display:none">
+			<button id="saveJsonBtn"
+class="win11-button success"
+style="width:100%; margin-top:8px">
+
+💾 Сохранить JSON
+
+</button>
             <div class="file-info" id="dataFileInfo">⏺ Файл не загружен</div>
             <div style="margin: 8px 0; height:1px; background:#ddd;"></div>
             <div><div style="font-size:10px">Следующий ID</div><div id="nextIdDisplay" class="unknown-id">—</div></div>
@@ -525,25 +553,27 @@
         </div>
     </div>
 
-    <!-- БЛОК ПРОСМОТРА (как в view.html) -->
+    <!-- ОТДЕЛЬНЫЙ БЛОК ПРОСМОТРА (как в view.html, без своих кнопок загрузки/экспорта) -->
     <div class="win11-card" style="padding: 0; background: transparent; backdrop-filter: none; box-shadow: none;">
-        <div class="viewer-container">
-            <div class="viewer-search-container">
-                <input type="text" id="headerSearchInput" placeholder="🔍 Поиск по пациентам, тексту, названию...">
-                <div class="search-hint">🔎 Поиск работает в реальном времени</div>
+        <div class="viewer-container" style="background: white; padding: 1.8rem 2rem 2.5rem;">
+            <div class="viewer-header">
+                <div class="viewer-search-container">
+                    <input type="text" id="viewerSearchInput" placeholder="🔍 Поиск...">
+                    <button id="viewerClearSearchBtn">Очистить</button>
+                </div>
             </div>
 
             <div class="viewer-filter-panel">
-                <div class="date-filter">
+                <div class="viewer-date-filter">
                     <label>📅</label>
-                    <input type="date" id="dateFilter" class="date-input">
+                    <input type="date" id="viewerDateFilter" class="viewer-date-input">
                 </div>
-                <button id="sortByIdBtn" class="sort-button">⬇️🆔</button>
-                <button id="clearFilterBtn" class="clear-filters-btn">✕ Сбросить</button>
-                <span id="filterStats" class="filter-stats"></span>
+                <button id="viewerSortBtn" class="viewer-sort-button">⬇️ По ID (новые сверху)</button>
+                <button id="viewerClearFiltersBtn" class="viewer-clear-filters-btn">✕ Сбросить фильтры</button>
+                <span id="viewerFilterStats" class="viewer-filter-stats"></span>
             </div>
 
-            <div id="conclusionsContainer" class="viewer-conclusions-list">
+            <div id="viewerConclusionsList" class="viewer-conclusions-list">
                 <div class="placeholder-message">📭 Загрузите JSON-файл в левом верхнем углу</div>
             </div>
         </div>
@@ -558,19 +588,9 @@
     let jsonData = null;
     let jsonFileName = '';
     let nextId = null;
-
-    // Переменные для просмотрщика (как в view.html)
-    let currentConclusions = [];
-    let filteredConclusions = [];
-    let activeDateFilter = '';
-    let sortByIdDesc = true;
-    let editingIndex = -1;
-    let editingDateIndex = -1;
-    let searchQuery = '';
-    let visibleCount = 50;
-    let loadedCount = 0;
-    let isLoading = false;
-    let hasMore = true;
+	let jsonDirty = false;
+let autoBackupTimer = null;
+let viewerRenderLimit = 50;
 
     // DOM элементы
     const abbrInput = document.getElementById('abbrInput');
@@ -583,6 +603,7 @@
     const exportTextBtn = document.getElementById('exportTextBtn');
     const importBtn = document.getElementById('importBtn');
     const fileInput = document.getElementById('fileInput');
+    const autoSaveStatus = document.getElementById('autoSaveStatus');
     const modalityRadios = document.querySelectorAll('input[name="modality"]');
     const dateField = document.getElementById('dateField');
     const patientName = document.getElementById('patientName');
@@ -595,16 +616,8 @@
     const filenamePreview = document.getElementById('filenamePreview');
     const submitBtn = document.getElementById('submitBtn');
     const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-    
-    // Элементы просмотрщика
-    const container = document.getElementById('conclusionsContainer');
-    const dateFilterInput = document.getElementById('dateFilter');
-    const sortByIdBtnView = document.getElementById('sortByIdBtn');
-    const clearFilterBtn = document.getElementById('clearFilterBtn');
-    const filterStats = document.getElementById('filterStats');
-    const headerSearchInput = document.getElementById('headerSearchInput');
 
-    // === ФУНКЦИИ ОСНОВНОГО ПРИЛОЖЕНИЯ ===
+    // === ФУНКЦИИ ===
     function formatDateTimeForFilename() {
         const now = new Date();
         const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
@@ -614,17 +627,6 @@
         const minutes = String(now.getMinutes()).padStart(2,'0');
         const seconds = String(now.getSeconds()).padStart(2,'0');
         return `${day}${month}_${hours}-${minutes}-${seconds}`;
-    }
-
-    function getModalityPrefixForExport() {
-        if (!jsonData || jsonData.length === 0) return 'UNKNOWN';
-        const lastItem = jsonData[jsonData.length - 1];
-        const mod = String(lastItem.modality || '').toLowerCase().trim();
-        if (mod.includes('mri') || mod.includes('мрт')) return 'MRT';
-        if (mod.includes('ct') || mod.includes('кт')) return 'CT';
-        if (mod.includes('rg') || mod.includes('рг')) return 'RG';
-        if (mod.includes('flg') || mod.includes('флг')) return 'FLG';
-        return 'UNKNOWN';
     }
 
     function setTodayDate() {
@@ -675,6 +677,13 @@
     function updateNextIdDisplay() {
         nextIdDisplay.textContent = nextId === null ? '—' : nextId;
     }
+	function markJsonDirty() {
+
+    jsonDirty = true;
+
+    jsonStatusBadge.textContent =
+        'Есть несохранённые изменения';
+}
 
     function getPrefixFromFilename(filename) {
         let match = filename.match(/^([A-Z]+)___/i);
@@ -691,399 +700,152 @@
         }
         return false;
     }
+	
+	function scheduleAutoBackup() {
 
-    // АВТОЭКСПОРТ JSON НА ДИСК
-    function saveJsonToDisk() {
-        if(!jsonData) return false;
-        const now = new Date();
-        const day = String(now.getDate()).padStart(2, '0');
-        const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-        const month = months[now.getMonth()];
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        const prefix = getModalityPrefixForExport();
-        const filename = `${prefix}___${day}${month}_${hours}-${minutes}-${seconds}.json`;
-        
-        const dataStr = JSON.stringify(jsonData, null, 2);
-        const blob = new Blob([dataStr], {type:'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        return true;
-    }
+    clearTimeout(autoBackupTimer);
 
-    // ЗАГРУЗКА JSON
-    function loadDataFile(file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const data = JSON.parse(e.target.result);
-                if(Array.isArray(data)) {
-                    jsonData = data;
-                    jsonFileName = file.name;
-                    const maxId = jsonData.reduce((max,item) => Math.max(max, item.id || 0), 0);
-                    nextId = maxId + 1;
-                    dataFileInfo.innerHTML = `<span style="color:#107c10;">✅ Загружен: ${jsonFileName}</span>`;
-                    jsonStatusBadge.textContent = 'Файл загружен';
-                    updateNextIdDisplay();
-                    const prefix = getPrefixFromFilename(file.name);
-                    if(prefix) setModalityByPrefix(prefix);
-                    showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
-                    
-                    // Обновляем просмотрщик
-                    currentConclusions = jsonData.map(item => normalizeItem(item));
-                    updateDisplay();
-                } else throw new Error('Файл должен быть массивом');
-            } catch(err) {
-                showButtonMessage(loadDataFileBtn, '✗ Ошибка', true);
-                jsonData = null;
-                nextId = null;
-                dataFileInfo.innerHTML = '<span style="color:#d13438;">❌ Ошибка загрузки</span>';
-                jsonStatusBadge.textContent = 'Ошибка';
+    autoBackupTimer = setTimeout(() => {
+
+        if(jsonData) {
+
+            localStorage.setItem(
+                'jsonBackup',
+                JSON.stringify(jsonData)
+            );
+
+            localStorage.setItem(
+                'jsonBackupTime',
+                new Date().toISOString()
+            );
+
+            showNotification(
+                'Создан локальный backup'
+            );
+        }
+
+    }, 3000);
+}
+
+
+
+    // СОХРАНЕНИЕ JSON НА ДИСК (один вызов = один экспорт)
+function saveJsonToDisk() {
+    if(!jsonData) return false;
+
+    const modality = getSelectedModality();
+
+    // новое имя при каждом экспорте
+    jsonFileName = formatFilenameWithModality(modality) + '.json';
+
+    const dataStr = JSON.stringify(jsonData, null, 2);
+
+    const blob = new Blob([
+        dataStr
+    ], {
+        type: 'application/json'
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = jsonFileName;
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+
+    // обновляем превью
+    filenamePreview.textContent = jsonFileName;
+
+    return true;
+}
+
+   // ЗАГРУЗКА JSON
+function loadDataFile(file) {
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+
+        try {
+
+            const data = JSON.parse(e.target.result);
+
+            if(Array.isArray(data)) {
+
+                jsonData = data;
+
+                // сохраняем исходное имя
+                jsonFileName = file.name;
+
+                // следующий ID
+                const maxId = jsonData.reduce(
+                    (max, item) => Math.max(max, Number(item.id) || 0),
+                    0
+                );
+
+                nextId = maxId + 1;
+
+                dataFileInfo.innerHTML =
+                    `<span style="color:#107c10;">✅ Загружен: ${jsonFileName}</span>`;
+
+                jsonStatusBadge.textContent = 'Файл загружен';
+
                 updateNextIdDisplay();
-                currentConclusions = [];
-                updateDisplay();
-            }
-        };
-        reader.readAsText(file);
-    }
 
-    // Нормализация данных для просмотрщика
-    function normalizeItem(item) {
-        return {
-            id: item.id || item.identifier || item.номер || item.ID || Date.now(),
-            patient: item.patient || item.patient_name || item.name || item.fio || item.ФИО || 'Без имени',
-            text: item.text || item.conclusion || item.заключение || item.description || 'Нет текста',
-            modality: item.modality || item.modalnost || item.модальность || item.method || '',
-            title: item.title || item.study_name || item.study || item.исследование || item.название || '',
-            date: item.date || item.study_date || item.дата || item.исследован || ''
-        };
-    }
+                // определяем модальность из имени файла
+                const prefix = getPrefixFromFilename(file.name);
 
-    function getModalityDisplay(modalityRaw) {
-        if (!modalityRaw) return '📦';
-        const mod = String(modalityRaw).toLowerCase().trim();
-        if (mod.includes('мрт') || mod.includes('mri')) return '🧠';
-        if (mod.includes('рг') || mod.includes('rg')) return '📦';
-        if (mod.includes('кт') || mod.includes('ct')) return '🖥️';
-        if (mod.includes('флг') || mod.includes('flg')) return '🫁';
-        return '🔬';
-    }
-
-    function formatDate(dateStr) {
-        if (!dateStr || dateStr === '—') return '—';
-        const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-        if (match) return `${match[3]}.${match[2]}.${match[1]}`;
-        return dateStr;
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return String(str).replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    function highlightText(text, query) {
-        if (!query.trim() || !text) return escapeHtml(text);
-        const keywords = query.toLowerCase().split(/\s+/).filter(k => k.length > 0);
-        if (keywords.length === 0) return escapeHtml(text);
-        let result = escapeHtml(text);
-        const sortedKeywords = [...keywords].sort((a, b) => b.length - a.length);
-        for (const keyword of sortedKeywords) {
-            try {
-                const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-                result = result.replace(regex, match => `<span class="highlight">${match}</span>`);
-            } catch(e) {}
-        }
-        return result;
-    }
-
-    function matchesSearch(item, query) {
-        if (!query.trim()) return true;
-        const keywords = query.toLowerCase().split(/\s+/).filter(k => k.length > 0);
-        const searchableText = [
-            item.patient, item.text, item.title, item.modality
-        ].join(' ').toLowerCase();
-        return keywords.every(keyword => searchableText.includes(keyword));
-    }
-
-    function sortConclusions(conclusions) {
-        return [...conclusions].sort((a, b) => {
-            const idA = String(a.id || '');
-            const idB = String(b.id || '');
-            if (sortByIdDesc) return idB.localeCompare(idA, undefined, { numeric: true });
-            return idA.localeCompare(idB, undefined, { numeric: true });
-        });
-    }
-
-    function filterConclusions() {
-        let filtered = currentConclusions;
-        if (activeDateFilter) {
-            filtered = filtered.filter(item => item.date === activeDateFilter);
-        }
-        if (searchQuery.trim()) {
-            filtered = filtered.filter(item => matchesSearch(item, searchQuery));
-        }
-        return sortConclusions(filtered);
-    }
-
-    function saveDateEdit(index, newDate) {
-        if (index === -1 || !newDate) return;
-        const item = filteredConclusions[index];
-        const originalIndex = currentConclusions.findIndex(orig => String(orig.id) === String(item.id));
-        if (originalIndex !== -1) {
-            currentConclusions[originalIndex].date = newDate;
-            // Обновляем jsonData
-            const jsonIndex = jsonData.findIndex(j => String(j.id) === String(item.id));
-            if (jsonIndex !== -1) jsonData[jsonIndex].date = newDate;
-        }
-        editingDateIndex = -1;
-        updateDisplay();
-        saveJsonToDisk();
-    }
-
-    function saveEdit(index, newPatient, newTitle, newText, newDate) {
-        if (index === -1) return;
-        const item = filteredConclusions[index];
-        const originalIndex = currentConclusions.findIndex(orig => String(orig.id) === String(item.id));
-        if (originalIndex !== -1) {
-            if (newPatient !== undefined) currentConclusions[originalIndex].patient = newPatient;
-            if (newTitle !== undefined) currentConclusions[originalIndex].title = newTitle;
-            if (newText !== undefined) currentConclusions[originalIndex].text = newText;
-            if (newDate !== undefined) currentConclusions[originalIndex].date = newDate;
-            
-            // Обновляем jsonData
-            const jsonIndex = jsonData.findIndex(j => String(j.id) === String(item.id));
-            if (jsonIndex !== -1) {
-                if (newPatient !== undefined) jsonData[jsonIndex].patient = newPatient;
-                if (newTitle !== undefined) jsonData[jsonIndex].title = newTitle;
-                if (newText !== undefined) jsonData[jsonIndex].text = newText;
-                if (newDate !== undefined) jsonData[jsonIndex].date = newDate;
-            }
-        }
-        editingIndex = -1;
-        updateDisplay();
-        saveJsonToDisk();
-        showNotification(`Запись ${item.id} обновлена`);
-    }
-
-    function startEditing(index) {
-        editingIndex = index;
-        editingDateIndex = -1;
-        renderConclusions(filteredConclusions);
-    }
-
-    function startDateEdit(index) {
-        editingDateIndex = index;
-        editingIndex = -1;
-        renderConclusions(filteredConclusions);
-    }
-
-    function cancelEditing() {
-        editingIndex = -1;
-        editingDateIndex = -1;
-        renderConclusions(filteredConclusions);
-    }
-
-    function appendConclusionToContainer(item, index) {
-        const modalityDisplay = getModalityDisplay(item.modality);
-        const safeId = escapeHtml(String(item.id));
-        const safeDate = formatDate(item.date);
-        const highlightedPatient = highlightText(item.patient, searchQuery);
-        const highlightedTitle = highlightText(item.title || '', searchQuery);
-        const highlightedText = highlightText(item.text, searchQuery);
-        
-        const isDateEditing = (editingDateIndex === index);
-        const dateHtml = isDateEditing 
-            ? `<input type="date" class="date-edit-input" id="date-edit-${index}" value="${item.date || ''}">`
-            : `<span class="study-date" ondblclick="window.startDateEdit(${index})">📅 ${safeDate}</span>`;
-        
-        const cardHtml = `
-            <div class="conclusion-card" data-index="${index}">
-                <div class="row-patient">
-                    <span class="patient-name" ondblclick="window.startEditItem(${index})">${highlightedPatient}</span>
-                </div>
-                <div class="row-modality-study-actions">
-                    <div class="left-group">
-                        <span class="modality-badge">${modalityDisplay}</span>
-                        <span class="study-title" ondblclick="window.startEditItem(${index})">${highlightedTitle || '—'}</span>
-                        ${dateHtml}
-                        <span class="conclusion-id">🆔 ${safeId}</span>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="edit-button" onclick="window.startEditItem(${index})">✏️ Редактировать</button>
-                        <button class="copy-button" data-copy-text="${escapeHtml(item.text).replace(/"/g, '&quot;')}">📋 Копировать</button>
-                    </div>
-                </div>
-                <div class="conclusion-text" ondblclick="window.startEditItem(${index})">${highlightedText}</div>
-            </div>
-        `;
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = cardHtml;
-        container.appendChild(tempDiv.firstElementChild);
-    }
-
-    function renderConclusions(conclusions) {
-        container.innerHTML = '';
-        if (!conclusions || conclusions.length === 0) {
-            container.innerHTML = `<div class="placeholder-message">🔍 Ничего не найдено</div>`;
-            return;
-        }
-        
-        if (editingIndex !== -1 && editingDateIndex === -1) {
-            // Режим полного редактирования
-            for (let i = 0; i < conclusions.length; i++) {
-                const item = conclusions[i];
-                const modalityDisplay = getModalityDisplay(item.modality);
-                const safeId = escapeHtml(String(item.id));
-                const safeDate = formatDate(item.date);
-                const safePatient = escapeHtml(item.patient);
-                const safeText = escapeHtml(item.text);
-                const safeTitle = escapeHtml(item.title || '');
-                
-                if (editingIndex === i) {
-                    const editHtml = `
-                        <div class="conclusion-card editing" data-index="${i}">
-                            <div class="row-patient">
-                                <input type="text" class="patient-edit" id="edit-patient-${i}" value="${safePatient}">
-                            </div>
-                            <div class="row-modality-study-actions">
-                                <div class="left-group">
-                                    <span class="modality-badge">${modalityDisplay}</span>
-                                    <input type="text" class="study-title-edit" id="edit-title-${i}" value="${safeTitle}">
-                                    <input type="date" class="date-edit-input" id="edit-date-${i}" value="${item.date || ''}">
-                                    <span class="conclusion-id">🆔 ${safeId}</span>
-                                </div>
-                                <div class="action-buttons">
-                                    <button class="save-button" onclick="window.saveEditItem(${i})">💾 Сохранить</button>
-                                    <button class="cancel-button" onclick="window.cancelEditItem()">✕ Отмена</button>
-                                </div>
-                            </div>
-                            <textarea class="conclusion-text-edit" id="edit-text-${i}">${safeText}</textarea>
-                        </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', editHtml);
-                } else {
-                    const highlightedPatient = highlightText(item.patient, searchQuery);
-                    const highlightedTitle = highlightText(item.title || '', searchQuery);
-                    const highlightedText = highlightText(item.text, searchQuery);
-                    const cardHtml = `
-                        <div class="conclusion-card" data-index="${i}">
-                            <div class="row-patient">
-                                <span class="patient-name" ondblclick="window.startEditItem(${i})">${highlightedPatient}</span>
-                            </div>
-                            <div class="row-modality-study-actions">
-                                <div class="left-group">
-                                    <span class="modality-badge">${modalityDisplay}</span>
-                                    <span class="study-title" ondblclick="window.startEditItem(${i})">${highlightedTitle || '—'}</span>
-                                    <span class="study-date" ondblclick="window.startDateEdit(${i})">📅 ${safeDate}</span>
-                                    <span class="conclusion-id">🆔 ${safeId}</span>
-                                </div>
-                                <div class="action-buttons">
-                                    <button class="edit-button" onclick="window.startEditItem(${i})">✏️ Редактировать</button>
-                                    <button class="copy-button" data-copy-text="${escapeHtml(item.text).replace(/"/g, '&quot;')}">📋 Копировать</button>
-                                </div>
-                            </div>
-                            <div class="conclusion-text" ondblclick="window.startEditItem(${i})">${highlightedText}</div>
-                        </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', cardHtml);
+                if(prefix) {
+                    setModalityByPrefix(prefix);
                 }
+
+                // обновляем preview
+                updateFilenamePreview();
+
+                showButtonMessage(
+                    loadDataFileBtn,
+                    `✓ Загружено ${data.length} записей`
+                );
+
+                renderViewer();
+
+            } else {
+
+                throw new Error('Файл должен быть массивом');
+
             }
-        } else {
-            // Обычный режим или режим редактирования даты
-            for (let i = 0; i < conclusions.length; i++) {
-                appendConclusionToContainer(conclusions[i], i);
-            }
+
+        } catch(err) {
+
+            console.error(err);
+
+            showButtonMessage(
+                loadDataFileBtn,
+                '✗ Ошибка',
+                true
+            );
+
+            jsonData = null;
+            nextId = null;
+
+            dataFileInfo.innerHTML =
+                '<span style="color:#d13438;">❌ Ошибка загрузки</span>';
+
+            jsonStatusBadge.textContent = 'Ошибка';
+
+            updateNextIdDisplay();
+
+            renderViewer();
         }
-        
-        setupCopyButtons();
-        
-        if (editingDateIndex !== -1 && editingIndex === -1) {
-            const dateInput = document.getElementById(`date-edit-${editingDateIndex}`);
-            if (dateInput) {
-                const saveDate = () => saveDateEdit(editingDateIndex, dateInput.value);
-                dateInput.addEventListener('blur', saveDate);
-                dateInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') saveDate(); });
-            }
-        }
-    }
+    };
 
-    function loadMore() {
-        if (isLoading || !hasMore) return;
-        const total = filteredConclusions.length;
-        if (loadedCount >= total) { hasMore = false; return; }
-        isLoading = true;
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'loading-indicator';
-        loadingDiv.id = 'loading-indicator';
-        loadingDiv.innerHTML = '<span class="loading-spinner"></span> Загрузка...';
-        container.appendChild(loadingDiv);
-        setTimeout(() => {
-            const newCount = Math.min(loadedCount + visibleCount, total);
-            for (let i = loadedCount; i < newCount; i++) {
-                appendConclusionToContainer(filteredConclusions[i], i);
-            }
-            loadedCount = newCount;
-            const indicator = document.getElementById('loading-indicator');
-            if (indicator) indicator.remove();
-            isLoading = false;
-            if (loadedCount >= total) hasMore = false;
-            setupCopyButtons();
-        }, 100);
-    }
-
-    function handleScroll() {
-        if (!hasMore || isLoading) return;
-        const scrollPosition = window.scrollY + window.innerHeight;
-        const pageHeight = document.documentElement.scrollHeight;
-        if (scrollPosition >= pageHeight - 200) loadMore();
-    }
-
-    function setupCopyButtons() {
-        document.querySelectorAll('.copy-button').forEach(button => {
-            button.removeEventListener('click', button.clickHandler);
-            button.clickHandler = function(e) {
-                e.stopPropagation();
-                const textToCopy = this.getAttribute('data-copy-text');
-                if (!textToCopy) return;
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    const originalText = this.innerHTML;
-                    this.innerHTML = '✓ Скопировано';
-                    this.classList.add('copied');
-                    setTimeout(() => {
-                        this.innerHTML = originalText;
-                        this.classList.remove('copied');
-                    }, 1500);
-                }).catch(() => alert('Не удалось скопировать текст'));
-            };
-            button.addEventListener('click', button.clickHandler);
-        });
-    }
-
-    function updateDisplay() {
-        if (currentConclusions.length === 0) {
-            container.innerHTML = `<div class="placeholder-message">📭 Загрузите JSON-файл с заключениями</div>`;
-            filterStats.textContent = '';
-            return;
-        }
-        filteredConclusions = filterConclusions();
-        filterStats.textContent = `${filteredConclusions.length} / ${currentConclusions.length}`;
-        loadedCount = 0;
-        hasMore = true;
-        isLoading = false;
-        renderConclusions(filteredConclusions);
-    }
+    reader.readAsText(file);
+}
 
     // ДОБАВЛЕНИЕ НОВОЙ ЗАПИСИ
     function submitToJson() {
@@ -1119,12 +881,28 @@
         titleField.value = '';
         setTodayDate();
         patientName.value = '';
-        
-        // Обновляем просмотрщик
-        currentConclusions = jsonData.map(item => normalizeItem(item));
-        updateDisplay();
-        saveJsonToDisk();
+        markJsonDirty();
+
+scheduleAutoBackup();
+
+renderViewer();
+
+showNotification('Заключение добавлено');
         showButtonMessage(submitBtn, `✓ ID: ${nextId-1} сохранен`);
+    }
+
+    // РЕДАКТИРОВАНИЕ ЗАПИСИ (тоже с автоэкспортом)
+    function updateRecord(recordId, updatedFields) {
+        const index = jsonData.findIndex(r => r.id === recordId);
+        if(index !== -1) {
+            Object.assign(jsonData[index], updatedFields);
+markJsonDirty();
+scheduleAutoBackup();
+
+renderViewer();
+
+showNotification(`Запись ${recordId} обновлена`);
+        }
     }
 
     function showNotification(msg) {
@@ -1133,6 +911,258 @@
         div.className = 'export-notification';
         document.body.appendChild(div);
         setTimeout(() => div.remove(), 2000);
+    }
+
+    // === ПРОСМОТРЩИК (полностью как в view.html, но данные берутся из jsonData) ===
+    let viewerConclusions = [];
+    let viewerFiltered = [];
+    let viewerSortDesc = true;
+    let viewerDateFilter = '';
+    let viewerSearchQuery = '';
+    let viewerEditingId = null;
+
+    function normalizeForViewer(item) {
+        return {
+            id: item.id,
+            patient: item.patient || 'Без имени',
+            text: item.text || '',
+            modality: item.modality || '',
+            title: item.title || '',
+            date: item.date || ''
+        };
+    }
+
+    function getModalityEmoji(mod) {
+        const m = String(mod).toLowerCase();
+        if(m.includes('mri') || m.includes('мрт')) return '🧠';
+        if(m.includes('ct') || m.includes('кт')) return '🖥️';
+        if(m.includes('rg') || m.includes('рг')) return '📦';
+        if(m.includes('flg') || m.includes('флг')) return '🫁';
+        return '🔬';
+    }
+
+    function escapeHtml(str) {
+        if(!str) return '';
+        return String(str).replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function highlightText(text, query) {
+    if(!query.trim() || !text) {
+        return escapeHtml(text);
+    }
+
+    const keywords = query
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    let result = escapeHtml(text);
+
+    for(const kw of keywords) {
+        const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+        const regex = new RegExp(`(${escaped})`, 'gi');
+
+        result = result.replace(
+            regex,
+            '<span class="highlight">$1</span>'
+        );
+    }
+
+    return result;
+}
+
+    function filterViewerConclusions() {
+    let filtered = [...viewerConclusions];
+
+    // фильтр по дате
+    if(viewerDateFilter) {
+        filtered = filtered.filter(i => i.date === viewerDateFilter);
+    }
+
+    // поиск по ключевым словам
+    if(viewerSearchQuery.trim()) {
+        const keywords = viewerSearchQuery
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+        filtered = filtered.filter(i => {
+            const combinedText = [
+                i.patient || '',
+                i.text || '',
+                i.title || ''
+            ]
+            .join(' ')
+            .toLowerCase();
+
+            // все слова должны присутствовать
+            return keywords.every(keyword =>
+                combinedText.includes(keyword)
+            );
+        });
+    }
+
+    // сортировка
+    filtered.sort((a, b) => {
+        const idA = Number(a.id) || 0;
+        const idB = Number(b.id) || 0;
+
+        return viewerSortDesc
+            ? idB - idA
+            : idA - idB;
+    });
+
+    viewerFiltered = filtered;
+
+    document.getElementById('viewerFilterStats').textContent =
+        `${viewerFiltered.length} / ${viewerConclusions.length}`;
+
+    return viewerFiltered;
+}
+
+    function renderViewer() {
+        if(!jsonData || !Array.isArray(jsonData)) {
+            document.getElementById('viewerConclusionsList').innerHTML = '<div class="placeholder-message">📭 Загрузите JSON-файл в левом верхнем углу</div>';
+            viewerConclusions = [];
+            return;
+        }
+        viewerConclusions = jsonData.map(normalizeForViewer);
+        const filtered = filterViewerConclusions();
+        const container = document.getElementById('viewerConclusionsList');
+        if(filtered.length === 0) {
+            container.innerHTML = '<div class="placeholder-message">🔍 Ничего не найдено</div>';
+            return;
+        }
+        container.innerHTML = '';
+        const visibleItems =
+    filtered.slice(0, viewerRenderLimit);
+
+for(let item of visibleItems) {
+            const isEditing = (viewerEditingId === item.id);
+            const modalityEmoji = getModalityEmoji(item.modality);
+            const safeId = escapeHtml(String(item.id));
+            const safeDate = item.date ? item.date.split('-').reverse().join('.') : '—';
+            const highlightedPatient = highlightText(item.patient, viewerSearchQuery);
+            const highlightedTitle = highlightText(item.title, viewerSearchQuery);
+            const highlightedText = highlightText(item.text, viewerSearchQuery);
+            
+            const card = document.createElement('div');
+            card.className = `conclusion-card ${isEditing ? 'editing' : ''}`;
+            card.dataset.id = item.id;
+            
+            if(isEditing) {
+                card.innerHTML = `
+                    <div class="row-patient">
+                        <input type="text" class="patient-edit" id="edit-patient-${item.id}" value="${escapeHtml(item.patient)}">
+                    </div>
+                    <div class="row-modality-study-actions">
+                        <div class="left-group">
+                            <span class="modality-badge">${modalityEmoji}</span>
+                            <input type="text" class="study-title-edit" id="edit-title-${item.id}" value="${escapeHtml(item.title)}">
+                            <input type="date" class="date-edit-input" id="edit-date-${item.id}" value="${item.date || ''}">
+                            <span class="conclusion-id">🆔 ${safeId}</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="save-button" data-id="${item.id}">💾 Сохранить</button>
+                            <button class="cancel-button" data-id="${item.id}">✕ Отмена</button>
+                        </div>
+                    </div>
+                    <textarea class="conclusion-text-edit" id="edit-text-${item.id}">${escapeHtml(item.text)}</textarea>
+                `;
+            } else {
+                card.innerHTML = `
+                    <div class="row-patient">
+                        <span class="patient-name" data-id="${item.id}">${highlightedPatient}</span>
+                    </div>
+                    <div class="row-modality-study-actions">
+                        <div class="left-group">
+                            <span class="modality-badge">${modalityEmoji}</span>
+                            <span class="study-title" data-id="${item.id}">${highlightedTitle || '—'}</span>
+                            <span class="study-date" data-id="${item.id}">📅 ${safeDate}</span>
+                            <span class="conclusion-id">🆔 ${safeId}</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="edit-button" data-id="${item.id}">✏️ Редактировать</button>
+                            <button class="copy-button" data-id="${item.id}">📋 Копировать</button>
+                        </div>
+                    </div>
+                    <div class="conclusion-text" data-id="${item.id}">${highlightedText}</div>
+                `;
+            }
+            container.appendChild(card);
+        }
+        
+        // Обработчики
+        document.querySelectorAll('.edit-button').forEach(btn => {
+            btn.onclick = () => { viewerEditingId = Number(btn.dataset.id); renderViewer(); };
+        });
+        document.querySelectorAll('.cancel-button').forEach(btn => {
+            btn.onclick = () => { viewerEditingId = null; renderViewer(); };
+        });
+        document.querySelectorAll('.save-button').forEach(btn => {
+            btn.onclick = () => {
+                const id = Number(btn.dataset.id);
+                const newPatient = document.getElementById(`edit-patient-${id}`)?.value;
+                const newTitle = document.getElementById(`edit-title-${id}`)?.value;
+                const newDate = document.getElementById(`edit-date-${id}`)?.value;
+                const newText = document.getElementById(`edit-text-${id}`)?.value;
+                if(newText !== undefined && newText.trim()) {
+                    updateRecord(id, {
+                        patient: newPatient || '',
+                        title: newTitle || '',
+                        date: newDate || '',
+                        text: newText
+                    });
+                    viewerEditingId = null;
+                } else if(newText !== undefined && !newText.trim()) {
+                    showNotification('Текст не может быть пустым');
+                }
+            };
+        });
+        document.querySelectorAll('.copy-button').forEach(btn => {
+            btn.onclick = () => {
+                const id = Number(btn.dataset.id);
+                const item = viewerConclusions.find(i => i.id === id);
+                if(item) navigator.clipboard.writeText(item.text);
+                showNotification('Текст скопирован');
+            };
+        });
+        document.querySelectorAll('.patient-name, .study-title, .study-date, .conclusion-text').forEach(el => {
+            if(el.classList.contains('conclusion-text') || el.classList.contains('patient-name') || 
+               el.classList.contains('study-title') || el.classList.contains('study-date')) {
+                el.onclick = (e) => {
+                    const id = Number(el.dataset.id);
+                    viewerEditingId = id;
+                    renderViewer();
+                };
+            }
+        });
+		container.onscroll = () => {
+
+    const nearBottom =
+
+        container.scrollTop +
+        container.clientHeight >=
+
+        container.scrollHeight - 200;
+
+    if(
+        nearBottom &&
+        viewerRenderLimit < filtered.length
+    ) {
+
+        viewerRenderLimit += 50;
+
+        renderViewer();
+    }
+};
+		
     }
 
     // === ОСТАЛЬНЫЕ ФУНКЦИИ ===
@@ -1215,7 +1245,6 @@
     }
 
     function autoSaveText() { if(textInput.value.trim()) exportText(); }
-    
     function copy_to_clipboard(id) {
         const el = document.getElementById(id);
         el.select();
@@ -1224,23 +1253,6 @@
         if(btn) showButtonMessage(btn, '✓ Скопировано');
     }
     window.copy_to_clipboard = copy_to_clipboard;
-    
-    // Глобальные функции для вызова из onclick
-    window.startEditItem = startEditing;
-    window.startDateEdit = startDateEdit;
-    window.cancelEditItem = cancelEditing;
-    window.saveEditItem = function(index) {
-        const patientInput = document.getElementById(`edit-patient-${index}`);
-        const titleInput = document.getElementById(`edit-title-${index}`);
-        const textInputEl = document.getElementById(`edit-text-${index}`);
-        const dateInputEl = document.getElementById(`edit-date-${index}`);
-        saveEdit(index, 
-            patientInput?.value, 
-            titleInput?.value, 
-            textInputEl?.value,
-            dateInputEl?.value
-        );
-    };
 
     // === ИНИЦИАЛИЗАЦИЯ ===
     function init() {
@@ -1253,6 +1265,15 @@
         loadDataFileBtn.onclick = () => dataFileInput.click();
         dataFileInput.onchange = (e) => { if(e.target.files.length) loadDataFile(e.target.files[0]); dataFileInput.value = ''; };
         submitBtn.onclick = submitToJson;
+		document.getElementById('saveJsonBtn').onclick = () => {
+
+    saveJsonToDisk();
+
+    jsonDirty = false;
+
+    jsonStatusBadge.textContent =
+        'JSON сохранён';
+};
         exportTextBtn.onclick = exportText;
         addBtn.onclick = addAbbreviation;
         clearBtn.onclick = clearAbbreviations;
@@ -1261,53 +1282,91 @@
         fileInput.onchange = (e) => { if(e.target.files.length) importAbbreviations(e.target.files[0]); fileInput.value = ''; };
         modalityRadios.forEach(r => r.addEventListener('change', updateFilenamePreview));
         
-        // Настройка фильтров просмотрщика
-        dateFilterInput.addEventListener('change', (e) => {
-            activeDateFilter = e.target.value;
-            editingIndex = -1;
-            editingDateIndex = -1;
-            updateDisplay();
+        // Просмотрщик
+        document.getElementById('viewerSearchInput').addEventListener('input', (e) => {
+            viewerSearchQuery = e.target.value;
+
+viewerEditingId = null;
+
+viewerRenderLimit = 50;
+
+renderViewer();
         });
-        
-        sortByIdBtnView.addEventListener('click', () => {
-            sortByIdDesc = !sortByIdDesc;
-            sortByIdBtnView.innerHTML = sortByIdDesc ? '⬇️🆔' : '⬆️🆔';
-            editingIndex = -1;
-            editingDateIndex = -1;
-            updateDisplay();
+        document.getElementById('viewerClearSearchBtn').onclick = () => {
+            document.getElementById('viewerSearchInput').value = '';
+            viewerSearchQuery = '';
+            viewerEditingId = null;
+            renderViewer();
+        };
+        document.getElementById('viewerDateFilter').addEventListener('change', (e) => {
+            viewerDateFilter = e.target.value;
+            viewerEditingId = null;
+            renderViewer();
         });
-        
-        clearFilterBtn.addEventListener('click', () => {
-            activeDateFilter = '';
-            dateFilterInput.value = '';
-            headerSearchInput.value = '';
-            searchQuery = '';
-            editingIndex = -1;
-            editingDateIndex = -1;
-            updateDisplay();
-        });
-        
-        let searchTimeout;
-        headerSearchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                searchQuery = e.target.value;
-                editingIndex = -1;
-                editingDateIndex = -1;
-                updateDisplay();
-            }, 300);
-        });
+        document.getElementById('viewerSortBtn').onclick = () => {
+            viewerSortDesc = !viewerSortDesc;
+            document.getElementById('viewerSortBtn').innerHTML = viewerSortDesc ? '⬇️ По ID (новые сверху)' : '⬆️ По ID (старые сверху)';
+            viewerEditingId = null;
+            renderViewer();
+        };
+        document.getElementById('viewerClearFiltersBtn').onclick = () => {
+            viewerDateFilter = '';
+            viewerSearchQuery = '';
+            document.getElementById('viewerSearchInput').value = '';
+            document.getElementById('viewerDateFilter').value = '';
+            viewerEditingId = null;
+            renderViewer();
+        };
         
         // Скролл
-        window.addEventListener('scroll', handleScroll);
         window.addEventListener('scroll', () => {
             if(window.scrollY > 300) scrollToTopBtn.classList.add('visible');
             else scrollToTopBtn.classList.remove('visible');
         });
         scrollToTopBtn.onclick = () => window.scrollTo({top:0, behavior:'smooth'});
         
-        currentConclusions = [];
-        updateDisplay();
+		
+		const backup = localStorage.getItem(
+    'jsonBackup'
+);
+
+if(backup && !jsonData) {
+
+    if(confirm(
+        'Найден backup. Восстановить?'
+    )) {
+
+        try {
+
+            jsonData = JSON.parse(backup);
+
+            viewerConclusions =
+                jsonData.map(normalizeForViewer);
+
+            nextId = jsonData.reduce(
+                (m, i) =>
+                    Math.max(
+                        m,
+                        Number(i.id) || 0
+                    ),
+                0
+            ) + 1;
+
+            updateNextIdDisplay();
+
+            renderViewer();
+
+            jsonStatusBadge.textContent =
+                'Backup восстановлен';
+
+        } catch(err) {
+
+            console.error(err);
+        }
+    }
+}
+		
+        renderViewer();
     }
     
     init();
