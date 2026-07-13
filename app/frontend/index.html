@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Система сокращений</title>
+    <title>Описать</title>
     <style>
         * {
             margin: 0;
@@ -176,7 +176,7 @@
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             transition: all 0.2s ease;
-            min-height: 400px;
+            min-height: 340px;
         }
 
         .win11-textarea:focus {
@@ -469,7 +469,7 @@
             <!-- Правая колонка: Основное рабочее поле -->
             <div class="win11-card">
                 <h3 class="section-title">📝 Текстовое поле</h3>
-                <textarea id="textInput" class="win11-textarea" rows="16"
+                <textarea id="textInput" class="win11-textarea" rows="12"
                     placeholder="Введите текст здесь... Сокращения заменяются при нажатии пробела или Enter."></textarea>
                 
                 <!-- Кнопка отправки ВЫШЕ остальных кнопок -->
@@ -536,6 +536,18 @@
         const filenamePreview = document.getElementById('filenamePreview');
         const submitBtn = document.getElementById('submitBtn');
 
+        // Функция для форматирования даты и времени для имени файла
+        function formatDateTimeForFilename() {
+            const now = new Date();
+            const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+            const month = months[now.getMonth()];
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            return `${day}${month}_${hours}-${minutes}-${seconds}`;
+        }
+
         // Установка сегодняшней даты в поле даты
         function setTodayDate() {
             const today = new Date();
@@ -593,9 +605,10 @@
             return `${prefix}_${day}${month}_${hours}-${minutes}-${seconds}`;
         }
 
-        // Функция для форматирования имени файла с ФИО пациента
-        function formatFilenameWithPatientName(patientNameText) {
+        // Функция для форматирования имени файла для сохранения текста
+        function formatTextFilename() {
             const now = new Date();
+            const selectedModality = getSelectedModality();
             
             // Месяц: 3-буквенное сокращение на английском
             const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
@@ -609,13 +622,25 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             
+            // Маппинг модальностей для префикса
+            const modalityPrefix = {
+                'rg': 'rg',
+                'fl': 'fl',
+                'ct': 'ct',
+                'mr': 'mr'
+            };
+            
+            const prefix = modalityPrefix[selectedModality] || 'unknown';
+            
             // Обрабатываем ФИО: заменяем пробелы на подчеркивания
-            let namePart = patientNameText.trim().replace(/\s+/g, '_');
+            const patientNameText = patientName.value.trim();
+            let namePart = patientNameText.replace(/\s+/g, '_');
             if (namePart === '') {
                 namePart = 'без_имени';
             }
             
-            return `${namePart}_${day}${month}_${hours}-${minutes}-${seconds}`;
+            // Формат: префикс_дата-время_фио.txt
+            return `${prefix}_${day}${month}_${hours}-${minutes}-${seconds}_${namePart}.txt`;
         }
 
         // Обновление превью имени файла на основе выбранной модальности
@@ -632,6 +657,34 @@
                 }
             }
             return 'rg'; // По умолчанию РГ
+        }
+
+        // Установка модальности по префиксу
+        function setModalityByPrefix(prefix) {
+            const modalityMap = {
+                'rg': 'rg',
+                'fl': 'fl',
+                'ct': 'ct',
+                'mr': 'mr'
+            };
+            
+            const modality = modalityMap[prefix];
+            if (modality) {
+                modalityRadios.forEach(radio => {
+                    if (radio.value === modality) {
+                        radio.checked = true;
+                    }
+                });
+                updateFilenamePreview();
+                return true;
+            }
+            return false;
+        }
+
+        // Получение префикса из имени файла
+        function getPrefixFromFilename(filename) {
+            const match = filename.match(/^([a-z]{2})_/i);
+            return match ? match[1].toLowerCase() : null;
         }
 
         // Получение текста выбранной модальности БЕЗ ЭМОДЗИ для title
@@ -797,7 +850,7 @@
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
-        // Экспорт сокращений в JSON
+        // Экспорт сокращений в JSON с новым форматом имени
         function exportAbbreviations() {
             const data = JSON.stringify(abbreviations, null, 2);
             const blob = new Blob([data], { type: 'application/json' });
@@ -805,7 +858,8 @@
 
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'сокращения.json';
+            const dateTime = formatDateTimeForFilename();
+            a.download = `abbreviations_${dateTime}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -814,7 +868,7 @@
             showButtonMessage(exportBtn, `✓ ${Object.keys(abbreviations).length} экспортировано`);
         }
 
-        // Экспорт текста в TXT с именем по формату: ФИО_ддмесяц_чч-мм-сс.txt
+        // Экспорт текста в TXT с новым форматом имени
         function exportText() {
             const text = textInput.value;
             if (!text.trim()) {
@@ -822,11 +876,8 @@
                 return;
             }
 
-            // Получаем ФИО из поля
-            const patientNameText = patientName.value.trim();
-            
-            // Генерируем имя файла на основе ФИО
-            const filename = formatFilenameWithPatientName(patientNameText) + '.txt';
+            // Генерируем имя файла в формате: rg_18mar_15-30-45_Петрова_Катя.txt
+            const filename = formatTextFilename();
 
             const blob = new Blob([text], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
@@ -915,6 +966,12 @@
                         
                         // Обновляем отображение ID
                         updateNextIdDisplay();
+                        
+                        // Автоматически выбираем модальность по префиксу имени файла
+                        const prefix = getPrefixFromFilename(file.name);
+                        if (prefix) {
+                            setModalityByPrefix(prefix);
+                        }
                         
                         showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
                     } else {
