@@ -498,9 +498,11 @@ style="width:100%; margin-top:8px">
 </button>
             <div class="file-info" id="dataFileInfo">⏺ Файл не загружен</div>
             <div style="margin: 8px 0; height:1px; background:#ddd;"></div>
+			
             <div><div style="font-size:10px">Следующий ID</div><div id="nextIdDisplay" class="unknown-id">—</div></div>
             <div style="margin-top:6px"><div style="font-size:10px">Имя файла</div><div id="filenamePreview" style="font-size:11px">—</div></div>
         </div>
+		
 
         <div class="win11-card compact-card">
             <div class="meta-row">
@@ -633,17 +635,61 @@ let viewerRenderLimit = 50;
         dateField.value = new Date().toISOString().slice(0,10);
     }
 
-    function showButtonMessage(button, message, isError = false) {
-        const msgSpan = button.querySelector('.button-message');
-        if(!msgSpan) return;
-        msgSpan.textContent = message;
-        button.classList.add('show-message');
-        if(isError) button.classList.add('error-message');
+function showButtonMessage(button, message, isError = false) {
+
+    if(!button) return;
+
+    // Если кнопка Win11
+    let msgSpan = button.querySelector('.button-message');
+    let textSpan = button.querySelector('.button-text');
+
+    // Обычные кнопки (save/copy/edit)
+    if(!msgSpan || !textSpan) {
+
+        const originalText = button.dataset.originalText
+            || button.textContent;
+
+        button.dataset.originalText = originalText;
+
+        button.textContent = message;
+
+        if(isError) {
+            button.style.backgroundColor = '#d13438';
+            button.style.color = 'white';
+        } else {
+            button.style.backgroundColor = '#107c10';
+            button.style.color = 'white';
+        }
+
         setTimeout(() => {
-            button.classList.remove('show-message');
-            button.classList.remove('error-message');
+
+            button.textContent =
+                button.dataset.originalText;
+
+            button.style.backgroundColor = '';
+            button.style.color = '';
+
         }, 2000);
+
+        return;
     }
+
+    // Win11-кнопки
+    msgSpan.textContent = message;
+
+    button.classList.add('show-message');
+
+    if(isError) {
+        button.classList.add('error-message');
+    }
+
+    setTimeout(() => {
+
+        button.classList.remove('show-message');
+        button.classList.remove('error-message');
+
+    }, 2000);
+}
 
     function getSelectedModality() {
         for(let r of modalityRadios) if(r.checked) return r.value;
@@ -719,14 +765,19 @@ let viewerRenderLimit = 50;
                 new Date().toISOString()
             );
 
-            showNotification(
-                'Создан локальный backup'
-            );
+            autoSaveStatus.textContent =
+                '✓ Backup сохранён';
+
+            setTimeout(() => {
+
+                autoSaveStatus.textContent =
+                    '⏺ Автосохранение активно';
+
+            }, 2000);
         }
 
     }, 3000);
 }
-
 
 
     // СОХРАНЕНИЕ JSON НА ДИСК (один вызов = один экспорт)
@@ -887,8 +938,11 @@ scheduleAutoBackup();
 
 renderViewer();
 
-showNotification('Заключение добавлено');
-        showButtonMessage(submitBtn, `✓ ID: ${nextId-1} сохранен`);
+
+        showButtonMessage(
+    submitBtn,
+    `✓ ID ${nextId - 1} добавлен`
+);
     }
 
     // РЕДАКТИРОВАНИЕ ЗАПИСИ (тоже с автоэкспортом)
@@ -901,7 +955,17 @@ scheduleAutoBackup();
 
 renderViewer();
 
-showNotification(`Запись ${recordId} обновлена`);
+const saveBtn = document.querySelector(
+    `.save-button[data-id="${recordId}"]`
+);
+
+if(saveBtn) {
+
+    showButtonMessage(
+        saveBtn,
+        '✓ Сохранено'
+    );
+}
         }
     }
 
@@ -1113,13 +1177,14 @@ for(let item of visibleItems) {
                 const newDate = document.getElementById(`edit-date-${id}`)?.value;
                 const newText = document.getElementById(`edit-text-${id}`)?.value;
                 if(newText !== undefined && newText.trim()) {
-                    updateRecord(id, {
-                        patient: newPatient || '',
-                        title: newTitle || '',
-                        date: newDate || '',
-                        text: newText
-                    });
-                    viewerEditingId = null;
+viewerEditingId = null;
+
+updateRecord(id, {
+    patient: newPatient || '',
+    title: newTitle || '',
+    date: newDate || '',
+    text: newText
+});
                 } else if(newText !== undefined && !newText.trim()) {
                     showNotification('Текст не может быть пустым');
                 }
@@ -1130,7 +1195,10 @@ for(let item of visibleItems) {
                 const id = Number(btn.dataset.id);
                 const item = viewerConclusions.find(i => i.id === id);
                 if(item) navigator.clipboard.writeText(item.text);
-                showNotification('Текст скопирован');
+                showButtonMessage(
+    btn,
+    '✓ Скопировано'
+);
             };
         });
         document.querySelectorAll('.patient-name, .study-title, .study-date, .conclusion-text').forEach(el => {
