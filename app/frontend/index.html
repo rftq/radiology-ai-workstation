@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Протокол</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
+
             box-sizing: border-box;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
@@ -154,8 +145,8 @@
             color: #8a9bb0;
             font-size: 22px;
             cursor: pointer;
-            padding: 2px 12px;
-            border-radius: 20px;
+            padding: 1px 8px 2px 8px;
+            border-radius: 10px;
         }
 
         .win11-delete-btn:hover {
@@ -701,7 +692,7 @@
     let nextId = null;
     let jsonDirty = false;
     let autoBackupTimer = null;
-    let viewerRenderLimit = 50;
+    let viewerRenderLimit = 25;
     let isLoadingMore = false;
     let currentFilteredList = [];
     
@@ -910,7 +901,7 @@
                     updateNextIdDisplay();
                     updateFilenamePreview();
                     showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
-                    viewerRenderLimit = 50;
+                    viewerRenderLimit = 25;
                     renderViewer();
                 } else throw new Error('Файл должен быть массивом');
             } catch(err) {
@@ -957,7 +948,7 @@
         localStorage.removeItem(TITLE_DRAFT_KEY);
         markJsonDirty();
         scheduleAutoBackup();
-        viewerRenderLimit = 50;
+        viewerRenderLimit = 25;
         renderViewer();
         showButtonMessage(submitBtn, `✓ ID ${nextId - 1} добавлен`);
         if (autoSaveHint) autoSaveHint.textContent = '💾 Черновик очищен';
@@ -976,7 +967,7 @@
                     nextId = 1;
                     updateNextIdDisplay();
                 }
-                viewerRenderLimit = 50;
+                viewerRenderLimit = 25;
                 renderViewer();
                 showNotification(`Заключение ID ${recordId} удалено`);
             }
@@ -1301,11 +1292,11 @@
         fileInput.onchange = (e) => { if(e.target.files.length) importAbbreviations(e.target.files[0]); fileInput.value = ''; };
         modalityRadios.forEach(r => r.addEventListener('change', updateFilenamePreview));
         
-        document.getElementById('viewerSearchInput').addEventListener('input', (e) => { viewerSearchQuery = e.target.value; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); });
-        document.getElementById('viewerClearSearchBtn').onclick = () => { document.getElementById('viewerSearchInput').value = ''; viewerSearchQuery = ''; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); };
-        document.getElementById('viewerDateFilter').addEventListener('change', (e) => { viewerDateFilter = e.target.value; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); });
-        document.getElementById('viewerSortBtn').onclick = () => { viewerSortDesc = !viewerSortDesc; document.getElementById('viewerSortBtn').innerHTML = viewerSortDesc ? '⬇️ По ID (новые сверху)' : '⬆️ По ID (старые сверху)'; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); };
-        document.getElementById('viewerClearFiltersBtn').onclick = () => { viewerDateFilter = ''; viewerSearchQuery = ''; document.getElementById('viewerSearchInput').value = ''; document.getElementById('viewerDateFilter').value = ''; viewerEditingId = null; viewerRenderLimit = 50; renderViewer(); };
+        document.getElementById('viewerSearchInput').addEventListener('input', (e) => { viewerSearchQuery = e.target.value; viewerEditingId = null; viewerRenderLimit = 25; renderViewer(); });
+        document.getElementById('viewerClearSearchBtn').onclick = () => { document.getElementById('viewerSearchInput').value = ''; viewerSearchQuery = ''; viewerEditingId = null; viewerRenderLimit = 25; renderViewer(); };
+        document.getElementById('viewerDateFilter').addEventListener('change', (e) => { viewerDateFilter = e.target.value; viewerEditingId = null; viewerRenderLimit = 25; renderViewer(); });
+        document.getElementById('viewerSortBtn').onclick = () => { viewerSortDesc = !viewerSortDesc; document.getElementById('viewerSortBtn').innerHTML = viewerSortDesc ? '⬇️ По ID (новые сверху)' : '⬆️ По ID (старые сверху)'; viewerEditingId = null; viewerRenderLimit = 25; renderViewer(); };
+        document.getElementById('viewerClearFiltersBtn').onclick = () => { viewerDateFilter = ''; viewerSearchQuery = ''; document.getElementById('viewerSearchInput').value = ''; document.getElementById('viewerDateFilter').value = ''; viewerEditingId = null; viewerRenderLimit = 25; renderViewer(); };
         
         window.addEventListener('scroll', () => { scrollToTopBtn.classList.toggle('visible', window.scrollY > 300); });
         scrollToTopBtn.onclick = () => window.scrollTo({top:0, behavior:'smooth'});
@@ -1333,7 +1324,7 @@
         viewerRenderLimit < currentFilteredList.length
     ) {
 
-        viewerRenderLimit += 50;
+        viewerRenderLimit += 25;
 
         renderViewer();
     }
