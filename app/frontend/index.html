@@ -1313,6 +1313,35 @@
         const backup = localStorage.getItem('jsonBackup');
         if(backup && !jsonData && confirm('Найден backup. Восстановить?')) {
             try { jsonData = JSON.parse(backup); nextId = jsonData.reduce((m,i)=>Math.max(m,Number(i.id)||0),0)+1; updateNextIdDisplay(); renderViewer(); jsonStatusBadge.textContent = 'Backup восстановлен'; } catch(err){ console.error(err); }
+			
+			
+			
+			
+			window.addEventListener('scroll', () => {
+
+    const scrollPosition =
+        window.innerHeight + window.scrollY;
+
+    const pageHeight =
+        document.body.offsetHeight;
+
+    const nearBottom =
+        scrollPosition >= pageHeight - 400;
+
+    if(
+        nearBottom &&
+        viewerRenderLimit < currentFilteredList.length
+    ) {
+
+        viewerRenderLimit += 50;
+
+        renderViewer();
+    }
+});
+			
+			
+			
+			
         }
         renderViewer();
     }
