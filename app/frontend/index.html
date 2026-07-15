@@ -30,7 +30,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.5);
             padding: 20px;
-            margin-bottom: 12px;
+            /*margin-bottom: 12px;*/
         }
 
         .win11-button {
@@ -223,7 +223,7 @@
             padding: 4px 12px;
             font-size: 12px;
             line-height: 1.4;
-            min-height: 28px;
+            /*min-height: 28px;*/
         }
         .compact-card { padding: 14px; }
         .unknown-id { color: #5f7b9c; font-size: 18px; font-weight: 600; }
@@ -363,7 +363,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-height: 600px;
+            /*max-height: 600px;*/
             overflow-y: auto;
             padding-right: 5px;
         }
@@ -466,11 +466,12 @@
         }
         .conclusion-text-edit {
             width: 100%;
-            min-height: 100px;
+            min-height: 250px;
             padding: 12px;
             border: 1px solid #0067c0;
             border-radius: 10px;
-            font-family: monospace;
+            /*font-family: monospace;*/
+			font-size: 16px;
             resize: vertical;
         }
         .highlight {
@@ -589,9 +590,9 @@
             <div class="editor-header">
                 <h3 class="section-title">📝 Новое заключение</h3>
                 <div class="compact-actions">
-                    <button id="submitBtn" class="win11-button success" style="background-color:#107c10;">📨 Отправить в JSON</button>
-                    <button class="win11-button" id="copyTextBtn">📋 Скопировать</button>
-                    <button id="exportTextBtn" class="win11-button">💾 Сохранить текст</button>
+                    <button id="submitBtn" class="win11-button success" style="background-color:#107c10;">📨 Отправить заключение в JSON</button>
+                    <button class="win11-button" id="copyTextBtn">📋 Скопировать заключение</button>
+                    <button id="exportTextBtn" class="win11-button">💾 Сохранить в текст</button>
                 </div>
             </div>
             <textarea id="textInput" class="win11-textarea" rows="6" placeholder="Введите текст заключения..."></textarea>
@@ -632,8 +633,8 @@
                         <label>📅</label>
                         <input type="date" id="viewerDateFilter" class="viewer-date-input">
                     </div>
-                    <button id="viewerSortBtn" class="viewer-sort-button">⬇️ По ID (новые сверху)</button>
-                    <button id="viewerClearFiltersBtn" class="viewer-clear-filters-btn">✕ Сбросить фильтры</button>
+                    <button id="viewerSortBtn" class="viewer-sort-button">⬇️ По ID</button>
+                    <button id="viewerClearFiltersBtn" class="viewer-clear-filters-btn">✕ Сбросить</button>
                     <span id="viewerFilterStats" class="viewer-filter-stats"></span>
                 </div>
                 <div id="viewerConclusionsList" class="viewer-conclusions-list">
@@ -781,7 +782,7 @@
         const month = months[now.getMonth()];
         const day = String(now.getDate()).padStart(2,'0');
         const hms = `${String(now.getHours()).padStart(2,'0')}-${String(now.getMinutes()).padStart(2,'0')}-${String(now.getSeconds()).padStart(2,'0')}`;
-        return `${modalityPrefixMap[modality]}___${month}${day}_${hms}`;
+        return `${modalityPrefixMap[modality]}___${month}_${day}___${hms}`;
     }
 
     function updateFilenamePreview() { filenamePreview.textContent = formatFilenameWithModality(getSelectedModality()) + '.json'; }
@@ -852,7 +853,7 @@
     function submitToJson() {
         if(!jsonData) { showButtonMessage(submitBtn, '✗ Сначала загрузите файл', true); return; }
         const text = textInput.value.trim();
-        if(!text) { showButtonMessage(submitBtn, '✗ Текст пустой', true); return; }
+        if(!text) { showButtonMessage(submitBtn, '✗ Нет текста', true); return; }
         let title = titleField.value.trim();
         if(!title) {
             const modalityText = getSelectedModalityText();
@@ -1009,7 +1010,7 @@
             } else {
                 card.innerHTML = `
                     <div class="row-patient"><span class="patient-name" data-id="${item.id}">${highlightText(item.patient, viewerSearchQuery)}</span></div>
-                    <div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><span class="study-title" data-id="${item.id}">${highlightText(item.title || '', viewerSearchQuery)}</span><span class="study-date" data-id="${item.id}">📅 ${safeDate}</span><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="edit-button" data-id="${item.id}">✏️ Редактировать</button><button class="copy-button" data-id="${item.id}">📋 Копировать</button><button class="delete-conclusion-btn" data-id="${item.id}">✖ Удалить</button></div></div>
+                    <div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><span class="study-title" data-id="${item.id}">${highlightText(item.title || '', viewerSearchQuery)}</span><span class="study-date" data-id="${item.id}">📅 ${safeDate}</span><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="delete-conclusion-btn" data-id="${item.id}">✖ Удалить</button><button class="edit-button" data-id="${item.id}">✏️ Редактировать</button><button class="copy-button" data-id="${item.id}">📋 Копировать</button></div></div>
                     <div class="conclusion-text" data-id="${item.id}">${highlightText(item.text, viewerSearchQuery)}</div>
                 `;
             }
@@ -1098,7 +1099,7 @@
 
     function exportText() {
         const text = textInput.value.trim();
-        if(!text) { showButtonMessage(exportTextBtn, '✗ Текст пустой', true); return; }
+        if(!text) { showButtonMessage(exportTextBtn, '✗ Нет текста', true); return; }
         const blob = new Blob([text], {type:'text/plain'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
