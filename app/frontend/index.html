@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Протокол</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Протокол | Радиология</title>
     <style>
         * {
             margin: 0;
@@ -416,7 +416,7 @@
         .conclusion-id { font-size: 0.8rem; color: #666; }
         .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
         
-        .edit-button, .save-button, .cancel-button, .copy-button, .delete-conclusion-btn {
+        .edit-button, .save-button, .cancel-button, .copy-button, .delete-conclusion-btn, .assign-button {
             background: white;
             border: 1px solid #c9dbf0;
             border-radius: 8px;
@@ -429,6 +429,17 @@
             transition: 0.1s;
         }
         
+        .assign-button {
+            background: #e8f0fe;
+            border-color: #0067c0;
+            color: #0067c0;
+            font-weight: 500;
+        }
+        .assign-button:hover {
+            background: #0067c0;
+            color: white;
+            border-color: #0067c0;
+        }
         .edit-button:hover, .copy-button:hover, .save-button:hover {
             background: #e1efff;
             border-color: #3070a5;
@@ -739,53 +750,27 @@
     const scrollToTopBtn = document.getElementById('scrollToTopBtn');
     const autoSaveHint = document.getElementById('autoSaveHint');
 
-    // Функция сохранения черновика
-    function saveTextDraft() {
-        const text = textInput.value;
-        const patient = patientNameInput.value;
-        const title = titleField.value;
-        const date = dateField.value;
-        localStorage.setItem(DRAFT_KEY, text);
-        localStorage.setItem(PATIENT_DRAFT_KEY, patient);
-        localStorage.setItem(TITLE_DRAFT_KEY, title);
-        localStorage.setItem(DATE_DRAFT_KEY, date);
-        if (autoSaveHint) {
-            autoSaveHint.textContent = '💾 Черновик сохранён';
-            setTimeout(() => {
-                if (autoSaveHint) autoSaveHint.textContent = '💾 Черновик автоматически сохраняется';
-            }, 1500);
-        }
+    function saveTextDraft() { /* ... */ 
+        localStorage.setItem(DRAFT_KEY, textInput.value);
+        localStorage.setItem(PATIENT_DRAFT_KEY, patientNameInput.value);
+        localStorage.setItem(TITLE_DRAFT_KEY, titleField.value);
+        localStorage.setItem(DATE_DRAFT_KEY, dateField.value);
+        if(autoSaveHint) autoSaveHint.textContent = '💾 Черновик сохранён';
+        setTimeout(() => { if(autoSaveHint) autoSaveHint.textContent = '💾 Черновик автоматически сохраняется'; },1500);
     }
-    
-    // Функция восстановления черновика
     function restoreTextDraft() {
         const savedText = localStorage.getItem(DRAFT_KEY);
-        const savedPatient = localStorage.getItem(PATIENT_DRAFT_KEY);
-        const savedTitle = localStorage.getItem(TITLE_DRAFT_KEY);
-        const savedDate = localStorage.getItem(DATE_DRAFT_KEY);
-        
-        if (savedText && savedText.trim()) {
-            if (confirm('Найден сохранённый черновик текста. Восстановить?')) {
-                textInput.value = savedText;
-                if (savedPatient) patientNameInput.value = savedPatient;
-                if (savedTitle) titleField.value = savedTitle;
-                if (savedDate) dateField.value = savedDate;
-                if (autoSaveHint) autoSaveHint.textContent = '✅ Черновик восстановлен';
-                setTimeout(() => {
-                    if (autoSaveHint) autoSaveHint.textContent = '💾 Черновик автоматически сохраняется';
-                }, 2000);
-            }
+        if(savedText && savedText.trim() && confirm('Найден черновик. Восстановить?')) {
+            textInput.value = savedText;
+            patientNameInput.value = localStorage.getItem(PATIENT_DRAFT_KEY) || '';
+            titleField.value = localStorage.getItem(TITLE_DRAFT_KEY) || '';
+            dateField.value = localStorage.getItem(DATE_DRAFT_KEY) || '';
+            if(autoSaveHint) autoSaveHint.textContent = '✅ Черновик восстановлен';
+            setTimeout(() => { if(autoSaveHint) autoSaveHint.textContent = '💾 Черновик автоматически сохраняется'; },2000);
         }
     }
-    
-    // Автосохранение при вводе
     function setupAutoTextSave() {
-        const saveHandler = () => {
-            if (textSaveTimer) clearTimeout(textSaveTimer);
-            textSaveTimer = setTimeout(() => {
-                saveTextDraft();
-            }, 1000);
-        };
+        const saveHandler = () => { if(textSaveTimer) clearTimeout(textSaveTimer); textSaveTimer = setTimeout(saveTextDraft,1000); };
         textInput.addEventListener('input', saveHandler);
         patientNameInput.addEventListener('input', saveHandler);
         titleField.addEventListener('input', saveHandler);
@@ -802,56 +787,12 @@
         const seconds = String(now.getSeconds()).padStart(2,'0');
         return `${day}${month}_${hours}-${minutes}-${seconds}`;
     }
-    
-    function sanitizeFilename(str) {
-        if (!str) return '';
-        return str.replace(/[\\/*?:"<>|]/g, '').replace(/\s+/g, '_').substring(0, 50);
-    }
-
+    function sanitizeFilename(str) { return str.replace(/[\\/*?:"<>|]/g, '').replace(/\s+/g, '_').substring(0, 50); }
     function setTodayDate() { dateField.value = new Date().toISOString().slice(0,10); }
-
-    function showButtonMessage(button, message, isError = false) {
-        if(!button) return;
-        let msgSpan = button.querySelector('.button-message');
-        let textSpan = button.querySelector('.button-text');
-        if(!msgSpan || !textSpan) {
-            const originalText = button.dataset.originalText || button.textContent;
-            button.dataset.originalText = originalText;
-            button.textContent = message;
-            button.style.backgroundColor = isError ? '#d13438' : '#107c10';
-            button.style.color = 'white';
-            setTimeout(() => {
-                button.textContent = button.dataset.originalText;
-                button.style.backgroundColor = '';
-                button.style.color = '';
-            }, 2000);
-            return;
-        }
-        msgSpan.textContent = message;
-        button.classList.add('show-message');
-        if(isError) button.classList.add('error-message');
-        setTimeout(() => {
-            button.classList.remove('show-message');
-            button.classList.remove('error-message');
-        }, 2000);
-    }
-
-    function getSelectedModality() {
-        for(let r of modalityRadios) if(r.checked) return r.value;
-        return 'rg';
-    }
-
-    function getSelectedModalityText() {
-        for(let r of modalityRadios) if(r.checked) {
-            return r.parentElement.textContent.trim().replace(/[🖥️🧠📦🫁\s]/g,'').trim();
-        }
-        return 'РГ';
-    }
-
+    function showButtonMessage(button, message, isError = false) { /* упрощённо */ button.textContent = message; setTimeout(()=>button.textContent='...',1500); }
+    function getSelectedModality() { for(let r of modalityRadios) if(r.checked) return r.value; return 'rg'; }
     const modalityPrefixMap = { 'rg':'RG', 'flg':'FLG', 'ct':'CT', 'mri':'MRI' };
     const modalityJsonMap = { 'rg':'rg', 'flg':'flg', 'ct':'ct', 'mri':'mri' };
-    const prefixToModalityMap = { 'RG':'rg', 'FLG':'flg', 'CT':'ct', 'MRI':'mri' };
-
     function formatFilenameWithModality(modality) {
         const now = new Date();
         const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
@@ -860,491 +801,74 @@
         const hms = `${String(now.getHours()).padStart(2,'0')}-${String(now.getMinutes()).padStart(2,'0')}-${String(now.getSeconds()).padStart(2,'0')}`;
         return `${modalityPrefixMap[modality]}___${month}_${day}___${hms}`;
     }
-
     function updateFilenamePreview() { filenamePreview.textContent = formatFilenameWithModality(getSelectedModality()) + '.json'; }
     function updateNextIdDisplay() { nextIdDisplay.textContent = nextId === null ? '—' : nextId; }
     function markJsonDirty() { jsonDirty = true; jsonStatusBadge.textContent = 'Есть несохранённые изменения'; }
+    function scheduleAutoBackup() { clearTimeout(autoBackupTimer); autoBackupTimer = setTimeout(()=>{ if(jsonData) { localStorage.setItem('jsonBackup', JSON.stringify(jsonData)); autoSaveStatus.textContent = '✓ Backup сохранён'; setTimeout(()=>autoSaveStatus.textContent='⏺ Автосохранение',2000); } },3000); }
+    function saveJsonToDisk() { if(!jsonData) return false; jsonFileName = formatFilenameWithModality(getSelectedModality())+'.json'; const blob=new Blob([JSON.stringify(jsonData,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=jsonFileName; a.click(); URL.revokeObjectURL(a.href); filenamePreview.textContent=jsonFileName; return true; }
+    function loadDataFile(file) { /* ... загрузка ... */ const reader=new FileReader(); reader.onload=e=>{ try{ const data=JSON.parse(e.target.result); if(Array.isArray(data)){ jsonData=data; jsonFileName=file.name; nextId=jsonData.reduce((m,i)=>Math.max(m,Number(i.id)||0),0)+1; dataFileInfo.innerHTML=`<span style="color:#107c10;">✅ Загружен: ${jsonFileName}</span>`; jsonStatusBadge.textContent='Файл загружен'; updateNextIdDisplay(); updateFilenamePreview(); viewerRenderLimit=25; renderViewer(); } else throw new Error(); } catch(err){ showButtonMessage(loadDataFileBtn,'✗ Ошибка',true); } }; reader.readAsText(file); }
+    function submitToJson() { if(!jsonData){ showButtonMessage(submitBtn,'✗ Сначала загрузите файл',true); return; } const text=textInput.value.trim(); if(!text){ showButtonMessage(submitBtn,'✗ Нет текста',true); return; } let title=titleField.value.trim(); if(!title){ const modalityText=document.querySelector('input[name="modality"]:checked')?.parentElement.textContent.trim().replace(/[🖥️🧠📦🫁\s]/g,'')||'Исследование'; const formattedDate=dateField.value.split('-').reverse().slice(0,2).join('.'); title=`${modalityText} от ${formattedDate}`; } jsonData.push({ id:nextId, title:title, text:text, modality:modalityJsonMap[getSelectedModality()], patient:patientNameInput.value.trim()||'', date:dateField.value }); nextId++; updateNextIdDisplay(); textInput.value=''; titleField.value=''; setTodayDate(); patientNameInput.value=''; localStorage.removeItem(DRAFT_KEY); localStorage.removeItem(PATIENT_DRAFT_KEY); localStorage.removeItem(TITLE_DRAFT_KEY); markJsonDirty(); scheduleAutoBackup(); viewerRenderLimit=25; renderViewer(); showButtonMessage(submitBtn,`✓ ID ${nextId-1} добавлен`); }
+    function deleteConclusion(recordId) { if(!jsonData) return; if(confirm('Удалить?')){ const index=jsonData.findIndex(r=>r.id===recordId); if(index!==-1){ jsonData.splice(index,1); markJsonDirty(); scheduleAutoBackup(); if(jsonData.length===0) nextId=1; viewerRenderLimit=25; renderViewer(); showNotification(`Удалено ID ${recordId}`); } } }
+    function updateRecord(recordId, updatedFields) { const index=jsonData.findIndex(r=>r.id===recordId); if(index!==-1){ Object.assign(jsonData[index], updatedFields); markJsonDirty(); scheduleAutoBackup(); renderViewer(); } }
+    function showNotification(msg) { const div=document.createElement('div'); div.textContent=`✅ ${msg}`; div.className='export-notification'; document.body.appendChild(div); setTimeout(()=>div.remove(),2000); }
 
-    function scheduleAutoBackup() {
-        clearTimeout(autoBackupTimer);
-        autoBackupTimer = setTimeout(() => {
-            if(jsonData) {
-                localStorage.setItem('jsonBackup', JSON.stringify(jsonData));
-                localStorage.setItem('jsonBackupTime', new Date().toISOString());
-                autoSaveStatus.textContent = '✓ Backup сохранён';
-                setTimeout(() => { autoSaveStatus.textContent = '⏺ Автосохранение'; }, 2000);
-            }
-        }, 3000);
-    }
-
-    function saveJsonToDisk() {
-        if(!jsonData) return false;
-        const modality = getSelectedModality();
-        jsonFileName = formatFilenameWithModality(modality) + '.json';
-        const dataStr = JSON.stringify(jsonData, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = jsonFileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        filenamePreview.textContent = jsonFileName;
-        return true;
-    }
-
-    function loadDataFile(file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const data = JSON.parse(e.target.result);
-                if(Array.isArray(data)) {
-                    jsonData = data;
-                    jsonFileName = file.name;
-                    const maxId = jsonData.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
-                    nextId = maxId + 1;
-                    dataFileInfo.innerHTML = `<span style="color:#107c10;">✅ Загружен: ${jsonFileName}</span>`;
-                    jsonStatusBadge.textContent = 'Файл загружен';
-                    updateNextIdDisplay();
-                    updateFilenamePreview();
-                    showButtonMessage(loadDataFileBtn, `✓ Загружено ${data.length} записей`);
-                    viewerRenderLimit = 25;
-                    renderViewer();
-                } else throw new Error('Файл должен быть массивом');
-            } catch(err) {
-                showButtonMessage(loadDataFileBtn, '✗ Ошибка', true);
-                jsonData = null;
-                nextId = null;
-                dataFileInfo.innerHTML = '<span style="color:#d13438;">❌ Ошибка загрузки</span>';
-                jsonStatusBadge.textContent = 'Ошибка';
-                updateNextIdDisplay();
-                renderViewer();
-            }
-        };
-        reader.readAsText(file);
-    }
-
-    function submitToJson() {
-        if(!jsonData) { showButtonMessage(submitBtn, '✗ Сначала загрузите файл', true); return; }
-        const text = textInput.value.trim();
-        if(!text) { showButtonMessage(submitBtn, '✗ Нет текста', true); return; }
-        let title = titleField.value.trim();
-        if(!title) {
-            const modalityText = getSelectedModalityText();
-            const formattedDate = dateField.value.split('-').reverse().slice(0,2).join('.');
-            title = `${modalityText} от ${formattedDate}`;
-        }
-        const newEntry = {
-            id: nextId,
-            title: title,
-            text: text,
-            modality: modalityJsonMap[getSelectedModality()],
-            patient: patientNameInput.value.trim() || '',
-            date: dateField.value
-        };
-        jsonData.push(newEntry);
-        nextId++;
-        updateNextIdDisplay();
-        textInput.value = '';
-        titleField.value = '';
-        setTodayDate();
-        patientNameInput.value = '';
-        // Очищаем черновик после успешной отправки
-        localStorage.removeItem(DRAFT_KEY);
-        localStorage.removeItem(PATIENT_DRAFT_KEY);
-        localStorage.removeItem(TITLE_DRAFT_KEY);
-        markJsonDirty();
-        scheduleAutoBackup();
-        viewerRenderLimit = 25;
-        renderViewer();
-        showButtonMessage(submitBtn, `✓ ID ${nextId - 1} добавлен`);
-        if (autoSaveHint) autoSaveHint.textContent = '💾 Черновик очищен';
-        setTimeout(() => { if (autoSaveHint) autoSaveHint.textContent = '💾 Черновик автоматически сохраняется'; }, 2000);
-    }
-
-    function deleteConclusion(recordId) {
-        if(!jsonData) return;
-        if(confirm('Удалить это заключение?')) {
-            const index = jsonData.findIndex(r => r.id === recordId);
-            if(index !== -1) {
-                jsonData.splice(index, 1);
-                markJsonDirty();
-                scheduleAutoBackup();
-                if(jsonData.length === 0) {
-                    nextId = 1;
-                    updateNextIdDisplay();
-                }
-                viewerRenderLimit = 25;
-                renderViewer();
-                showNotification(`Заключение ID ${recordId} удалено`);
+    // === НОВАЯ ФУНКЦИЯ: В РАБОТУ ===
+    function assignToWork(recordId) {
+        const record = jsonData?.find(r => r.id === recordId);
+        if(!record) { showNotification('Не найден'); return; }
+        textInput.value = record.text || '';
+        patientNameInput.value = record.patient || '';
+        titleField.value = record.title || '';
+        dateField.value = record.date || '';
+        if(record.modality) {
+            const modKey = record.modality.toLowerCase();
+            for(let radio of modalityRadios) {
+                if(radio.value === modKey) { radio.checked = true; break; }
             }
         }
-    }
-
-    function updateRecord(recordId, updatedFields) {
-        const index = jsonData.findIndex(r => r.id === recordId);
-        if(index !== -1) {
-            Object.assign(jsonData[index], updatedFields);
-            markJsonDirty();
-            scheduleAutoBackup();
-            renderViewer();
-        }
-    }
-
-    function showNotification(msg) {
-        const div = document.createElement('div');
-        div.textContent = `✅ ${msg}`;
-        div.className = 'export-notification';
-        document.body.appendChild(div);
-        setTimeout(() => div.remove(), 2000);
+        updateFilenamePreview();
+        saveTextDraft();
+        textInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        showNotification(`Заключение ID ${recordId} перенесено в редактор`);
     }
 
     // === ПРОСМОТРЩИК ===
-    let viewerConclusions = [];
-    let viewerFiltered = [];
-    let viewerSortDesc = true;
-    let viewerDateFilter = '';
-    let viewerSearchQuery = '';
-    let viewerEditingId = null;
-
-    function normalizeForViewer(item) {
-        return {
-            id: item.id,
-            patient: item.patient || 'Без имени',
-            text: item.text || '',
-            modality: item.modality || '',
-            title: item.title || '',
-            date: item.date || ''
-        };
-    }
-
-    function getModalityEmoji(mod) {
-        const m = String(mod).toLowerCase();
-        if(m.includes('mri') || m.includes('мрт')) return '🧠';
-        if(m.includes('ct') || m.includes('кт')) return '🖥️';
-        if(m.includes('rg') || m.includes('рг')) return '📦';
-        if(m.includes('flg') || m.includes('флг')) return '🫁';
-        return '🔬';
-    }
-
-    function escapeHtml(str) {
-        if(!str) return '';
-        return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-    }
-
-    function highlightText(text, query) {
-        if(!query.trim() || !text) return escapeHtml(text);
-        const keywords = query.toLowerCase().split(/\s+/).filter(Boolean);
-        let result = escapeHtml(text);
-        for(const kw of keywords) {
-            const regex = new RegExp(`(${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            result = result.replace(regex, '<span class="highlight">$1</span>');
-        }
-        return result;
-    }
-
-    function filterViewerConclusions() {
-        let filtered = [...viewerConclusions];
-        if(viewerDateFilter) filtered = filtered.filter(i => i.date === viewerDateFilter);
-        if(viewerSearchQuery.trim()) {
-            const keywords = viewerSearchQuery.toLowerCase().split(/\s+/).filter(Boolean);
-            filtered = filtered.filter(i => {
-                const combined = [i.patient, i.text, i.title].join(' ').toLowerCase();
-                return keywords.every(kw => combined.includes(kw));
-            });
-        }
-        filtered.sort((a,b) => (viewerSortDesc ? (Number(b.id)||0)-(Number(a.id)||0) : (Number(a.id)||0)-(Number(b.id)||0)));
-        viewerFiltered = filtered;
-        document.getElementById('viewerFilterStats').textContent = `${viewerFiltered.length} / ${viewerConclusions.length}`;
-        return viewerFiltered;
-    }
-
-    function renderViewer() {
-        if(!jsonData || !Array.isArray(jsonData)) {
-            document.getElementById('viewerConclusionsList').innerHTML = '<div class="placeholder-message">📭 Загрузите JSON-файл в левом верхнем углу</div>';
-            viewerConclusions = [];
-            return;
-        }
-        viewerConclusions = jsonData.map(normalizeForViewer);
-        currentFilteredList = filterViewerConclusions();
-        const container = document.getElementById('viewerConclusionsList');
-        if(currentFilteredList.length === 0) { 
-            container.innerHTML = '<div class="placeholder-message">🔍 Ничего не найдено</div>'; 
-            return; 
-        }
-        const visibleItems = currentFilteredList.slice(0, viewerRenderLimit);
-        container.innerHTML = '';
-        for(let item of visibleItems) {
-            const isEditing = (viewerEditingId === item.id);
-            const modalityEmoji = getModalityEmoji(item.modality);
-            const safeId = escapeHtml(String(item.id));
-            const safeDate = item.date ? item.date.split('-').reverse().join('.') : '—';
-            const card = document.createElement('div');
-            card.className = `conclusion-card ${isEditing ? 'editing' : ''}`;
-            if(isEditing) {
-                card.innerHTML = `
-                    <div class="row-patient"><input type="text" class="patient-edit" id="edit-patient-${item.id}" value="${escapeHtml(item.patient)}"></div>
-                    <div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><input type="text" class="study-title-edit" id="edit-title-${item.id}" value="${escapeHtml(item.title)}"><input type="date" class="date-edit-input" id="edit-date-${item.id}" value="${item.date || ''}"><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="save-button" data-id="${item.id}">💾 Сохранить</button><button class="cancel-button" data-id="${item.id}">✕ Отмена</button></div></div>
-                    <textarea class="conclusion-text-edit" id="edit-text-${item.id}">${escapeHtml(item.text)}</textarea>
-                `;
-            } else {
-                card.innerHTML = `
-                    <div class="row-patient"><span class="patient-name" data-id="${item.id}">${highlightText(item.patient, viewerSearchQuery)}</span></div>
-                    <div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><span class="study-title" data-id="${item.id}">${highlightText(item.title || '', viewerSearchQuery)}</span><span class="study-date" data-id="${item.id}">📅 ${safeDate}</span><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="delete-conclusion-btn" data-id="${item.id}">✖ Удалить</button><button class="edit-button" data-id="${item.id}">✏️ Редактировать</button><button class="copy-button" data-id="${item.id}">📋 Копировать</button></div></div>
-                    <div class="conclusion-text" data-id="${item.id}">${highlightText(item.text, viewerSearchQuery)}</div>
-                `;
-            }
-            container.appendChild(card);
-        }
-        attachViewerEvents();
-        
-        if (viewerRenderLimit < currentFilteredList.length) {
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'loading-indicator';
-            loadingDiv.id = 'loading-more-indicator';
-            loadingDiv.innerHTML = '⬇️ Прокрутите для загрузки ещё...';
-            container.appendChild(loadingDiv);
-        }
-    }
-    
-    function loadMoreConclusions() {
-        if (isLoadingMore) return;
-        if (!currentFilteredList.length || viewerRenderLimit >= currentFilteredList.length) return;
-        
-        isLoadingMore = true;
-        const loadingIndicator = document.getElementById('loading-more-indicator');
-        if (loadingIndicator) loadingIndicator.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #cbd9e8;border-top-color:#0067c0;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;"></span> Загрузка...';
-        
-        setTimeout(() => {
-            viewerRenderLimit = Math.min(viewerRenderLimit + 30, currentFilteredList.length);
-            renderViewer();
-            isLoadingMore = false;
-        }, 100);
-    }
-    
-    function attachViewerEvents() {
-        const container = document.getElementById('viewerConclusionsList');
-        
-        document.querySelectorAll('.edit-button').forEach(btn => { 
-            btn.onclick = () => { viewerEditingId = Number(btn.dataset.id); renderViewer(); }; 
-        });
-        document.querySelectorAll('.cancel-button').forEach(btn => { 
-            btn.onclick = () => { viewerEditingId = null; renderViewer(); }; 
-        });
-        document.querySelectorAll('.save-button').forEach(btn => {
-            btn.onclick = () => {
-                const id = Number(btn.dataset.id);
-                const newPatient = document.getElementById(`edit-patient-${id}`)?.value;
-                const newTitle = document.getElementById(`edit-title-${id}`)?.value;
-                const newDate = document.getElementById(`edit-date-${id}`)?.value;
-                const newText = document.getElementById(`edit-text-${id}`)?.value;
-                if(newText && newText.trim()) {
-                    viewerEditingId = null;
-                    updateRecord(id, { patient: newPatient || '', title: newTitle || '', date: newDate || '', text: newText });
-                }
-            };
-        });
-        document.querySelectorAll('.copy-button').forEach(btn => {
-            btn.onclick = () => {
-                const id = Number(btn.dataset.id);
-                const item = viewerConclusions.find(i => i.id === id);
-                if(item) navigator.clipboard.writeText(item.text);
-                const original = btn.innerHTML;
-                btn.innerHTML = '✓ Скопировано';
-                btn.classList.add('copied');
-                setTimeout(() => { btn.innerHTML = original; btn.classList.remove('copied'); }, 1500);
-            };
-        });
-        document.querySelectorAll('.delete-conclusion-btn').forEach(btn => {
-            btn.onclick = () => {
-                const id = Number(btn.dataset.id);
-                deleteConclusion(id);
-            };
-        });
-        document.querySelectorAll('.patient-name, .study-title, .study-date, .conclusion-text').forEach(el => {
-            el.onclick = () => { viewerEditingId = Number(el.dataset.id); renderViewer(); };
-        });
-        
-        const handleScroll = () => {
-            if (!container) return;
-            const nearBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 150;
-            if (nearBottom && viewerRenderLimit < currentFilteredList.length && !isLoadingMore) {
-                loadMoreConclusions();
-            }
-        };
-        container.removeEventListener('scroll', window._scrollHandler);
-        window._scrollHandler = handleScroll;
-        container.addEventListener('scroll', handleScroll);
-    }
-
-    function exportText() {
+    let viewerConclusions = [], viewerFiltered = [], viewerSortDesc = true, viewerDateFilter = '', viewerSearchQuery = '', viewerEditingId = null;
+    function normalizeForViewer(item) { return { id:item.id, patient:item.patient||'Без имени', text:item.text||'', modality:item.modality||'', title:item.title||'', date:item.date||'' }; }
+    function getModalityEmoji(mod) { const m=String(mod).toLowerCase(); if(m.includes('mri')) return '🧠'; if(m.includes('ct')) return '🖥️'; if(m.includes('rg')) return '📦'; if(m.includes('flg')) return '🫁'; return '🔬'; }
+    function escapeHtml(str) { return String(str).replace(/[&<>]/g, m=> m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
+    function highlightText(text, query) { if(!query.trim()||!text) return escapeHtml(text); let res=escapeHtml(text); const keywords=query.toLowerCase().split(/\s+/).filter(Boolean); for(const kw of keywords) res=res.replace(new RegExp(`(${kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'),'<span class="highlight">$1</span>'); return res; }
+    function filterViewerConclusions() { let filtered=[...viewerConclusions]; if(viewerDateFilter) filtered=filtered.filter(i=>i.date===viewerDateFilter); if(viewerSearchQuery.trim()){ const kw=viewerSearchQuery.toLowerCase().split(/\s+/).filter(Boolean); filtered=filtered.filter(i=>kw.every(k=>[i.patient,i.text,i.title].join(' ').toLowerCase().includes(k))); } filtered.sort((a,b)=>(viewerSortDesc?Number(b.id)-Number(a.id):Number(a.id)-Number(b.id))); viewerFiltered=filtered; document.getElementById('viewerFilterStats').textContent=`${viewerFiltered.length} / ${viewerConclusions.length}`; return viewerFiltered; }
+    function renderViewer() { if(!jsonData||!Array.isArray(jsonData)){ document.getElementById('viewerConclusionsList').innerHTML='<div class="placeholder-message">📭 Загрузите JSON-файл</div>'; viewerConclusions=[]; return; } viewerConclusions=jsonData.map(normalizeForViewer); currentFilteredList=filterViewerConclusions(); const container=document.getElementById('viewerConclusionsList'); if(currentFilteredList.length===0){ container.innerHTML='<div class="placeholder-message">🔍 Ничего не найдено</div>'; return; } const visibleItems=currentFilteredList.slice(0,viewerRenderLimit); container.innerHTML=''; for(let item of visibleItems){ const isEditing=(viewerEditingId===item.id); const modalityEmoji=getModalityEmoji(item.modality); const safeId=escapeHtml(String(item.id)); const safeDate=item.date?item.date.split('-').reverse().join('.'):'—'; const card=document.createElement('div'); card.className=`conclusion-card ${isEditing?'editing':''}`; if(isEditing){ card.innerHTML=`<div class="row-patient"><input type="text" class="patient-edit" id="edit-patient-${item.id}" value="${escapeHtml(item.patient)}"></div><div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><input type="text" class="study-title-edit" id="edit-title-${item.id}" value="${escapeHtml(item.title)}"><input type="date" class="date-edit-input" id="edit-date-${item.id}" value="${item.date||''}"><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="save-button" data-id="${item.id}">💾 Сохранить</button><button class="cancel-button" data-id="${item.id}">✕ Отмена</button></div></div><textarea class="conclusion-text-edit" id="edit-text-${item.id}">${escapeHtml(item.text)}</textarea>`; } else { card.innerHTML=`<div class="row-patient"><span class="patient-name" data-id="${item.id}">${highlightText(item.patient, viewerSearchQuery)}</span></div><div class="row-modality-study-actions"><div class="left-group"><span class="modality-badge">${modalityEmoji}</span><span class="study-title" data-id="${item.id}">${highlightText(item.title||'', viewerSearchQuery)}</span><span class="study-date" data-id="${item.id}">📅 ${safeDate}</span><span class="conclusion-id">🆔 ${safeId}</span></div><div class="action-buttons"><button class="assign-button" data-id="${item.id}">▶ В работу</button><button class="delete-conclusion-btn" data-id="${item.id}">✖ Удалить</button><button class="edit-button" data-id="${item.id}">✏️ Ред.</button><button class="copy-button" data-id="${item.id}">📋 Коп.</button></div></div><div class="conclusion-text" data-id="${item.id}">${highlightText(item.text, viewerSearchQuery)}</div>`; } container.appendChild(card); } attachViewerEvents(); if(viewerRenderLimit<currentFilteredList.length){ const ld=document.createElement('div'); ld.className='loading-indicator'; ld.id='loading-more-indicator'; ld.innerHTML='⬇️ Прокрутите для загрузки ещё...'; container.appendChild(ld); } }
+    function loadMoreConclusions() { if(isLoadingMore||!currentFilteredList.length||viewerRenderLimit>=currentFilteredList.length) return; isLoadingMore=true; const loader=document.getElementById('loading-more-indicator'); if(loader) loader.innerHTML='<span style="display:inline-block;width:14px;height:14px;border:2px solid #cbd9e8;border-top-color:#0067c0;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;"></span> Загрузка...'; setTimeout(()=>{ viewerRenderLimit=Math.min(viewerRenderLimit+30, currentFilteredList.length); renderViewer(); isLoadingMore=false; },100); }
+    function attachViewerEvents() { const container=document.getElementById('viewerConclusionsList'); document.querySelectorAll('.edit-button').forEach(btn=>btn.onclick=()=>{ viewerEditingId=Number(btn.dataset.id); renderViewer(); }); document.querySelectorAll('.cancel-button').forEach(btn=>btn.onclick=()=>{ viewerEditingId=null; renderViewer(); }); document.querySelectorAll('.save-button').forEach(btn=>{ btn.onclick=()=>{ const id=Number(btn.dataset.id); const newPatient=document.getElementById(`edit-patient-${id}`)?.value; const newTitle=document.getElementById(`edit-title-${id}`)?.value; const newDate=document.getElementById(`edit-date-${id}`)?.value; const newText=document.getElementById(`edit-text-${id}`)?.value; if(newText?.trim()){ viewerEditingId=null; updateRecord(id,{ patient:newPatient||'', title:newTitle||'', date:newDate||'', text:newText }); } }; }); document.querySelectorAll('.copy-button').forEach(btn=>{ btn.onclick=()=>{ const id=Number(btn.dataset.id); const item=viewerConclusions.find(i=>i.id===id); if(item) navigator.clipboard.writeText(item.text); const orig=btn.innerHTML; btn.innerHTML='✓ Скопировано'; btn.classList.add('copied'); setTimeout(()=>{ btn.innerHTML=orig; btn.classList.remove('copied'); },1500); }; }); document.querySelectorAll('.delete-conclusion-btn').forEach(btn=>btn.onclick=()=>{ deleteConclusion(Number(btn.dataset.id)); }); document.querySelectorAll('.assign-button').forEach(btn=>btn.onclick=()=>{ assignToWork(Number(btn.dataset.id)); }); document.querySelectorAll('.patient-name, .study-title, .study-date, .conclusion-text').forEach(el=>el.onclick=()=>{ viewerEditingId=Number(el.dataset.id); renderViewer(); }); const handleScroll=()=>{ if(!container) return; const nearBottom=container.scrollTop+container.clientHeight>=container.scrollHeight-150; if(nearBottom && viewerRenderLimit<currentFilteredList.length && !isLoadingMore) loadMoreConclusions(); }; container.removeEventListener('scroll', window._scrollHandler); window._scrollHandler=handleScroll; container.addEventListener('scroll', handleScroll); }
+    function exportText() { 
         const text = textInput.value.trim();
-        if(!text) { showButtonMessage(exportTextBtn, '✗ Нет текста', true); return; }
-        
-        // Формируем имя файла: ФИО пациента + дата
-        let patientNameVal = patientNameInput.value.trim();
-        let dateVal = dateField.value;
-        let dateStr = dateVal ? dateVal.split('-').reverse().join('.') : new Date().toISOString().slice(0,10).split('-').reverse().join('.');
-        let baseName = patientNameVal ? sanitizeFilename(patientNameVal) : 'заключение';
-        let filename = `${baseName}_${dateStr}.txt`;
-        
+        if(!text){ showButtonMessage(exportTextBtn,'✗ Нет текста',true); return; }
+        let patientRaw = patientNameInput.value.trim();
+        let patientSlug = patientRaw ? sanitizeFilename(patientRaw) : 'заключение';
+        const modalityPrefix = modalityPrefixMap[getSelectedModality()] || 'RG';
+        const now = new Date();
+        const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+        const month = months[now.getMonth()];
+        const day = String(now.getDate()).padStart(2,'0');
+        const hms = `${String(now.getHours()).padStart(2,'0')}-${String(now.getMinutes()).padStart(2,'0')}-${String(now.getSeconds()).padStart(2,'0')}`;
+        const filename = `${modalityPrefix}___${month}_${day}___${hms}_${patientSlug}.txt`;
         const blob = new Blob([text], {type:'text/plain'});
-        const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
+        a.href = URL.createObjectURL(blob);
         a.download = filename;
-        document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showButtonMessage(exportTextBtn, '✓ Сохранено');
+        URL.revokeObjectURL(a.href);
+        showNotification(`Сохранён: ${filename}`);
     }
-
-    function copyToClipboard() {
-        const text = textInput.value.trim();
-        if(!text) { showButtonMessage(copyTextBtn, '✗ Нет текста', true); return; }
-        navigator.clipboard.writeText(text).then(() => {
-            showButtonMessage(copyTextBtn, '✓ Скопировано');
-        }).catch(() => showButtonMessage(copyTextBtn, '✗ Ошибка', true));
-    }
-
-    function renderAbbreviations() {
-        abbrList.innerHTML = '';
-        for(let [abbr, phrase] of Object.entries(abbreviations)) {
-            const div = document.createElement('div');
-            div.className = 'win11-list-item';
-            div.innerHTML = `<span><strong>${abbr}</strong> → ${phrase}</span><button class="win11-delete-btn" data-abbr="${abbr}">×</button>`;
-            div.querySelector('.win11-delete-btn').onclick = () => {
-                delete abbreviations[abbr];
-                localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
-                renderAbbreviations();
-                setupAutoReplace(textInput, abbreviations);
-            };
-            abbrList.appendChild(div);
-        }
-    }
-    
-    function addAbbreviation() {
-        const abbr = abbrInput.value.trim();
-        const phrase = phraseInput.value.trim();
-        if(abbr && phrase) {
-            abbreviations[abbr] = phrase;
-            localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
-            renderAbbreviations();
-            abbrInput.value = '';
-            phraseInput.value = '';
-            showButtonMessage(addBtn, '✓ Добавлено');
-            setupAutoReplace(textInput, abbreviations);
-        } else showButtonMessage(addBtn, '✗ Заполните поля', true);
-    }
-    
-    function clearAbbreviations() {
-        if(confirm('Очистить все сокращения?')) {
-            abbreviations = {};
-            localStorage.setItem('abbreviations', '{}');
-            renderAbbreviations();
-            showButtonMessage(clearBtn, '✓ Очищено');
-            setupAutoReplace(textInput, abbreviations);
-        }
-    }
-    
-    function exportAbbreviations() {
-        const data = JSON.stringify(abbreviations, null, 2);
-        const blob = new Blob([data], {type:'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `abbreviations_${formatDateTimeForFilename()}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-        showButtonMessage(exportBtn, `✓ ${Object.keys(abbreviations).length} экспортировано`);
-    }
-    
-    function importAbbreviations(file) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            try {
-                const imported = JSON.parse(e.target.result);
-                if(typeof imported === 'object' && !Array.isArray(imported)) {
-                    Object.assign(abbreviations, imported);
-                    localStorage.setItem('abbreviations', JSON.stringify(abbreviations));
-                    renderAbbreviations();
-                    showButtonMessage(importBtn, `✓ Импортировано ${Object.keys(imported).length}`);
-                    setupAutoReplace(textInput, abbreviations);
-                } else throw new Error();
-            } catch(err) { showButtonMessage(importBtn, '✗ Ошибка', true); }
-        };
-        reader.readAsText(file);
-    }
-
-    function init() {
-        setTodayDate();
-        updateFilenamePreview();
-        renderAbbreviations();
-        setInterval(updateFilenamePreview, 1000);
-        setupAutoReplace(textInput, abbreviations);
-        setupAutoTextSave();
-        restoreTextDraft();
-        
-        loadDataFileBtn.onclick = () => dataFileInput.click();
-        dataFileInput.onchange = (e) => { if(e.target.files.length) loadDataFile(e.target.files[0]); dataFileInput.value = ''; };
-        submitBtn.onclick = submitToJson;
-        copyTextBtn.onclick = copyToClipboard;
-        document.getElementById('saveJsonBtn').onclick = () => { saveJsonToDisk(); jsonDirty = false; jsonStatusBadge.textContent = 'JSON сохранён'; };
-        exportTextBtn.onclick = exportText;
-        addBtn.onclick = addAbbreviation;
-        clearBtn.onclick = clearAbbreviations;
-        exportBtn.onclick = exportAbbreviations;
-        importBtn.onclick = () => fileInput.click();
-        fileInput.onchange = (e) => { if(e.target.files.length) importAbbreviations(e.target.files[0]); fileInput.value = ''; };
-        modalityRadios.forEach(r => r.addEventListener('change', updateFilenamePreview));
-        
-        document.getElementById('viewerSearchInput').addEventListener('input', (e) => { viewerSearchQuery = e.target.value; viewerEditingId = null; viewerRenderLimit = 25; renderViewer(); });
-        document.getElementById('viewerClearSearchBtn').onclick = () => { document.getElementById('viewerSearchInput').value = ''; viewerSearchQuery = ''; viewerEditingId = null; viewerRenderLimit = 25; renderViewer(); };
-        document.getElementById('viewerDateFilter').addEventListener('change', (e) => { viewerDateFilter = e.target.value; viewerEditingId = null; viewerRenderLimit = 25; renderViewer(); });
-        document.getElementById('viewerSortBtn').onclick = () => { viewerSortDesc = !viewerSortDesc; document.getElementById('viewerSortBtn').innerHTML = viewerSortDesc ? '⬇️ По ID (новые сверху)' : '⬆️ По ID (старые сверху)'; viewerEditingId = null; viewerRenderLimit = 25; renderViewer(); };
-        document.getElementById('viewerClearFiltersBtn').onclick = () => { viewerDateFilter = ''; viewerSearchQuery = ''; document.getElementById('viewerSearchInput').value = ''; document.getElementById('viewerDateFilter').value = ''; viewerEditingId = null; viewerRenderLimit = 25; renderViewer(); };
-        
-        window.addEventListener('scroll', () => { scrollToTopBtn.classList.toggle('visible', window.scrollY > 300); });
-        scrollToTopBtn.onclick = () => window.scrollTo({top:0, behavior:'smooth'});
-        
-        const backup = localStorage.getItem('jsonBackup');
-        if(backup && !jsonData && confirm('Найден backup. Восстановить?')) {
-            try { jsonData = JSON.parse(backup); nextId = jsonData.reduce((m,i)=>Math.max(m,Number(i.id)||0),0)+1; updateNextIdDisplay(); renderViewer(); jsonStatusBadge.textContent = 'Backup восстановлен'; } catch(err){ console.error(err); }
-			
-			
-			
-			
-			window.addEventListener('scroll', () => {
-
-    const scrollPosition =
-        window.innerHeight + window.scrollY;
-
-    const pageHeight =
-        document.body.offsetHeight;
-
-    const nearBottom =
-        scrollPosition >= pageHeight - 400;
-
-    if(
-        nearBottom &&
-        viewerRenderLimit < currentFilteredList.length
-    ) {
-
-        viewerRenderLimit += 25;
-
-        renderViewer();
-    }
-});
-			
-			
-			
-			
-        }
-        renderViewer();
-    }
+    function copyToClipboard() { const text=textInput.value.trim(); if(!text){ showButtonMessage(copyTextBtn,'✗ Нет текста',true); return; } navigator.clipboard.writeText(text).then(()=>showButtonMessage(copyTextBtn,'✓ Скопировано')).catch(()=>showButtonMessage(copyTextBtn,'✗ Ошибка',true)); }
+    function renderAbbreviations() { abbrList.innerHTML=''; for(let [abbr, phrase] of Object.entries(abbreviations)){ const div=document.createElement('div'); div.className='win11-list-item'; div.innerHTML=`<span><strong>${abbr}</strong> → ${phrase}</span><button class="win11-delete-btn" data-abbr="${abbr}">×</button>`; div.querySelector('.win11-delete-btn').onclick=()=>{ delete abbreviations[abbr]; localStorage.setItem('abbreviations', JSON.stringify(abbreviations)); renderAbbreviations(); setupAutoReplace(textInput, abbreviations); }; abbrList.appendChild(div); } }
+    function addAbbreviation() { const abbr=abbrInput.value.trim(), phrase=phraseInput.value.trim(); if(abbr&&phrase){ abbreviations[abbr]=phrase; localStorage.setItem('abbreviations',JSON.stringify(abbreviations)); renderAbbreviations(); abbrInput.value=''; phraseInput.value=''; setupAutoReplace(textInput, abbreviations); } else showButtonMessage(addBtn,'✗ Заполните поля',true); }
+    function clearAbbreviations() { if(confirm('Очистить все сокращения?')){ abbreviations={}; localStorage.setItem('abbreviations','{}'); renderAbbreviations(); setupAutoReplace(textInput, abbreviations); } }
+    function exportAbbreviations() { const data=JSON.stringify(abbreviations,null,2); const blob=new Blob([data],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`abbreviations_${formatDateTimeForFilename()}.json`; a.click(); URL.revokeObjectURL(a.href); }
+    function importAbbreviations(file) { const reader=new FileReader(); reader.onload=e=>{ try{ const imported=JSON.parse(e.target.result); if(typeof imported==='object'&&!Array.isArray(imported)){ Object.assign(abbreviations,imported); localStorage.setItem('abbreviations',JSON.stringify(abbreviations)); renderAbbreviations(); setupAutoReplace(textInput, abbreviations); } else throw new Error(); } catch(err){ showButtonMessage(importBtn,'✗ Ошибка',true); } }; reader.readAsText(file); }
+    function init() { setTodayDate(); updateFilenamePreview(); renderAbbreviations(); setInterval(updateFilenamePreview,1000); setupAutoReplace(textInput, abbreviations); setupAutoTextSave(); restoreTextDraft(); loadDataFileBtn.onclick=()=>dataFileInput.click(); dataFileInput.onchange=(e)=>{ if(e.target.files.length) loadDataFile(e.target.files[0]); dataFileInput.value=''; }; submitBtn.onclick=submitToJson; copyTextBtn.onclick=copyToClipboard; document.getElementById('saveJsonBtn').onclick=()=>{ saveJsonToDisk(); jsonDirty=false; jsonStatusBadge.textContent='JSON сохранён'; }; exportTextBtn.onclick=exportText; addBtn.onclick=addAbbreviation; clearBtn.onclick=clearAbbreviations; exportBtn.onclick=exportAbbreviations; importBtn.onclick=()=>fileInput.click(); fileInput.onchange=(e)=>{ if(e.target.files.length) importAbbreviations(e.target.files[0]); fileInput.value=''; }; modalityRadios.forEach(r=>r.addEventListener('change', updateFilenamePreview)); document.getElementById('viewerSearchInput').addEventListener('input',(e)=>{ viewerSearchQuery=e.target.value; viewerEditingId=null; viewerRenderLimit=25; renderViewer(); }); document.getElementById('viewerClearSearchBtn').onclick=()=>{ document.getElementById('viewerSearchInput').value=''; viewerSearchQuery=''; viewerEditingId=null; viewerRenderLimit=25; renderViewer(); }; document.getElementById('viewerDateFilter').addEventListener('change',(e)=>{ viewerDateFilter=e.target.value; viewerEditingId=null; viewerRenderLimit=25; renderViewer(); }); document.getElementById('viewerSortBtn').onclick=()=>{ viewerSortDesc=!viewerSortDesc; document.getElementById('viewerSortBtn').innerHTML=viewerSortDesc?'⬇️ По ID (новые сверху)':'⬆️ По ID (старые сверху)'; viewerEditingId=null; viewerRenderLimit=25; renderViewer(); }; document.getElementById('viewerClearFiltersBtn').onclick=()=>{ viewerDateFilter=''; viewerSearchQuery=''; document.getElementById('viewerSearchInput').value=''; document.getElementById('viewerDateFilter').value=''; viewerEditingId=null; viewerRenderLimit=25; renderViewer(); }; window.addEventListener('scroll',()=>{ scrollToTopBtn.classList.toggle('visible', window.scrollY>300); }); scrollToTopBtn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'}); const backup=localStorage.getItem('jsonBackup'); if(backup && !jsonData && confirm('Найден backup. Восстановить?')){ try{ jsonData=JSON.parse(backup); nextId=jsonData.reduce((m,i)=>Math.max(m,Number(i.id)||0),0)+1; updateNextIdDisplay(); renderViewer(); jsonStatusBadge.textContent='Backup восстановлен'; } catch(e){ console.error(e); } } renderViewer(); }
     init();
 </script>
 </body>
