@@ -365,7 +365,6 @@
             gap: 12px;
             overflow-y: auto;
             padding-right: 5px;
-            max-height: 600px;
         }
 
         .conclusion-card {
@@ -627,7 +626,7 @@
                 <button id="importBtn" class="win11-button" style="flex:1">📥 Импорт</button>
                 <button id="exportBtn" class="win11-button" style="flex:1">📤 Экспорт</button>
             </div>
-            <div id="autoSaveStatus" style="font-size:11px; text-align:center; margin-top:8px">⏺ Автосохранение каждые 20 мин</div>
+            <div id="autoSaveStatus" style="font-size:11px; text-align:center; margin-top:8px">⏺ Автосохранение</div>
         </div>
 		
         <div class="win11-card" style="padding: 0; background: transparent; backdrop-filter: none; box-shadow: none;">
@@ -873,7 +872,7 @@
                 localStorage.setItem('jsonBackup', JSON.stringify(jsonData));
                 localStorage.setItem('jsonBackupTime', new Date().toISOString());
                 autoSaveStatus.textContent = '✓ Backup сохранён';
-                setTimeout(() => { autoSaveStatus.textContent = '⏺ Автосохранение каждые 20 мин'; }, 2000);
+                setTimeout(() => { autoSaveStatus.textContent = '⏺ Автосохранение'; }, 2000);
             }
         }, 3000);
     }
