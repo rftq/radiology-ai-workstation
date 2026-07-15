@@ -30,7 +30,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.5);
             padding: 20px;
-            /*margin-bottom: 12px;*/
         }
 
         .win11-button {
@@ -183,7 +182,6 @@
             display: grid;
             grid-template-columns: 340px 1fr;
             gap: 12px;
-            margin-bottom: 12px;
         }
 
         .meta-row {
@@ -207,6 +205,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 5px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .section-title {
             font-size: 13px;
@@ -218,12 +218,12 @@
         .compact-actions {
             display: flex;
             gap: 8px;
+            flex-wrap: wrap;
         }
         .compact-actions .win11-button {
             padding: 4px 12px;
             font-size: 12px;
             line-height: 1.4;
-            /*min-height: 28px;*/
         }
         .compact-card { padding: 14px; }
         .unknown-id { color: #5f7b9c; font-size: 18px; font-weight: 600; }
@@ -363,9 +363,9 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            /*max-height: 600px;*/
             overflow-y: auto;
             padding-right: 5px;
+            max-height: 600px;
         }
 
         .conclusion-card {
@@ -415,7 +415,7 @@
         .study-date:hover { background: #e1efff; border-radius: 4px; }
         .date-edit-input { padding: 4px 8px; border: 1px solid #0067c0; border-radius: 6px; }
         .conclusion-id { font-size: 0.8rem; color: #666; }
-        .action-buttons { display: flex; gap: 8px; }
+        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
         
         .edit-button, .save-button, .cancel-button, .copy-button, .delete-conclusion-btn {
             background: white;
@@ -470,8 +470,7 @@
             padding: 12px;
             border: 1px solid #0067c0;
             border-radius: 10px;
-            /*font-family: monospace;*/
-			font-size: 16px;
+            font-size: 16px;
             resize: vertical;
         }
         .highlight {
@@ -550,6 +549,17 @@
             color: #6b8bb0;
             font-size: 0.85rem;
         }
+        
+        .auto-save-hint {
+            font-size: 11px;
+            color: #107c10;
+            margin-top: 6px;
+            text-align: right;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -590,12 +600,13 @@
             <div class="editor-header">
                 <h3 class="section-title">📝 Новое заключение</h3>
                 <div class="compact-actions">
-                    <button id="submitBtn" class="win11-button success" style="background-color:#107c10;">📨 Отправить заключение в JSON</button>
-                    <button class="win11-button" id="copyTextBtn">📋 Скопировать заключение</button>
+                    <button id="submitBtn" class="win11-button success" style="background-color:#107c10;">📨 Отправить в JSON</button>
+                    <button class="win11-button" id="copyTextBtn">📋 Скопировать</button>
                     <button id="exportTextBtn" class="win11-button">💾 Сохранить в текст</button>
                 </div>
             </div>
             <textarea id="textInput" class="win11-textarea" rows="6" placeholder="Введите текст заключения..."></textarea>
+            <div class="auto-save-hint" id="autoSaveHint">💾 Черновик автоматически сохраняется</div>
         </div>
     </div>
 
@@ -694,6 +705,13 @@
     let viewerRenderLimit = 50;
     let isLoadingMore = false;
     let currentFilteredList = [];
+    
+    // Автосохранение черновика текста
+    let textSaveTimer = null;
+    const DRAFT_KEY = 'protocol_text_draft';
+    const PATIENT_DRAFT_KEY = 'protocol_patient_draft';
+    const TITLE_DRAFT_KEY = 'protocol_title_draft';
+    const DATE_DRAFT_KEY = 'protocol_date_draft';
 
     // DOM элементы
     const abbrInput = document.getElementById('abbrInput');
@@ -709,7 +727,7 @@
     const autoSaveStatus = document.getElementById('autoSaveStatus');
     const modalityRadios = document.querySelectorAll('input[name="modality"]');
     const dateField = document.getElementById('dateField');
-    const patientName = document.getElementById('patientName');
+    const patientNameInput = document.getElementById('patientName');
     const titleField = document.getElementById('titleField');
     const loadDataFileBtn = document.getElementById('loadDataFileBtn');
     const dataFileInput = document.getElementById('dataFileInput');
@@ -720,6 +738,60 @@
     const submitBtn = document.getElementById('submitBtn');
     const copyTextBtn = document.getElementById('copyTextBtn');
     const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    const autoSaveHint = document.getElementById('autoSaveHint');
+
+    // Функция сохранения черновика
+    function saveTextDraft() {
+        const text = textInput.value;
+        const patient = patientNameInput.value;
+        const title = titleField.value;
+        const date = dateField.value;
+        localStorage.setItem(DRAFT_KEY, text);
+        localStorage.setItem(PATIENT_DRAFT_KEY, patient);
+        localStorage.setItem(TITLE_DRAFT_KEY, title);
+        localStorage.setItem(DATE_DRAFT_KEY, date);
+        if (autoSaveHint) {
+            autoSaveHint.textContent = '💾 Черновик сохранён';
+            setTimeout(() => {
+                if (autoSaveHint) autoSaveHint.textContent = '💾 Черновик автоматически сохраняется';
+            }, 1500);
+        }
+    }
+    
+    // Функция восстановления черновика
+    function restoreTextDraft() {
+        const savedText = localStorage.getItem(DRAFT_KEY);
+        const savedPatient = localStorage.getItem(PATIENT_DRAFT_KEY);
+        const savedTitle = localStorage.getItem(TITLE_DRAFT_KEY);
+        const savedDate = localStorage.getItem(DATE_DRAFT_KEY);
+        
+        if (savedText && savedText.trim()) {
+            if (confirm('Найден сохранённый черновик текста. Восстановить?')) {
+                textInput.value = savedText;
+                if (savedPatient) patientNameInput.value = savedPatient;
+                if (savedTitle) titleField.value = savedTitle;
+                if (savedDate) dateField.value = savedDate;
+                if (autoSaveHint) autoSaveHint.textContent = '✅ Черновик восстановлен';
+                setTimeout(() => {
+                    if (autoSaveHint) autoSaveHint.textContent = '💾 Черновик автоматически сохраняется';
+                }, 2000);
+            }
+        }
+    }
+    
+    // Автосохранение при вводе
+    function setupAutoTextSave() {
+        const saveHandler = () => {
+            if (textSaveTimer) clearTimeout(textSaveTimer);
+            textSaveTimer = setTimeout(() => {
+                saveTextDraft();
+            }, 1000);
+        };
+        textInput.addEventListener('input', saveHandler);
+        patientNameInput.addEventListener('input', saveHandler);
+        titleField.addEventListener('input', saveHandler);
+        dateField.addEventListener('change', saveHandler);
+    }
 
     function formatDateTimeForFilename() {
         const now = new Date();
@@ -730,6 +802,11 @@
         const minutes = String(now.getMinutes()).padStart(2,'0');
         const seconds = String(now.getSeconds()).padStart(2,'0');
         return `${day}${month}_${hours}-${minutes}-${seconds}`;
+    }
+    
+    function sanitizeFilename(str) {
+        if (!str) return '';
+        return str.replace(/[\\/*?:"<>|]/g, '').replace(/\s+/g, '_').substring(0, 50);
     }
 
     function setTodayDate() { dateField.value = new Date().toISOString().slice(0,10); }
@@ -796,7 +873,7 @@
                 localStorage.setItem('jsonBackup', JSON.stringify(jsonData));
                 localStorage.setItem('jsonBackupTime', new Date().toISOString());
                 autoSaveStatus.textContent = '✓ Backup сохранён';
-                setTimeout(() => { autoSaveStatus.textContent = '⏺ Автосохранение активно'; }, 2000);
+                setTimeout(() => { autoSaveStatus.textContent = '⏺ Автосохранение каждые 20 мин'; }, 2000);
             }
         }, 3000);
     }
@@ -865,7 +942,7 @@
             title: title,
             text: text,
             modality: modalityJsonMap[getSelectedModality()],
-            patient: patientName.value.trim() || '',
+            patient: patientNameInput.value.trim() || '',
             date: dateField.value
         };
         jsonData.push(newEntry);
@@ -874,12 +951,18 @@
         textInput.value = '';
         titleField.value = '';
         setTodayDate();
-        patientName.value = '';
+        patientNameInput.value = '';
+        // Очищаем черновик после успешной отправки
+        localStorage.removeItem(DRAFT_KEY);
+        localStorage.removeItem(PATIENT_DRAFT_KEY);
+        localStorage.removeItem(TITLE_DRAFT_KEY);
         markJsonDirty();
         scheduleAutoBackup();
         viewerRenderLimit = 50;
         renderViewer();
         showButtonMessage(submitBtn, `✓ ID ${nextId - 1} добавлен`);
+        if (autoSaveHint) autoSaveHint.textContent = '💾 Черновик очищен';
+        setTimeout(() => { if (autoSaveHint) autoSaveHint.textContent = '💾 Черновик автоматически сохраняется'; }, 2000);
     }
 
     function deleteConclusion(recordId) {
@@ -1033,7 +1116,7 @@
         
         isLoadingMore = true;
         const loadingIndicator = document.getElementById('loading-more-indicator');
-        if (loadingIndicator) loadingIndicator.innerHTML = '<span class="loading-spinner" style="display:inline-block;width:14px;height:14px;border:2px solid #cbd9e8;border-top-color:#0067c0;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;"></span> Загрузка...';
+        if (loadingIndicator) loadingIndicator.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #cbd9e8;border-top-color:#0067c0;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;"></span> Загрузка...';
         
         setTimeout(() => {
             viewerRenderLimit = Math.min(viewerRenderLimit + 30, currentFilteredList.length);
@@ -1100,12 +1183,22 @@
     function exportText() {
         const text = textInput.value.trim();
         if(!text) { showButtonMessage(exportTextBtn, '✗ Нет текста', true); return; }
+        
+        // Формируем имя файла: ФИО пациента + дата
+        let patientNameVal = patientNameInput.value.trim();
+        let dateVal = dateField.value;
+        let dateStr = dateVal ? dateVal.split('-').reverse().join('.') : new Date().toISOString().slice(0,10).split('-').reverse().join('.');
+        let baseName = patientNameVal ? sanitizeFilename(patientNameVal) : 'заключение';
+        let filename = `${baseName}_${dateStr}.txt`;
+        
         const blob = new Blob([text], {type:'text/plain'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `text_${formatDateTimeForFilename()}.txt`;
+        a.download = filename;
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
         URL.revokeObjectURL(url);
         showButtonMessage(exportTextBtn, '✓ Сохранено');
     }
@@ -1193,6 +1286,8 @@
         renderAbbreviations();
         setInterval(updateFilenamePreview, 1000);
         setupAutoReplace(textInput, abbreviations);
+        setupAutoTextSave();
+        restoreTextDraft();
         
         loadDataFileBtn.onclick = () => dataFileInput.click();
         dataFileInput.onchange = (e) => { if(e.target.files.length) loadDataFile(e.target.files[0]); dataFileInput.value = ''; };
